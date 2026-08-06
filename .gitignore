@@ -1,0 +1,5 @@
+node_modules/
+forgeos-core/data/
+projects/
+*.log
+.DS_Store
