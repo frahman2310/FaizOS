@@ -11,6 +11,7 @@ import { updateMastery, bumpConfidence, type EvidenceKind } from './mastery.js';
 import { advanceStreak, todayISO } from './streak.js';
 import { compileNotebook } from './notebook.js';
 import { PHASES, MISSION_TEMPLATES } from './curriculum.js';
+import { initCard, review as fsrsReview, gradeFromOutcome, type Card } from './fsrs.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = process.env.FAIZOS_HOME || join(HERE, '..', 'data');
@@ -169,31 +170,72 @@ server.registerTool('faizos_config', {
 
 // ---- light retrieval: keep the few must-knows fresh ----
 server.registerTool('faizos_review_queue', {
-  title: 'Review queue (must-knows)',
-  description: 'Return the must-know fundamentals most in need of a short retrieval check (low mastery / not seen lately).',
+  title: 'Review queue (must-knows, FSRS)',
+  description: 'Return must-know fundamentals that are DUE for a short retrieval check (FSRS-scheduled), plus new built-but-unscheduled must-knows. Keep it light — building is the main event.',
   inputSchema: { limit: z.number().optional() },
 }, async ({ limit }) => {
-  const items = db.prepare('SELECT id,name,build_hint,mastery,last_seen FROM skills WHERE must_know=1 ORDER BY mastery ASC, (last_seen IS NULL) DESC, last_seen ASC LIMIT ?').all(limit ?? 5);
-  return ok({ items, note: 'Ask the user to recall each (no notes), grade briefly, then call faizos_record_review.' });
+  const today = todayISO();
+  const n = limit ?? 5;
+  const due = db.prepare(
+    'SELECT s.id, s.name, s.build_hint, r.due, r.stability FROM reviews r JOIN skills s ON s.id=r.skill_id WHERE s.must_know=1 AND r.due<=? ORDER BY r.due ASC LIMIT ?',
+  ).all(today, n) as Array<Record<string, unknown>>;
+  const rest = n - due.length;
+  const fresh = rest > 0
+    ? db.prepare("SELECT id, name, build_hint FROM skills WHERE must_know=1 AND last_seen IS NOT NULL AND id NOT IN (SELECT skill_id FROM reviews) ORDER BY mastery ASC LIMIT ?").all(rest) as Array<Record<string, unknown>>
+    : [];
+  const items = [...due.map((d) => ({ ...d, status: 'due' })), ...fresh.map((f) => ({ ...f, status: 'new' }))];
+  return ok({ items, note: 'Ask him to recall each (no notes), grade briefly, then faizos_record_review. Keep it short.' });
 });
 server.registerTool('faizos_record_review', {
-  title: 'Record review results',
-  description: 'Record short-review outcomes (0..1) for must-know skills. Updates mastery with review-weight evidence.',
+  title: 'Record review results (FSRS)',
+  description: 'Record short-review outcomes (0..1). Updates the FSRS card (schedules the next review) and bumps mastery with review-weight evidence.',
   inputSchema: { results: z.array(z.object({ id: z.string(), outcome: z.number().min(0).max(1) })) },
 }, async ({ results }) => {
   const today = todayISO();
-  const updated: any[] = [];
-  const upd = db.prepare('UPDATE skills SET mastery=?, confidence=?, last_seen=? WHERE id=?');
+  const updated: Array<Record<string, unknown>> = [];
+  const getCard = db.prepare('SELECT stability, difficulty, last, due, reps FROM reviews WHERE skill_id=?');
+  const upsertCard = db.prepare('INSERT INTO reviews (skill_id,stability,difficulty,last,due,reps) VALUES (?,?,?,?,?,?) ON CONFLICT(skill_id) DO UPDATE SET stability=excluded.stability, difficulty=excluded.difficulty, last=excluded.last, due=excluded.due, reps=excluded.reps');
+  const updSkill = db.prepare('UPDATE skills SET mastery=?, confidence=?, last_seen=? WHERE id=?');
   db.transaction(() => {
     for (const r of results) {
-      const row = db.prepare('SELECT mastery,confidence,name FROM skills WHERE id=?').get(r.id) as any;
+      const row = db.prepare('SELECT mastery,confidence,name FROM skills WHERE id=?').get(r.id) as { mastery: number; confidence: number; name: string } | undefined;
       if (!row) continue;
+      const grade = gradeFromOutcome(r.outcome);
+      const existing = getCard.get(r.id) as Card | undefined;
+      const card = existing ? fsrsReview(existing, grade, today) : initCard(grade, today);
+      upsertCard.run(r.id, card.stability, card.difficulty, card.last, card.due, card.reps);
       const to = updateMastery(row.mastery, r.outcome, 'review');
-      upd.run(to, bumpConfidence(row.confidence, 'review'), today, r.id);
-      updated.push({ id: r.id, name: row.name, from: Number(row.mastery.toFixed(3)), to: Number(to.toFixed(3)) });
+      updSkill.run(to, bumpConfidence(row.confidence, 'review'), today, r.id);
+      updated.push({ id: r.id, name: row.name, from: Number(row.mastery.toFixed(3)), to: Number(to.toFixed(3)), next_due: card.due });
     }
   })();
   return ok({ updated });
+});
+
+// ================= AI Opportunity Radar (AI-only research -> buildable missions) =================
+server.registerTool('faizos_radar_save', {
+  title: 'Save radar opportunities',
+  description: 'Store buildable AI opportunities found by /faiz-radar (AI-only; Pakistan-first + global remote/tech). Each has buildable_as = a concrete first shippable project.',
+  inputSchema: { opportunities: z.array(z.object({ title: z.string(), market: z.string().optional(), feasibility: z.string().optional(), roi_note: z.string().optional(), buildable_as: z.string().optional() })) },
+}, async ({ opportunities }) => {
+  const ts = now();
+  const ins = db.prepare('INSERT INTO radar (ts,title,market,feasibility,roi_note,buildable_as) VALUES (?,?,?,?,?,?)');
+  const saved: Array<{ id: number; title: string }> = [];
+  db.transaction(() => {
+    for (const o of opportunities) {
+      const info = ins.run(ts, o.title, o.market ?? '', o.feasibility ?? '', o.roi_note ?? '', o.buildable_as ?? '');
+      saved.push({ id: Number(info.lastInsertRowid), title: o.title });
+    }
+  })();
+  logEvent(db, ts, 'radar', `${opportunities.length} opportunities`);
+  return ok({ saved, note: 'Offer to turn one into a mission with faizos_start_build({ idea: buildable_as }).' });
+});
+server.registerTool('faizos_radar_list', {
+  title: 'List radar opportunities',
+  description: 'Return recent AI opportunities found by the radar.',
+  inputSchema: { limit: z.number().optional() },
+}, async ({ limit }) => {
+  return ok({ items: db.prepare('SELECT id,ts,title,market,feasibility,roi_note,buildable_as FROM radar ORDER BY id DESC LIMIT ?').all(limit ?? 10) });
 });
 
 // ================= Memory + self-improving feedback loop =================

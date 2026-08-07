@@ -6,7 +6,7 @@
   "description": "FaizOS deterministic brain — MCP server (state, skills, missions, mastery).",
   "scripts": {
     "start": "tsx src/server.ts",
-    "test": "tsx src/mastery.ts && tsx src/streak.ts && tsx src/notebook.ts"
+    "test": "tsx src/mastery.ts && tsx src/streak.ts && tsx src/notebook.ts && tsx src/fsrs.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

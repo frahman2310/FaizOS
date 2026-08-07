@@ -58,6 +58,23 @@ CREATE TABLE IF NOT EXISTS revisions (
   topic   TEXT NOT NULL,
   note_md TEXT NOT NULL                -- full revision-note markdown
 );
+CREATE TABLE IF NOT EXISTS reviews (
+  skill_id   TEXT PRIMARY KEY,         -- one FSRS card per must-know skill
+  stability  REAL NOT NULL,
+  difficulty REAL NOT NULL,
+  last       TEXT NOT NULL,
+  due        TEXT NOT NULL,
+  reps       INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE IF NOT EXISTS radar (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts           TEXT NOT NULL,
+  title        TEXT NOT NULL,
+  market       TEXT DEFAULT '',
+  feasibility  TEXT DEFAULT '',
+  roi_note     TEXT DEFAULT '',
+  buildable_as TEXT DEFAULT ''         -- the concrete first shippable AI project
+);
 `;
 
 const DEFAULT_META: Record<string, string> = {

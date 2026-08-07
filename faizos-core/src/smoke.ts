@@ -66,7 +66,7 @@ console.assert(s2.last_shipped && s2.shipped_count === 1, 'final: last_shipped s
 console.assert(s2.skills.recently_moved.some((x: any) => x.id === 'floating-point-logsumexp'), 'final: skill shows as recently moved');
 
 const rq = await call('faizos_review_queue', { limit: 3 });
-console.assert(Array.isArray(rq.items) && rq.items.length === 3, 'review queue returns must-knows');
+console.assert(Array.isArray(rq.items) && rq.items.some((i: any) => i.id === 'floating-point-logsumexp'), 'review queue surfaces a built must-know');
 
 // --- Phase 1: memory + self-improving feedback loop (prove it closes) ---
 const ls0 = await call('faizos_lesson_start', { topic: 'test lesson' });
@@ -89,6 +89,17 @@ console.assert(cur.phases.length >= 15 && cur.phases.some((p: any) => p.phase ==
 console.assert(Array.isArray(cur.suggested_missions) && cur.suggested_missions.length >= 1, 'suggests next missions');
 console.assert(typeof cur.free_build === 'string', 'free-build is always offered');
 console.log('Step 2 (curriculum): map spans', cur.phases.length, 'phases; next suggestion:', cur.suggested_missions[0]?.title);
+
+// --- Step 3: FSRS review scheduling ---
+const rec = await call('faizos_record_review', { results: [{ id: 'linalg-matmul', outcome: 0.9 }] });
+console.assert(rec.updated[0] && typeof rec.updated[0].next_due === 'string', 'review schedules a next_due (FSRS)');
+console.log('Step 3 (FSRS): linalg-matmul next review scheduled →', rec.updated[0].next_due);
+
+// --- Step 5: AI Opportunity Radar ---
+await call('faizos_radar_save', { opportunities: [{ title: 'Urdu support bot', market: 'PK SMEs', feasibility: 'HIGH', roi_note: 'low incumbency', buildable_as: 'fine-tune a small Urdu support model' }] });
+const radar = await call('faizos_radar_list', { limit: 5 });
+console.assert(radar.items.length >= 1 && String(radar.items[0].buildable_as).includes('Urdu'), 'radar saves + lists opportunities');
+console.log('Step 5 (radar): saved a buildable opportunity →', radar.items[0].buildable_as);
 
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');
