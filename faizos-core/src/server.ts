@@ -336,4 +336,32 @@ server.registerTool('faizos_curriculum', {
   });
 });
 
+// ---- faizos_progress: a course-wide progress bar (show it with the revision summary) ----
+server.registerTool('faizos_progress', {
+  title: 'Course progress bar',
+  description: 'Progress across the WHOLE curriculum (Phases 0–15): overall mastery %, skills started, missions shipped, and a rendered progress bar (overall + per-phase). Show its `rendered` block with the revision summary.',
+  inputSchema: {},
+}, async () => {
+  const skills = db.prepare('SELECT phase, mastery, last_seen FROM skills WHERE on_curriculum=1').all() as Array<{ phase: number; mastery: number; last_seen: string | null }>;
+  const total = skills.length;
+  const touched = skills.filter((s) => s.last_seen).length;
+  const overall = total ? skills.reduce((a, s) => a + s.mastery, 0) / total : 0;
+  const shipped = (db.prepare("SELECT COUNT(*) c FROM missions WHERE status='shipped'").get() as { c: number }).c;
+  const byPhase = new Map<number, { sum: number; n: number }>();
+  for (const s of skills) { const p = byPhase.get(s.phase) ?? { sum: 0, n: 0 }; p.sum += s.mastery; p.n++; byPhase.set(s.phase, p); }
+  const bar = (f: number, w = 20) => { const x = Math.max(0, Math.min(1, f)); const k = Math.round(x * w); return '▓'.repeat(k) + '░'.repeat(w - k); };
+  const pct = (f: number) => `${Math.round(f * 100)}%`;
+  const phaseLines = [...byPhase.entries()].sort((a, b) => a[0] - b[0]).map(([ph, v]) => {
+    const m = v.n ? v.sum / v.n : 0;
+    return `  ${String(ph).padStart(2)}  ${(PHASES[ph] ?? '').padEnd(26)} ${bar(m, 12)} ${pct(m)}`;
+  });
+  const rendered = [
+    'Course progress — the whole scope (Phases 0–15)',
+    `  OVERALL  ${bar(overall)} ${pct(overall)}    ·  ${touched}/${total} skills started  ·  ${shipped} shipped`,
+    '',
+    ...phaseLines,
+  ].join('\n');
+  return ok({ overall_mastery_pct: Math.round(overall * 100), skills_touched: touched, skills_total: total, missions_shipped: shipped, rendered });
+});
+
 await server.connect(new StdioServerTransport());

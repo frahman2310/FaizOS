@@ -12,7 +12,7 @@ try: print(json.load(sys.stdin).get('pending_close') or '')
 except Exception: print('')" 2>/dev/null)
 if [ -n "$PENDING" ]; then
   cat <<EOF
-{"decision":"block","reason":"FaizOS auto-close: a shipped build (mission $PENDING) hasn't been analyzed yet. Before finishing, run the close-loop now: (1) analyze it — read the repo, bank the skills with faizos_analyze, teach the one gap; (2) post the Revision Note and save it with faizos_save_revision; (3) call faizos_record_lesson with 1-2 new_insights (this clears the flag). Then commit + push the journey. Then you're done."}
+{"decision":"block","reason":"FaizOS auto-close: a shipped build (mission $PENDING) hasn't been analyzed yet. Before finishing, run the close-loop now: (1) analyze it — read the repo, bank the skills with faizos_analyze, teach the one gap; (2) post the Revision Note, save it with faizos_save_revision, and show the course progress bar (faizos_progress) under it; (3) call faizos_record_lesson with 1-2 new_insights (this clears the flag). Then commit + push the journey. Then you're done."}
 EOF
 fi
 exit 0

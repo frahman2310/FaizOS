@@ -10,6 +10,6 @@ Shipping is the **celebrated moment**. Keep it crisp and rewarding.
 4. Celebrate briefly: 🚢 title · 🔥 new streak (note if `best_streak` beaten; if `grace_used`, a missed day was forgiven — positively) · shipped count.
 5. **Auto-close the loop immediately — do NOT wait for him to ask:**
    - Analyze the build: `faizos_analyze` (read the repo, bank the skills, teach the one gap).
-   - Post the Revision Note and save it: `faizos_save_revision`.
+   - Post the Revision Note, save it (`faizos_save_revision`), and **directly under it show the course progress bar** from `faizos_progress` (print its `rendered` block). Every revision summary ends with where he stands across the whole course.
    - `faizos_record_lesson` with 1–2 `new_insights` (this clears the pending flag).
    - `git add -A && git commit && git push` the journey. Then tease the suggested next build.

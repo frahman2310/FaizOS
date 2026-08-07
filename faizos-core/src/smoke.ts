@@ -101,5 +101,10 @@ const radar = await call('faizos_radar_list', { limit: 5 });
 console.assert(radar.items.length >= 1 && String(radar.items[0].buildable_as).includes('Urdu'), 'radar saves + lists opportunities');
 console.log('Step 5 (radar): saved a buildable opportunity →', radar.items[0].buildable_as);
 
+// --- course progress bar ---
+const prog = await call('faizos_progress', {});
+console.assert(typeof prog.rendered === 'string' && prog.rendered.includes('OVERALL'), 'progress bar renders');
+console.log('Progress:', prog.overall_mastery_pct + '% overall,', prog.missions_shipped, 'shipped');
+
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');
