@@ -61,6 +61,7 @@ server.registerTool('faizos_state', {
 
   return ok({
     streak, best_streak: best, last_active_date: getMeta(db, 'last_active_date') || null,
+    pending_close: getMeta(db, 'pending_close') || null,
     current_build: current,
     last_shipped: lastShipped,
     shipped_count: shippedCount,
@@ -106,6 +107,7 @@ server.registerTool('faizos_ship', {
   const s = advanceStreak({ streak: Number(getMeta(db, 'streak') || 0), best: Number(getMeta(db, 'best_streak') || 0), lastActive: getMeta(db, 'last_active_date') || null }, today);
   setMeta(db, 'streak', String(s.streak)); setMeta(db, 'best_streak', String(s.best)); setMeta(db, 'last_active_date', today);
   logEvent(db, now(), 'ship', `#${id} ${m.title}${ship_url ? ' ' + ship_url : ''}`);
+  setMeta(db, 'pending_close', String(id)); // triggers auto-analyze + revision before the session ends
 
   const shippedCount = (db.prepare("SELECT COUNT(*) c FROM missions WHERE status='shipped'").get() as { c: number }).c;
   return ok({ shipped: { mission_id: id, title: m.title, ship_url: ship_url ?? null }, streak: s.streak, best_streak: s.best, grace_used: s.graceUsed, shipped_count: shippedCount, next: 'Run /faiz-analyze to bank the skills you just built.' });
@@ -286,6 +288,7 @@ server.registerTool('faizos_record_lesson', {
   const upsert = db.prepare('INSERT INTO insights (ts,note,weight) VALUES (?,?,1) ON CONFLICT(note) DO UPDATE SET weight=weight+1, ts=excluded.ts, active=1');
   for (const n of new_insights ?? []) if (n.trim()) upsert.run(ts, n.trim());
   logEvent(db, ts, 'lesson', `${topic} (+${(new_insights ?? []).length} insights)`);
+  setMeta(db, 'pending_close', ''); // loop closed for this build
   const active = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC LIMIT 8').all();
   return ok({ recorded: topic, new_insights: new_insights ?? [], active_insights: active, note: 'These load at the next faizos_lesson_start.' });
 });
