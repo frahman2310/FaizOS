@@ -34,9 +34,12 @@ A recap he can genuinely re-learn from later — so it must carry the **backgrou
 > **Your gap → next:** <the one thing to firm up, and the next ship>
 
 ## The build steps
-1. If `$ARGUMENTS` is empty, call `faizos_state` and propose `recommended_next`; else use `$ARGUMENTS` as the idea.
-2. Call `faizos_start_build`.
+1. **Call `faizos_lesson_start` FIRST.** Apply its `insights_to_apply` and `recent_struggles` — these are what FaizOS learned about teaching *you* in past lessons — plus note `weak_skills` and `current_build`. This is the self-improving loop in action.
+2. If `$ARGUMENTS` is empty, propose `recommended_next` from `faizos_state`; else use `$ARGUMENTS` as the idea. Call `faizos_start_build`.
 3. Scaffold a real repo at `repo_path`: `git init`, a `README.md` (goal + acceptance criteria = a verifiable result), and a stub file with the function(s) to fill plus a runnable acceptance test. Light scaffold — he earns the build; never write the solution.
 4. Teach toward passing that test with the Brick Method above.
 5. Commit locally as progress is made; do not push (that's `/faiz-ship`).
-6. When the test passes → send him to `/faiz-ship`, then post the Revision Note.
+6. When the test passes → send him to `/faiz-ship`.
+7. **Close the loop (lesson end):**
+   - Post the Revision Note (format above), then save it: `faizos_save_revision({ topic, note_md })` → auto-updates `notebook/REVISIONS.md`.
+   - `faizos_record_lesson({ topic, mission_id, skills, struggles, worked, new_insights, difficulty_felt })`, where `new_insights` = 1–2 concrete, reusable teaching adjustments you noticed this lesson (e.g. *"he confused rows vs columns — define both with the column-length trick"*). They load automatically at the next `faizos_lesson_start`, so every lesson improves the next.

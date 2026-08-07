@@ -13,7 +13,7 @@ const isolated = mkdtempSync(join(tmpdir(), 'faizos-smoke-'));
 const transport = new StdioClientTransport({
   command: 'npx',
   args: ['tsx', join(HERE, 'server.ts')],
-  env: { ...process.env, FAIZOS_HOME: isolated } as Record<string, string>,
+  env: { ...process.env, FAIZOS_HOME: isolated, FAIZOS_NOTEBOOK: join(isolated, 'REVISIONS.md') } as Record<string, string>,
 });
 const client = new Client({ name: 'smoke', version: '0.0.0' });
 await client.connect(transport);
@@ -67,6 +67,21 @@ console.assert(s2.skills.recently_moved.some((x: any) => x.id === 'floating-poin
 
 const rq = await call('faizos_review_queue', { limit: 3 });
 console.assert(Array.isArray(rq.items) && rq.items.length === 3, 'review queue returns must-knows');
+
+// --- Phase 1: memory + self-improving feedback loop (prove it closes) ---
+const ls0 = await call('faizos_lesson_start', { topic: 'test lesson' });
+console.assert(Array.isArray(ls0.insights_to_apply) && typeof ls0.learning_profile === 'string', 'lesson_start returns insights + profile');
+const insightText = 'reinforce rows-vs-columns with the column-length trick';
+await call('faizos_record_lesson', { topic: 'matmul cost', skills: ['linalg-matmul'], struggles: ['confused rows vs columns'], new_insights: [insightText], difficulty_felt: 'right' });
+const ls1 = await call('faizos_lesson_start');
+console.assert(ls1.insights_to_apply.some((i: any) => i.note === insightText), 'insight surfaces at next lesson_start (loop closes)');
+const sv = await call('faizos_save_revision', { topic: 'matmul cost', note_md: '**Remember:** 2*M*N*K' });
+console.assert(sv.entries >= 1 && sv.notebook_path.endsWith('REVISIONS.md'), 'revision saved');
+const fsmod = await import('node:fs');
+console.assert(fsmod.existsSync(sv.notebook_path) && fsmod.readFileSync(sv.notebook_path, 'utf8').includes('2*M*N*K'), 'notebook file compiled with the note');
+const notes = await call('faizos_notes', { limit: 5 });
+console.assert(notes.count >= 1 && notes.recent.length >= 1, 'notes returns revisions');
+console.log('Phase 1 (memory + feedback loop): closed ✅  insight recorded → surfaced next lesson → notebook compiled');
 
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');

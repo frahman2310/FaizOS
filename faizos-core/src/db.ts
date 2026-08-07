@@ -35,6 +35,29 @@ CREATE TABLE IF NOT EXISTS meta (
   key   TEXT PRIMARY KEY,
   value TEXT
 );
+CREATE TABLE IF NOT EXISTS lessons (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts              TEXT NOT NULL,
+  topic           TEXT NOT NULL,
+  mission_id      INTEGER,
+  skills          TEXT DEFAULT '[]',   -- JSON: skill ids touched
+  struggles       TEXT DEFAULT '[]',   -- JSON: where he struggled
+  worked          TEXT DEFAULT '[]',   -- JSON: what worked
+  difficulty_felt TEXT                 -- too_easy | right | too_hard
+);
+CREATE TABLE IF NOT EXISTS insights (
+  id     INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts     TEXT NOT NULL,
+  note   TEXT NOT NULL UNIQUE,         -- deduped teaching insight
+  weight INTEGER NOT NULL DEFAULT 1,   -- reinforced count
+  active INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE IF NOT EXISTS revisions (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts      TEXT NOT NULL,
+  topic   TEXT NOT NULL,
+  note_md TEXT NOT NULL                -- full revision-note markdown
+);
 `;
 
 const DEFAULT_META: Record<string, string> = {

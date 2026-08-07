@@ -3,15 +3,18 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { openDb, getMeta, setMeta, logEvent, type DB } from './db.js';
 import { updateMastery, bumpConfidence, type EvidenceKind } from './mastery.js';
 import { advanceStreak, todayISO } from './streak.js';
+import { compileNotebook } from './notebook.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = process.env.FAIZOS_HOME || join(HERE, '..', 'data');
+const PROJECT_ROOT = process.env.FAIZOS_PROJECT || join(HERE, '..', '..');
+const NOTEBOOK_PATH = process.env.FAIZOS_NOTEBOOK || join(PROJECT_ROOT, 'notebook', 'REVISIONS.md');
 mkdirSync(DATA_DIR, { recursive: true });
 const db: DB = openDb(join(DATA_DIR, 'faiz.db'));
 
@@ -190,6 +193,82 @@ server.registerTool('faizos_record_review', {
     }
   })();
   return ok({ updated });
+});
+
+// ================= Memory + self-improving feedback loop =================
+
+const LEARNING_PROFILE =
+  'Teach with the Brick Method: start below the floor, ONE tiny concept per step, ask a small ' +
+  'question, WAIT for his answer, then reveal the answer + the reasoning. Define each term in one ' +
+  'sentence + an analogy. He does the doing. No fluff. Small lessons. End with a rich revision note.';
+
+// ---- faizos_lesson_start: load what we've learned about teaching him ----
+server.registerTool('faizos_lesson_start', {
+  title: 'Start a lesson',
+  description: 'Call at the START of a lesson/build. Returns the learning profile, accumulated teaching INSIGHTS to apply, weakest skills, and recent struggles. This is how FaizOS applies what it learned from past lessons.',
+  inputSchema: { topic: z.string().optional() },
+}, async ({ topic }) => {
+  const insights = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC, ts DESC LIMIT 8').all();
+  const weak = db.prepare('SELECT id,name,mastery,must_know FROM skills WHERE on_curriculum=1 ORDER BY mastery ASC, must_know DESC LIMIT 5').all();
+  const recentStruggles = (db.prepare('SELECT struggles FROM lessons ORDER BY id DESC LIMIT 3').all() as Array<{ struggles: string }>)
+    .flatMap((l) => { try { return JSON.parse(l.struggles); } catch { return []; } });
+  return ok({
+    topic: topic ?? null,
+    learning_profile: LEARNING_PROFILE,
+    insights_to_apply: insights,
+    weak_skills: weak,
+    recent_struggles: recentStruggles,
+    current_build: activeMission(),
+    note: 'Apply insights_to_apply + recent_struggles proactively. Teach one brick at a time.',
+  });
+});
+
+// ---- faizos_record_lesson: store the lesson + distil new insights (improve) ----
+server.registerTool('faizos_record_lesson', {
+  title: 'Record a lesson',
+  description: 'Call at the END of a lesson. Stores what happened and appends 1-2 new teaching INSIGHTS (distilled by you from how the lesson went) so the NEXT lesson improves. Insights are deduped; repeats get reinforced (weight++).',
+  inputSchema: {
+    topic: z.string(),
+    mission_id: z.number().optional(),
+    skills: z.array(z.string()).optional(),
+    struggles: z.array(z.string()).optional(),
+    worked: z.array(z.string()).optional(),
+    new_insights: z.array(z.string()).optional().describe('1-2 concrete, reusable teaching adjustments for next time'),
+    difficulty_felt: z.enum(['too_easy', 'right', 'too_hard']).optional(),
+  },
+}, async ({ topic, mission_id, skills, struggles, worked, new_insights, difficulty_felt }) => {
+  const ts = now();
+  db.prepare('INSERT INTO lessons (ts,topic,mission_id,skills,struggles,worked,difficulty_felt) VALUES (?,?,?,?,?,?,?)')
+    .run(ts, topic, mission_id ?? null, JSON.stringify(skills ?? []), JSON.stringify(struggles ?? []), JSON.stringify(worked ?? []), difficulty_felt ?? null);
+  const upsert = db.prepare('INSERT INTO insights (ts,note,weight) VALUES (?,?,1) ON CONFLICT(note) DO UPDATE SET weight=weight+1, ts=excluded.ts, active=1');
+  for (const n of new_insights ?? []) if (n.trim()) upsert.run(ts, n.trim());
+  logEvent(db, ts, 'lesson', `${topic} (+${(new_insights ?? []).length} insights)`);
+  const active = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC LIMIT 8').all();
+  return ok({ recorded: topic, new_insights: new_insights ?? [], active_insights: active, note: 'These load at the next faizos_lesson_start.' });
+});
+
+// ---- faizos_save_revision: store note + regenerate the compiled notebook ----
+server.registerTool('faizos_save_revision', {
+  title: 'Save a revision note',
+  description: 'Call at lesson end with the full revision-note markdown. Stores it and REGENERATES the compiled notebook file (notebook/REVISIONS.md) from all revisions.',
+  inputSchema: { topic: z.string(), note_md: z.string() },
+}, async ({ topic, note_md }) => {
+  db.prepare('INSERT INTO revisions (ts,topic,note_md) VALUES (?,?,?)').run(now(), topic, note_md);
+  const all = db.prepare('SELECT ts, topic, note_md FROM revisions').all() as Array<{ ts: string; topic: string; note_md: string }>;
+  mkdirSync(dirname(NOTEBOOK_PATH), { recursive: true });
+  writeFileSync(NOTEBOOK_PATH, compileNotebook(all));
+  return ok({ saved: topic, notebook_path: NOTEBOOK_PATH, entries: all.length });
+});
+
+// ---- faizos_notes: read the notebook ----
+server.registerTool('faizos_notes', {
+  title: 'Read the revision notebook',
+  description: 'Return recent revision notes + the compiled notebook path. For /faiz-notes.',
+  inputSchema: { limit: z.number().optional() },
+}, async ({ limit }) => {
+  const recent = db.prepare('SELECT ts, topic, note_md FROM revisions ORDER BY id DESC LIMIT ?').all(limit ?? 10);
+  const count = (db.prepare('SELECT COUNT(*) c FROM revisions').get() as { c: number }).c;
+  return ok({ notebook_path: NOTEBOOK_PATH, count, recent });
 });
 
 await server.connect(new StdioServerTransport());
