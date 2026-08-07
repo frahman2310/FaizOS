@@ -75,13 +75,12 @@ export function openDb(path: string): DB {
   db.pragma('journal_mode = WAL');
   db.exec(SCHEMA);
 
-  const skillCount = (db.prepare('SELECT COUNT(*) c FROM skills').get() as { c: number }).c;
-  if (skillCount === 0) {
-    const ins = db.prepare('INSERT INTO skills (id,name,phase,must_know,build_hint) VALUES (?,?,?,?,?)');
-    db.transaction(() => {
-      for (const s of skillsSeed) ins.run(s.id, s.name, s.phase, s.must_know ? 1 : 0, s.build_hint);
-    })();
-  }
+  // Idempotent: adds any new seed skills on every start; INSERT OR IGNORE preserves
+  // existing rows (and their mastery). This is how the curriculum grows without wiping progress.
+  const insSkill = db.prepare('INSERT OR IGNORE INTO skills (id,name,phase,must_know,build_hint) VALUES (?,?,?,?,?)');
+  db.transaction(() => {
+    for (const s of skillsSeed) insSkill.run(s.id, s.name, s.phase, s.must_know ? 1 : 0, s.build_hint);
+  })();
   const mIns = db.prepare('INSERT OR IGNORE INTO meta (key,value) VALUES (?,?)');
   for (const [k, v] of Object.entries(DEFAULT_META)) mIns.run(k, v);
   return db;

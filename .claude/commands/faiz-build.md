@@ -35,7 +35,7 @@ A recap he can genuinely re-learn from later — so it must carry the **backgrou
 
 ## The build steps
 1. **Call `faizos_lesson_start` FIRST.** Apply its `insights_to_apply` and `recent_struggles` — these are what FaizOS learned about teaching *you* in past lessons — plus note `weak_skills` and `current_build`. This is the self-improving loop in action.
-2. If `$ARGUMENTS` is empty, propose `recommended_next` from `faizos_state`; else use `$ARGUMENTS` as the idea. Call `faizos_start_build`.
+2. Pick the build: if `$ARGUMENTS` is given, use it (**free-build — encouraged**). Else offer `recommended_next` from `faizos_state` **and** a suggested mission from `faizos_curriculum` (the map's next shippable project), and let him choose or free-build anything. Then call `faizos_start_build`. The curriculum guides; it never forces.
 3. Scaffold a real repo at `repo_path`: `git init`, a `README.md` (goal + acceptance criteria = a verifiable result), and a stub file with the function(s) to fill plus a runnable acceptance test. Light scaffold — he earns the build; never write the solution.
 4. Teach toward passing that test with the Brick Method above.
 5. Commit locally as progress is made; do not push (that's `/faiz-ship`).

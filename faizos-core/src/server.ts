@@ -10,6 +10,7 @@ import { openDb, getMeta, setMeta, logEvent, type DB } from './db.js';
 import { updateMastery, bumpConfidence, type EvidenceKind } from './mastery.js';
 import { advanceStreak, todayISO } from './streak.js';
 import { compileNotebook } from './notebook.js';
+import { PHASES, MISSION_TEMPLATES } from './curriculum.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = process.env.FAIZOS_HOME || join(HERE, '..', 'data');
@@ -269,6 +270,25 @@ server.registerTool('faizos_notes', {
   const recent = db.prepare('SELECT ts, topic, note_md FROM revisions ORDER BY id DESC LIMIT ?').all(limit ?? 10);
   const count = (db.prepare('SELECT COUNT(*) c FROM revisions').get() as { c: number }).c;
   return ok({ notebook_path: NOTEBOOK_PATH, count, recent });
+});
+
+// ---- faizos_curriculum: the map + suggested next builds (free-build anytime) ----
+server.registerTool('faizos_curriculum', {
+  title: 'Curriculum map & suggested builds',
+  description: 'The full Phases 0–15 map with your mastery per phase, plus 2–3 suggested next missions from the roadmap (each ends in a verifiable number). You can always FREE-BUILD anything instead — describe it and it becomes a mission; the analyzer back-fills the skills.',
+  inputSchema: {},
+}, async () => {
+  const rows = db.prepare('SELECT phase, AVG(mastery) avg, COUNT(*) n FROM skills WHERE on_curriculum=1 GROUP BY phase ORDER BY phase').all() as Array<{ phase: number; avg: number; n: number }>;
+  const phases = rows.map((r) => ({ phase: r.phase, name: PHASES[r.phase] ?? `Phase ${r.phase}`, skills: r.n, avg_mastery: Number((r.avg ?? 0).toFixed(2)) }));
+  const seen = new Set((db.prepare('SELECT id FROM skills WHERE last_seen IS NOT NULL').all() as Array<{ id: string }>).map((r) => r.id));
+  const suggested = MISSION_TEMPLATES.filter((m) => !m.skills.every((s) => seen.has(s))).slice(0, 3);
+  return ok({
+    phases,
+    frontier_phase: suggested[0]?.phase ?? 15,
+    frontier_name: PHASES[suggested[0]?.phase ?? 15],
+    suggested_missions: suggested,
+    free_build: 'Build ANYTHING — describe it and it becomes a mission on the map; the analyzer back-fills the skills it exercised. The curriculum guides, it never forces.',
+  });
 });
 
 await server.connect(new StdioServerTransport());

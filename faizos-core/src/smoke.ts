@@ -83,5 +83,12 @@ const notes = await call('faizos_notes', { limit: 5 });
 console.assert(notes.count >= 1 && notes.recent.length >= 1, 'notes returns revisions');
 console.log('Phase 1 (memory + feedback loop): closed ✅  insight recorded → surfaced next lesson → notebook compiled');
 
+// --- Step 2: curriculum map + suggestions (free-build within) ---
+const cur = await call('faizos_curriculum', {});
+console.assert(cur.phases.length >= 15 && cur.phases.some((p: any) => p.phase === 15), 'curriculum spans Phases 0–15');
+console.assert(Array.isArray(cur.suggested_missions) && cur.suggested_missions.length >= 1, 'suggests next missions');
+console.assert(typeof cur.free_build === 'string', 'free-build is always offered');
+console.log('Step 2 (curriculum): map spans', cur.phases.length, 'phases; next suggestion:', cur.suggested_missions[0]?.title);
+
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');
