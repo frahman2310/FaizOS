@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"/Users/faizr/AI OS for Learning/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

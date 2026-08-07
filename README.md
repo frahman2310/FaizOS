@@ -4,8 +4,10 @@ An AI operating system for becoming an elite AI engineer — a **Claude Code plu
 learning into a **build-and-ship loop**. You build real AI projects; FaizOS teaches you what you
 need *as you build*, reads what you shipped, and tracks your growing skills.
 
-This is the **MVP**: the core `build → ship → learn` loop. Gamification chrome, the AI Opportunity
-Radar, mobile, and the weekly audit come later (see `docs/` and the plan).
+The full lean build is complete: the build→ship→learn loop, **self-improving memory** (it learns how
+*you* learn), the **full curriculum** (Phases 0–15, free-build within), **spaced-repetition**, a
+**GitHub journey**, and the **AI Opportunity Radar**. It **opens automatically** each session. On the
+roadmap: gamification chrome, portfolio builder, weekly audit, mobile.
 
 ## How it works
 
@@ -31,7 +33,9 @@ Radar, mobile, and the weekly audit come later (see `docs/` and the plan).
 | `/faiz-build <idea>` | Scaffold a real repo and pair-build it; theory delivered just-in-time. |
 | `/faiz-ship` | Ship it (deploy/public/merge), update your streak, celebrate. |
 | `/faiz-analyze` | Read what you built → bank the skills → teach the one gap. |
-| `/faiz-review` | A short retrieval check on the must-know fundamentals. |
+| `/faiz-review` | A short retrieval check on the must-know fundamentals (FSRS-scheduled). |
+| `/faiz-notes` | Flip through your auto-compiled revision notebook. |
+| `/faiz-radar` | Find a buildable, marketable AI opportunity and turn it into a mission. |
 
 ## Dev
 
