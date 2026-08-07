@@ -1,5 +1,5 @@
-// forgeos-core — the deterministic brain. All state + math lives here so the model is only
-// invoked for judgment (teaching, analysis). Tools are consumed by the /forge* slash commands.
+// faizos-core — the deterministic brain. All state + math lives here so the model is only
+// invoked for judgment (teaching, analysis). Tools are consumed by the /faiz* slash commands.
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -11,9 +11,9 @@ import { updateMastery, bumpConfidence, type EvidenceKind } from './mastery.js';
 import { advanceStreak, todayISO } from './streak.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = process.env.FORGEOS_HOME || join(HERE, '..', 'data');
+const DATA_DIR = process.env.FAIZOS_HOME || join(HERE, '..', 'data');
 mkdirSync(DATA_DIR, { recursive: true });
-const db: DB = openDb(join(DATA_DIR, 'forge.db'));
+const db: DB = openDb(join(DATA_DIR, 'faiz.db'));
 
 const now = () => new Date().toISOString();
 const ok = (obj: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(obj, null, 2) }] });
@@ -29,12 +29,12 @@ function activeMission() {
   return db.prepare('SELECT id,title,idea,repo_path,created_at FROM missions WHERE id=? AND status=?').get(Number(id), 'active') ?? null;
 }
 
-const server = new McpServer({ name: 'forgeos-core', version: '0.1.0' });
+const server = new McpServer({ name: 'faizos-core', version: '0.1.0' });
 
-// ---- forge_state: everything the /forge dashboard needs ----
-server.registerTool('forge_state', {
-  title: 'ForgeOS state',
-  description: 'Dashboard state: streak, current build, last shipped, weakest skills, and the single recommended next action. Call this first for /forge.',
+// ---- faizos_state: everything the /faiz dashboard needs ----
+server.registerTool('faizos_state', {
+  title: 'FaizOS state',
+  description: 'Dashboard state: streak, current build, last shipped, weakest skills, and the single recommended next action. Call this first for /faiz.',
   inputSchema: {},
 }, async () => {
   const streak = Number(getMeta(db, 'streak') || 0);
@@ -48,7 +48,7 @@ server.registerTool('forge_state', {
 
   let recommended;
   if (current) {
-    recommended = { action: 'continue', label: `Continue "${current.title}" — then /forge-ship when it runs.`, mission_id: current.id };
+    recommended = { action: 'continue', label: `Continue "${current.title}" — then /faiz-ship when it runs.`, mission_id: current.id };
   } else {
     const target = db.prepare('SELECT id,name,build_hint FROM skills WHERE on_curriculum=1 AND must_know=1 ORDER BY mastery ASC LIMIT 1').get() as any;
     recommended = { action: 'build', label: `Build something that exercises "${target?.name}".`, skill: target?.id, build_hint: target?.build_hint };
@@ -61,12 +61,12 @@ server.registerTool('forge_state', {
     shipped_count: shippedCount,
     skills: { total: (db.prepare('SELECT COUNT(*) c FROM skills').get() as { c: number }).c, avg_mastery: Number(avg.toFixed(3)), weakest, recently_moved: recentlyMoved },
     recommended_next: recommended,
-    menu: ['/forge-build <idea>', '/forge-ship', '/forge-analyze', '/forge-review'],
+    menu: ['/faiz-build <idea>', '/faiz-ship', '/faiz-analyze', '/faiz-review'],
   });
 });
 
-// ---- forge_start_build ----
-server.registerTool('forge_start_build', {
+// ---- faizos_start_build ----
+server.registerTool('faizos_start_build', {
   title: 'Start a build',
   description: 'Begin a new build mission from an idea (or a recommended skill). Creates the mission record, sets it current, returns a repo path and the skills it will likely exercise.',
   inputSchema: { idea: z.string().describe('what the user wants to build'), title: z.string().optional(), repo_path: z.string().optional() },
@@ -82,15 +82,15 @@ server.registerTool('forge_start_build', {
   return ok({ mission_id: missionId, title: t, idea, repo_path: rp, likely_skills: likely, note: `Scaffold a real repo at ${rp} (git init + README), then pair-build. Teach only the theory needed for the next step.` });
 });
 
-// ---- forge_ship ----
-server.registerTool('forge_ship', {
+// ---- faizos_ship ----
+server.registerTool('faizos_ship', {
   title: 'Ship a build',
-  description: 'Mark a build shipped (deployed/public/merged). Updates the forgiving streak and clears it as the current build. Celebrate, then suggest /forge-analyze.',
+  description: 'Mark a build shipped (deployed/public/merged). Updates the forgiving streak and clears it as the current build. Celebrate, then suggest /faiz-analyze.',
   inputSchema: { mission_id: z.number().optional(), ship_url: z.string().optional() },
 }, async ({ mission_id, ship_url }) => {
   const cur = activeMission() as any;
   const id = mission_id ?? cur?.id;
-  if (!id) return ok({ error: 'No active build to ship. Start one with /forge-build.' });
+  if (!id) return ok({ error: 'No active build to ship. Start one with /faiz-build.' });
   const m = db.prepare('SELECT id,title FROM missions WHERE id=?').get(id) as any;
   if (!m) return ok({ error: `No mission #${id}.` });
 
@@ -103,11 +103,11 @@ server.registerTool('forge_ship', {
   logEvent(db, now(), 'ship', `#${id} ${m.title}${ship_url ? ' ' + ship_url : ''}`);
 
   const shippedCount = (db.prepare("SELECT COUNT(*) c FROM missions WHERE status='shipped'").get() as { c: number }).c;
-  return ok({ shipped: { mission_id: id, title: m.title, ship_url: ship_url ?? null }, streak: s.streak, best_streak: s.best, grace_used: s.graceUsed, shipped_count: shippedCount, next: 'Run /forge-analyze to bank the skills you just built.' });
+  return ok({ shipped: { mission_id: id, title: m.title, ship_url: ship_url ?? null }, streak: s.streak, best_streak: s.best, grace_used: s.graceUsed, shipped_count: shippedCount, next: 'Run /faiz-analyze to bank the skills you just built.' });
 });
 
-// ---- forge_analyze: learn-from-what-you-built ----
-server.registerTool('forge_analyze', {
+// ---- faizos_analyze: learn-from-what-you-built ----
+server.registerTool('faizos_analyze', {
   title: 'Analyze a build & update skills',
   description: 'Record which skills a finished build exercised (with an outcome 0..1) and any gaps. Updates mastery deterministically, mints off-curriculum skills as needed, and returns the one gap to teach next. The model infers the skills/outcomes by reading the repo; this tool banks them.',
   inputSchema: {
@@ -136,10 +136,10 @@ server.registerTool('forge_analyze', {
   return ok({ mission_id: mission_id ?? null, updated, gaps: gaps ?? [], teach_next: gaps?.[0] ?? null, note: 'Teach teach_next now (just what is needed), then suggest a short follow-up build.' });
 });
 
-// ---- forge_list_skills: for the analyze command to map a repo to known skill ids ----
-server.registerTool('forge_list_skills', {
+// ---- faizos_list_skills: for the analyze command to map a repo to known skill ids ----
+server.registerTool('faizos_list_skills', {
   title: 'List skills',
-  description: 'List skills (optionally filtered) so the model can map a repo to known skill ids before calling forge_analyze.',
+  description: 'List skills (optionally filtered) so the model can map a repo to known skill ids before calling faizos_analyze.',
   inputSchema: { phase: z.number().optional(), must_know_only: z.boolean().optional() },
 }, async ({ phase, must_know_only }) => {
   let q = 'SELECT id,name,phase,must_know,mastery,confidence,last_seen,on_curriculum,build_hint FROM skills WHERE 1=1';
@@ -150,8 +150,8 @@ server.registerTool('forge_list_skills', {
   return ok({ skills: db.prepare(q).all(...args) });
 });
 
-// ---- forge_config: journey repo / github / projects dir ----
-server.registerTool('forge_config', {
+// ---- faizos_config: journey repo / github / projects dir ----
+server.registerTool('faizos_config', {
   title: 'Get/set config',
   description: 'Read or update config: journey_repo (git remote for auto-push, empty = local commits only), github_user, projects_dir.',
   inputSchema: { set: z.object({ journey_repo: z.string().optional(), github_user: z.string().optional(), projects_dir: z.string().optional() }).optional() },
@@ -164,15 +164,15 @@ server.registerTool('forge_config', {
 });
 
 // ---- light retrieval: keep the few must-knows fresh ----
-server.registerTool('forge_review_queue', {
+server.registerTool('faizos_review_queue', {
   title: 'Review queue (must-knows)',
   description: 'Return the must-know fundamentals most in need of a short retrieval check (low mastery / not seen lately).',
   inputSchema: { limit: z.number().optional() },
 }, async ({ limit }) => {
   const items = db.prepare('SELECT id,name,build_hint,mastery,last_seen FROM skills WHERE must_know=1 ORDER BY mastery ASC, (last_seen IS NULL) DESC, last_seen ASC LIMIT ?').all(limit ?? 5);
-  return ok({ items, note: 'Ask the user to recall each (no notes), grade briefly, then call forge_record_review.' });
+  return ok({ items, note: 'Ask the user to recall each (no notes), grade briefly, then call faizos_record_review.' });
 });
-server.registerTool('forge_record_review', {
+server.registerTool('faizos_record_review', {
   title: 'Record review results',
   description: 'Record short-review outcomes (0..1) for must-know skills. Updates mastery with review-weight evidence.',
   inputSchema: { results: z.array(z.object({ id: z.string(), outcome: z.number().min(0).max(1) })) },

@@ -1,5 +1,5 @@
 node_modules/
-forgeos-core/data/
+faizos-core/data/
 projects/
 *.log
 .DS_Store

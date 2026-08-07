@@ -1,9 +1,9 @@
 {
-  "name": "forgeos-core",
+  "name": "faizos-core",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "ForgeOS deterministic brain — MCP server (state, skills, missions, mastery).",
+  "description": "FaizOS deterministic brain — MCP server (state, skills, missions, mastery).",
   "scripts": {
     "start": "tsx src/server.ts",
     "test": "tsx src/mastery.ts && tsx src/streak.ts"

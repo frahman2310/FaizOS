@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "forgeos-core": {
-      "command": "/Users/faizr/AI OS for Learning/forgeos-core/node_modules/.bin/tsx",
-      "args": ["/Users/faizr/AI OS for Learning/forgeos-core/src/server.ts"]
+    "faizos-core": {
+      "command": "/Users/faizr/AI OS for Learning/faizos-core/node_modules/.bin/tsx",
+      "args": ["/Users/faizr/AI OS for Learning/faizos-core/src/server.ts"]
     }
   }
 }
