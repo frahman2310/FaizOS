@@ -1,6 +1,30 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 2 entries, newest first.
+> Auto-compiled from every lesson. 3 entries, newest first.
+
+---
+
+## a tiny net that learns (gradient descent)
+_2026-08-08_
+
+**📝 Revision — a tiny net that learns (gradient descent)**
+
+**Why it matters:** this is how *every* neural network trains — a model adjusts its weights to shrink a loss, step by step, using gradients. You just ran the real training loop; GPT's is the same loop, scaled up.
+
+**Built:** a one-weight "net" that learns `w*3 = 6` → `w = 2` by gradient descent on your micrograd engine. Loss dropped `9 → 0` in a few steps. Shipped ✅
+
+**The bricks (what + why):**
+- **Learning = turn a knob (weight) to reduce wrongness.** *Why:* a model *is* its weights; learning = adjusting them.
+- **Which way = opposite the gradient** (slope of loss w.r.t. the weight). *Why:* the gradient points uphill in loss; you go downhill.
+- **How far = − learning_rate × gradient** (a small step). *Why:* big steps overshoot; small steps converge.
+- **Loss = (guess − target)².** *Why:* always positive, punishes big misses, and is smooth to minimize.
+- **The loop:** guess → loss → `backward()` (gradient) → step `w` → repeat. *Why:* repeating drives loss to ~0.
+
+**Remember:** **new w = old w − (learning_rate × gradient)**, repeated in a loop. That one line, looped, *is* training.
+
+**The payoff:** this exact loop trains every model, including GPT — just with millions of weights instead of one. You've built and run it end to end.
+
+**Your gap → next:** a real neuron (multiple inputs + a bias + a nonlinearity like `tanh`), then stack a few into an actual multi-layer net.
 
 ---
 
