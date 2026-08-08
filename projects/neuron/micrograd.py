@@ -33,6 +33,17 @@ class Value:
         out._backward = _backward
         return out
 
+    def tanh(self):
+        import math
+        t = math.tanh(self.data)          # the squish
+        out = Value(t, (self,))
+
+        def _backward():
+            # tanh's local slope is (1 - tanh(x)^2)
+            self.grad += (1 - t * t) * out.grad
+        out._backward = _backward
+        return out
+
     def backward(self):
         # Put the boxes in order so we always handle a box before its inputs, then walk
         # from the output back to the inputs, letting each box hand its slope to its parents.
