@@ -1,6 +1,38 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 4 entries, newest first.
+> Auto-compiled from every lesson. 5 entries, newest first.
+
+---
+
+## a layer of neurons
+_2026-08-08_
+
+**📝 Revision — a layer of neurons**
+
+**Why it matters:** a layer is the next building block up from a single neuron — and a neural *network* is just layers stacked. Every "dense"/"linear" layer, including the ones inside GPT, has this shape. *(Phase 4 — Deep Learning.)*
+
+**What you built + the core mechanism:** 2 neurons side by side, both reading the same inputs, each producing its own output.
+```python
+out_a = (a_w1*x1 + a_w2*x2 + a_b).tanh()
+out_b = (b_w1*x1 + b_w2*x2 + b_b).tanh()   # same shape, its OWN knobs
+```
+
+**The concept chain (with examples):**
+- **A layer = several neurons side by side.** *Ex:* 4 neurons → 4 outputs. *Why:* each neuron can learn to detect a different feature of the input.
+- **Shared inputs, separate knobs.** Every neuron reads the same `x`s, but has its own weights + bias → its own output. *Ex:* shared inputs `(2,3)` → neuron A = `tanh(0.5·2 − 1·3 + 0) = tanh(−2) = −0.964`; neuron B = `tanh(1·2 + 0.5·3 − 1) = tanh(2.5) = 0.987`.
+- **Inside each neuron is unchanged** — weighted sum + bias + `tanh`, exactly what you already built.
+
+**Key rules:**
+- a layer's output = **the list of its neurons' outputs**; **N neurons → N outputs**.
+- neurons **share inputs** but **not knobs** — each has its own weights + bias.
+
+**Gotchas / what to watch:**
+- Don't let the neurons share weights — each needs its **own** `w`s and `b` (that's why they give different outputs).
+- This build was **forward-only** (no training yet) — training a layer is the same per-knob gradient descent, just with more knobs.
+
+**The payoff:** a layer turns your raw inputs into several **features**. Stack layers (each feeding the next) and the network can learn genuinely complex, nonlinear patterns. You've built the horizontal piece; stacking is the vertical piece.
+
+**Where it sits + next:** Phase 4. Next → **train** the layer, then **stack two layers into an MLP** that learns a nonlinear function like XOR — a real neural network. (And a gentle Python step: a list + loop so you're not copy-pasting neurons.)
 
 ---
 
