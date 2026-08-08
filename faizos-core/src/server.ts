@@ -299,6 +299,7 @@ server.registerTool('faizos_save_revision', {
   description: 'Call at lesson end with the full revision-note markdown. Stores it and REGENERATES the compiled notebook file (notebook/REVISIONS.md) from all revisions.',
   inputSchema: { topic: z.string(), note_md: z.string() },
 }, async ({ topic, note_md }) => {
+  db.prepare('DELETE FROM revisions WHERE topic=?').run(topic); // dedup by topic: re-saving replaces
   db.prepare('INSERT INTO revisions (ts,topic,note_md) VALUES (?,?,?)').run(now(), topic, note_md);
   const all = db.prepare('SELECT ts, topic, note_md FROM revisions').all() as Array<{ ts: string; topic: string; note_md: string }>;
   mkdirSync(dirname(NOTEBOOK_PATH), { recursive: true });

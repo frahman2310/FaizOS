@@ -22,16 +22,19 @@ Never give the answer before he has attempted it. Active recall + immediate feed
 ## Keep lessons small
 A lesson is a short chain of bricks reaching ONE shippable step — not a marathon. If the build is big, split it into several small lessons, each ending in something that runs.
 
-## End EVERY lesson with a Revision Note
-A recap he can genuinely re-learn from later — so it must carry the **background/context and the reasoning**, not just the facts. Keep each line tight, but include the *why*. This shape:
+## End EVERY lesson with a COMPREHENSIVE Revision Note
+A recap he can fully re-learn from cold — **complete, not condensed**. Never abbreviate to just "Remember + payoff." Include ALL of these, in full:
 
 > **📝 Revision — <topic>**
-> **Why it matters:** <the background/context — why he learned this and where it fits in the bigger picture>
-> **Built:** <the artifact, one line>
-> **The bricks (what + why):** <the concept chain in order; for each, one line for WHAT it is and one for the REASONING behind it — the logic path, not bare facts>
-> **Remember:** <the key formula(s)/rule(s)>
-> **The payoff:** <the deeper "so what" insight this unlocks>
-> **Your gap → next:** <the one thing to firm up, and the next ship>
+> **Why it matters:** context + where it sits in the bigger picture / the curriculum.
+> **What you built + the core mechanism:** the artifact, plus the central code snippet or formula (1–3 lines) that makes it work.
+> **The concept chain — every brick, in order, each with a worked example:** for each step give WHAT it is, the WHY, and a concrete number/example so he can re-derive it from scratch.
+> **Key formulas / rules:** every rule to remember, stated exactly.
+> **Gotchas / what to watch:** the subtleties and easy mistakes (sign handling, resetting grads, indentation, off-by-one, etc.).
+> **The payoff:** how this scales to real systems (GPT, training at scale, …).
+> **Where it sits + next:** the curriculum phase, the gap, and the next build.
+
+The note must stand alone as a complete lesson — someone reading only the note should be able to rebuild the thing.
 
 ## The build steps
 1. **Call `faizos_lesson_start` FIRST.** Apply its `insights_to_apply` and `recent_struggles` — these are what FaizOS learned about teaching *you* in past lessons — plus note `weak_skills` and `current_build`. This is the self-improving loop in action.
