@@ -1,6 +1,44 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 7 entries, newest first.
+> Auto-compiled from every lesson. 8 entries, newest first.
+
+---
+
+## QKV attention (scaled dot-product)
+_2026-08-10_
+
+**📝 Revision — QKV attention (scaled dot-product)**
+
+**Why it matters:** this is the *actual* attention inside every transformer — the real mechanism GPT uses, upgrading basic self-attention with learned Query/Key/Value projections and `√d` scaling. *(Module 7 — Attention & modern block basics.)*
+
+**What you built + the core mechanism:**
+```python
+q  = project(item0, Wq)                    # this item's Query
+K  = [project(it, Wk) for it in items]     # every item's Key
+V  = [project(it, Wv) for it in items]     # every item's Value
+scores  = [dot(q, k) / sqrt(d) for k in K] # score, scaled
+weights = softmax(scores)
+out     = Σ weights[j] * V[j]              # blend the Values
+```
+
+**The concept chain (with examples):**
+- **Q / K / V roles** — Query = what an item *seeks*; Key = what it *advertises*; Value = what it *delivers*. (Library: your request / each book's label / each book's content.)
+- **Made via learned weight matrices** `Wq, Wk, Wv` — `project(item, W)` = the item through a matrix = **a stack of dot products** (learned weights, but the operation is your dot product).
+- **Scale by `1/√d`** — `score = Q·K ÷ √d`. Ex: `d=16` → divide by 4. *Why:* big `d` → big dot products → softmax gets too spiky; the scale keeps it balanced.
+- **softmax → weighted sum of the Values** — the blend uses the Values (not the Keys).
+
+**Key formulas / rules:**
+- `attention = softmax( (Q·Kᵀ) / √d ) · V`.
+- three separate **learned** projections (Wq, Wk, Wv); weights sum to 1; blend the **Values**.
+
+**Gotchas / what to watch:**
+- Blend the **Values**, not the Keys or raw items.
+- Scale by **√d** (d = vector length) — forgetting it makes softmax spiky and training unstable.
+- `project` is built from the **dot product** (the weights being learned is separate from the operation).
+
+**The payoff:** this exact formula — with **many heads** in parallel and **stacked layers** — *is* the transformer. GPT runs this billions of times per forward pass. You built the real thing.
+
+**Where it sits + next:** Module 7. To **complete** the module: **RoPE** (rotary positions — how the model knows word *order*) + **RMSNorm** (a normalization). Then multi-head attention, then the full transformer block.
 
 ---
 
