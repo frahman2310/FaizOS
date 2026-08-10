@@ -8,6 +8,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 8 — FFN, GQA & state-space models](#module-8)
 - [Module 9 — Build a GPT (nanoGPT → Llama)](#module-9)
 - [Module 10 — Scaling, MLA & evaluation](#module-10)
+- [Foundations & other](#foundations)
 
 <a id="module-1"></a>
 # Module 1 — Math: numbers, softmax, matmul
@@ -862,5 +863,47 @@ Three ways to tame the KV cache, now all yours: **KV cache** (M9, don't recomput
 
 ### Coverage now
 **35% of the course · 5 of 20 modules complete (Modules 5, 7, 8, 9, 10) · 21 ships.** You've now covered the entire core of building, upgrading, sizing, and evaluating a modern LLM. Remaining frontier: GPU kernels (Modules 11–12), distributed training, fine-tuning/RLHF, agents, safety.
+
+---
+
+<a id="foundations"></a>
+# Foundations & other
+
+## GPU memory hierarchy & MFU
+
+**Why it matters:** Every module so far was about *what* a model computes. This is about *how fast the hardware actually runs it* — and the answer is almost never "limited by math." It's limited by **moving data**. This one idea explains FlashAttention, kernel fusion, and why GPU bills look the way they do.
+
+**What you built + the core mechanism:**
+```python
+intensity = flops / numbers_moved            # math per number fetched
+RIDGE     = PEAK_FLOPS / NUMBERS_PER_SEC     # ~600 on an H100-ish machine
+mfu       = achieved_flops_per_sec / PEAK_FLOPS
+```
+
+**The concept chain — every brick, in order:**
+1. **The hierarchy.** A GPU is a chef in a tiny kitchen next to a huge warehouse. **HBM** = the warehouse (~80 GB, slow, far). **SRAM** = the countertop (~20 MB, instant, tiny). Every number must be walked from warehouse to countertop before use.
+2. **The gap.** The chef does ~**1000 chops** in the time one ingredient is fetched. Fetching, not chopping, sets the pace.
+3. **The instinct.** Once a number is on the countertop, **reuse it for as much math as possible**.
+4. **Arithmetic intensity** = `math ÷ numbers moved`. Vector add: 100 additions ÷ 300 numbers = **0.33** (terrible). Matmul: `2N³ ÷ 3N² = 2N/3` — grows with N because each number is reused N times.
+5. **Ridge point** = `peak FLOPs ÷ memory bandwidth` (~600 here). Below → **memory-bound** (math units starved). Above → **compute-bound** (good).
+6. **MFU** = `achieved ÷ peak` FLOPs/sec. 400 of 1000 TFLOP/s = **40%**. Frontier runs hit 35–50%.
+
+**Key formulas / rules:**
+```
+arithmetic intensity = FLOPs / numbers moved
+matmul intensity     = 2N^3 / 3N^2 = 2N/3
+ridge point          = peak FLOPs / memory bandwidth
+MFU                  = achieved FLOPs-per-sec / peak FLOPs-per-sec
+```
+
+**Gotchas / what to watch:**
+- **Intensity is a ratio, not a speed** — it says nothing about job size, only how well each fetch is exploited.
+- **Size decides the verdict:** matmul N=300 → AI 200 → *still memory-bound*. Only N=1500 (AI 1000) crosses the ridge. Small matmuls waste the GPU.
+- **MFU can't reach 100%** — some movement is unavoidable; 50% is excellent.
+- Counting in *numbers* vs *bytes* changes the ridge value (bf16 = 2 bytes/number). Be consistent.
+
+**The payoff:** the fix for memory-bound work is always the same — **fuse operations and tile the data** so one trip to the warehouse feeds many chops. That is exactly what Triton lets you write and what FlashAttention does to attention.
+
+**Where it sits + next:** Module 11 skill `gpu-memory-hierarchy` (also raised `roofline-cost-model` from mission #2). Next: **Triton** (write a fused kernel), then **FlashAttention**.
 
 ---

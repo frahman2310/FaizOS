@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**35% coverage** · 5/20 modules complete · 21 builds shipped · 21/66 skills touched
+**37% coverage** · 5/20 modules complete · 22 builds shipped · 22/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 35%
+OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 37%
 ```
 
 ## Modules
@@ -18,7 +18,7 @@ OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 35%
 
 ### 🔄 Module 3 — Python & the cost model (50%)
 - **skills:** ✓ Modern Python craft (uv, ruff, typing, CI) · · Core data structures & complexity · ✓ Arithmetic intensity & the roofline · · Profiling (cProfile, torch profiler)
-- **builds:** #2 Matmul FLOP estimator · #3 micrograd: autograd from scratch · #4 tiny net that learns · #5 a real neuron · #6 a layer of neurons · #7 an MLP that learns XOR · #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm
+- **builds:** #2 Matmul FLOP estimator · #3 micrograd: autograd from scratch · #4 tiny net that learns · #5 a real neuron · #6 a layer of neurons · #7 an MLP that learns XOR · #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm · #22 GPU memory hierarchy & MFU
 
 ### 🔄 Module 4 — Classical ML (25%)
 - **skills:** · Regression from scratch · ✓ Leakage-safe ML pipeline · · Bias-variance & double descent · · PCA via SVD
@@ -48,9 +48,14 @@ OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 35%
 - **skills:** ✓ Scaling laws (inference-optimal) · ✓ Multi-head Latent Attention · ✓ Held-out evaluation harness
 - **builds:** #19 Scaling laws: predict loss + Chinchilla-optimal sizing · #20 Held-out eval: perplexity from scratch · #21 MLA: latent-compressed KV cache
 
+### 🔄 Module 11 — GPU kernels (Triton, FlashAttn) (33%)
+- **skills:** ✓ GPU memory hierarchy & MFU · · Triton kernels from zero · · FlashAttention (tiled attention kernel)
+- **builds:** #22 GPU memory hierarchy & MFU
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 22 | GPU memory hierarchy & MFU | GPU memory hierarchy & MFU, Arithmetic intensity & the roofline | 2026-08-10 |
 | 21 | MLA: latent-compressed KV cache | Multi-head Latent Attention | 2026-08-10 |
 | 20 | Held-out eval: perplexity from scratch | Held-out evaluation harness, Leakage-safe ML pipeline | 2026-08-10 |
 | 19 | Scaling laws: predict loss + Chinchilla-optimal sizing | Scaling laws (inference-optimal) | 2026-08-10 |
