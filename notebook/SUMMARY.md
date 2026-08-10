@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**38% coverage** · 5/20 modules complete · 23 builds shipped · 23/66 skills touched
+**40% coverage** · 6/20 modules complete · 24 builds shipped · 24/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 38%
+OVERALL  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 40%
 ```
 
 ## Modules
@@ -34,7 +34,7 @@ OVERALL  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 38%
 
 ### ✅ Module 7 — Attention & modern block basics (100%)
 - **skills:** ✓ Self-attention from scratch · ✓ RoPE rotary positions · ✓ RMSNorm
-- **builds:** #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm · #12 Transformer block: residuals + stacking · #13 Train attention: a learned attention weight
+- **builds:** #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm · #12 Transformer block: residuals + stacking · #13 Train attention: a learned attention weight · #24 FlashAttention: tiled attention with online softmax
 
 ### ✅ Module 8 — FFN, GQA & state-space models (100%)
 - **skills:** ✓ SwiGLU gated FFN · ✓ Grouped-Query Attention · ✓ SSM / Mamba (linear-time)
@@ -48,13 +48,14 @@ OVERALL  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 38%
 - **skills:** ✓ Scaling laws (inference-optimal) · ✓ Multi-head Latent Attention · ✓ Held-out evaluation harness
 - **builds:** #19 Scaling laws: predict loss + Chinchilla-optimal sizing · #20 Held-out eval: perplexity from scratch · #21 MLA: latent-compressed KV cache
 
-### 🔄 Module 11 — GPU kernels (Triton, FlashAttn) (67%)
-- **skills:** ✓ GPU memory hierarchy & MFU · ✓ Triton kernels from zero · · FlashAttention (tiled attention kernel)
-- **builds:** #22 GPU memory hierarchy & MFU · #23 Triton: a fused softmax kernel
+### ✅ Module 11 — GPU kernels (Triton, FlashAttn) (100%)
+- **skills:** ✓ GPU memory hierarchy & MFU · ✓ Triton kernels from zero · ✓ FlashAttention (tiled attention kernel)
+- **builds:** #22 GPU memory hierarchy & MFU · #23 Triton: a fused softmax kernel · #24 FlashAttention: tiled attention with online softmax
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 24 | FlashAttention: tiled attention with online softmax | FlashAttention (tiled attention kernel), Self-attention from scratch | 2026-08-10 |
 | 23 | Triton: a fused softmax kernel | Triton kernels from zero, Numerically stable softmax & log-sum-exp | 2026-08-10 |
 | 22 | GPU memory hierarchy & MFU | GPU memory hierarchy & MFU, Arithmetic intensity & the roofline | 2026-08-10 |
 | 21 | MLA: latent-compressed KV cache | Multi-head Latent Attention | 2026-08-10 |

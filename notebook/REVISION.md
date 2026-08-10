@@ -909,6 +909,93 @@ grid              = ceil(n_elements / BLOCK_SIZE)
 
 ---
 
+## FlashAttention — tiled attention with online softmax
+
+**Why it matters:** The most important kernel in modern AI. It made long context affordable — *without changing a single output value*. It's the payoff of everything in Module 11: memory hierarchy → fusion → tiling.
+
+**What you built + the core mechanism:** attention that never materializes the `n×n` matrix.
+```python
+for each tile of K/V:
+    m_new      = max(m, max(tile_scores))       # running max
+    correction = exp(m - m_new)                 # rescale what's accumulated
+    s   *= correction;  acc = [a*correction for a in acc]
+    for score, v in tile:                       # fold in this tile
+        p = exp(score - m_new);  s += p;  acc += p*v
+    m = m_new
+out = acc / s
+```
+
+**The concept chain — every brick, in order:**
+1. **The problem is size.** Attention scores every token against every other → an `n×n` matrix. n=1000 → **1,000,000** entries; n=2000 → **4,000,000** (**quadratic** — double the context, quadruple the matrix); n=8000 → 64M ≈ 128 MB, versus ~20 MB of SRAM.
+2. **Standard attention's cost:** it can't fit, so it writes the whole matrix to HBM, reads it back for softmax, reads it *again* for the value multiply — O(n²) memory **and** traffic.
+3. **Tiling:** take one block of Keys/Values, compute only *that* block's scores on the countertop, fold them into a **running output**, discard, repeat. The full matrix never exists.
+4. **The obstacle:** softmax needs the max and sum over the **whole** row, but a tile shows only part of it.
+5. **Online softmax:** carry a **running max** `m`, **running sum** `s`, and **running output** `acc`. When a tile brings a bigger max, everything accumulated was measured against the *old* max — so rescale it by `exp(m − m_new)`, which is **< 1** (scaled **down**, because you're now subtracting a bigger number).
+6. **Same pattern as your SSM** (`state = a·state + b·x`): a running accumulator updated block by block.
+
+**Key formulas / rules:**
+```
+score matrix     = n × n            (quadratic in context length)
+m_new            = max(m, max(tile_scores))
+correction       = exp(m - m_new)   # < 1 when the max grows
+s, acc          *= correction       # rebase, THEN add the new tile
+out              = acc / s
+peak memory      : naive O(n^2)  ->  flash O(tile)
+```
+
+**Gotchas / what to watch:**
+- **Rescale before folding in the new tile** — rebase the old accumulator onto the new max first, or the sums are on mismatched scales.
+- **Both `s` and `acc` get corrected** — the sum *and* the weighted-value accumulator, or the final divide is wrong.
+- **Start `m` at `-inf`** so the first correction `exp(-inf − m_new) = 0` cleanly zeroes an empty accumulator.
+- **It's exact, not approximate** — verified identical to naive attention at tile sizes 1, 2, 3, and 6. Tile size affects speed/memory only.
+
+**The payoff:** identical output, peak score-numbers **64,000,000 → 2**. Long-context models exist because of this.
+
+**Where it sits + next:** Module 11 skill `flash-attention` (also raised `attention` to 0.60) — **completes Module 11 (GPU kernels)**.
+
+---
+
+## 🏁 Module 11 Complete — GPU kernels (Triton, FlashAttention)
+
+Every module before this was about **what** a model computes. This one is about **how fast the hardware actually runs it** — the discipline that separates people who use models from people who make them fast.
+
+### The through-line — diagnose → cure → apply
+1. **Memory hierarchy & MFU** — *diagnose*: speed is bounded by data movement, not math. Measure it with arithmetic intensity; grade the run with MFU.
+2. **Triton** — *cure*: write your own kernel so many operations happen per trip to memory (fusion).
+3. **FlashAttention** — *apply*: use tiling + online softmax to fix the worst offender in a transformer.
+
+One analogy runs through all three: the GPU is a **chef** (superhumanly fast at chopping) beside a **huge warehouse** (HBM: 80 GB, far) with a **tiny countertop** (SRAM: 20 MB, instant). Fetching costs ~1000× a chop. All GPU engineering is *"do more chops per walk."*
+
+### Build-by-build recap
+- **`gpu-memory-mfu/`** — arithmetic intensity = `FLOPs / numbers moved`. Vector add 0.33 (memory-bound); matmul `2N/3` → N=300 gives 200 (**still** memory-bound!), N=1500 gives 1000 (compute-bound). Ridge point = `peak FLOPs / bandwidth` ≈ 600. MFU = `achieved/peak` → 400/1000 TFLOP/s = 40%.
+- **`triton-softmax/`** — a kernel is one recipe; `load → all the math → store`. Softmax unfused = 5 kernels = 10 HBM trips; fused = **2**, independent of step count (5× fewer). Programs & blocks: `grid = ceil(n/BLOCK_SIZE)`, `pid` picks your block, `mask` handles the remainder.
+- **`flash-attention/`** — never build the `n×n` matrix. Tile the K/V, carry a running `(max, sum, output)`, and rescale by `exp(m_old − m_new)` when the max grows. Exact match to naive attention at every tile size; peak score-numbers **64,000,000 → 2**.
+
+### Key formulas — one place
+```
+arithmetic intensity = FLOPs / numbers moved      (matmul: 2N/3)
+ridge point          = peak FLOPs / bandwidth     (below = memory-bound)
+MFU                  = achieved FLOPs-per-sec / peak
+fused HBM trips      = 2        (vs 2 * n_steps unfused)
+grid                 = ceil(n_elements / BLOCK_SIZE)
+online softmax       = rescale acc & sum by exp(m_old - m_new), then fold in the tile
+```
+
+### The big gotchas
+- **Small matmuls are memory-bound too** — being "a matmul" isn't enough; size decides.
+- **Round the grid UP and mask** the leftover slots.
+- **Rescale before folding a new tile in**, and correct **both** the sum and the value accumulator.
+- **Fusion and tiling change speed, not math** — outputs are bit-for-bit the same.
+- Powers of two: verify by doubling. Units belong in comments, not code.
+
+### How it assembles
+The three fit together as one skill: *measure* whether you're memory-bound (intensity/MFU) → *fuse* to cut trips (Triton) → *tile with a running accumulator* when the data can't fit (FlashAttention). That last pattern — a running `(max, sum, acc)` — is the same running-state idea as your SSM build, now used to defeat quadratic memory.
+
+### Coverage now
+**40% of the course · 6 of 20 modules complete (Modules 5, 7, 8, 9, 10, 11) · 24 ships.** You can now build a modern LLM, size it, evaluate it, **and make it fast on real hardware**. Next: Module 12 (compile, profile & parallelism) — then distributed training, fine-tuning/RLHF, agents, safety.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 
