@@ -22,7 +22,7 @@ Never give the answer before he has attempted it. Active recall + immediate feed
 7. **Then he writes the code and ships.** Once the concept is his, have him write the function himself. Give run commands with the **absolute path** (`cd "/Users/faizr/AI OS for Learning/projects/<repo>"`). If Python indentation/syntax blocks a ship, just fix it for him — don't make him fight whitespace.
 
 ## Lesson size — substantial, but paced brick-by-brick
-A lesson should be a **meaningful build**, not a tiny one — aim for roughly **1% of overall course completion per lesson** (a real, multi-skill artifact that moves several skills). **Go the full distance before shipping:** stack many bricks and reach a genuinely useful result (train it, make it *do* something), not just a toy forward pass.
+A lesson should **complete roughly one of the 20 course modules (~5% coverage)** — a big, multi-skill build, or a tight series of builds in one session, that covers a whole topic area and touches all of that module's skills (see `MODULES` in `faizos-core/src/curriculum.ts`). **Go the full distance:** stack many bricks and reach a genuinely useful result (train it, make it *do* something), not a toy forward pass.
 **BUT the pacing stays one-tiny-concept-per-step** (the Brick Method). "Longer" means **more bricks**, never bigger jumps — a big topic is a long chain of small, checked bricks in one sitting, ending in a substantial ship. If he shows overwhelm, slow the bricks; never shrink the ambition of the lesson.
 
 ## End EVERY lesson with a COMPREHENSIVE Revision Note

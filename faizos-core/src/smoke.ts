@@ -104,7 +104,7 @@ console.log('Step 5 (radar): saved a buildable opportunity →', radar.items[0].
 // --- course progress bar ---
 const prog = await call('faizos_progress', {});
 console.assert(typeof prog.rendered === 'string' && prog.rendered.includes('OVERALL'), 'progress bar renders');
-console.log('Progress:', prog.overall_mastery_pct + '% overall,', prog.missions_shipped, 'shipped');
+console.log('Progress:', prog.coverage_pct + '% coverage,', prog.modules_done + '/20 modules,', prog.missions_shipped, 'shipped');
 
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');

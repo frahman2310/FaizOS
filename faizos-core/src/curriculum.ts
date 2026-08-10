@@ -37,3 +37,29 @@ export const MISSION_TEMPLATES: MissionTemplate[] = [
   { id: 'real-sae', title: 'Real SAE on a model + feature steering', phase: 13, skills: ['interpretability-sae'], acceptance: 'an interpretable, steerable feature (ideally on Neuronpedia)' },
   { id: 'paper-repro', title: 'Reproduce a paper to a public number + a merged PR', phase: 14, skills: ['paper-reproduction', 'oss-contribution'], acceptance: 'matched metric + a merge link' },
 ];
+
+// The course as 20 MODULES, each ~5% of total coverage → ~20 lessons to 100%.
+// A lesson aims to complete ~one module. Coverage = mean over modules of (skills touched / skills).
+export interface Module { id: number; name: string; skills: string[]; }
+export const MODULES: Module[] = [
+  { id: 1, name: 'Math: numbers, softmax, matmul', skills: ['dev-setup', 'floating-point-logsumexp', 'linalg-matmul'] },
+  { id: 2, name: 'Math: linear algebra & calculus', skills: ['svd-lowrank', 'matrix-calculus-vjp', 'probability-covariance', 'highdim-geometry'] },
+  { id: 3, name: 'Python & the cost model', skills: ['python-craft', 'data-structures', 'roofline-cost-model', 'profiling'] },
+  { id: 4, name: 'Classical ML', skills: ['regression-from-scratch', 'ml-lifecycle-leakage', 'double-descent', 'pca-svd'] },
+  { id: 5, name: 'Autograd from scratch', skills: ['autograd-backprop', 'pytorch-basics'] },
+  { id: 6, name: 'Optimization & DL foundations', skills: ['optimization-adam', 'init-normalization', 'torch-compile'] },
+  { id: 7, name: 'Attention & modern block basics', skills: ['attention', 'rope', 'rmsnorm'] },
+  { id: 8, name: 'FFN, GQA & state-space models', skills: ['swiglu', 'gqa', 'ssm-mamba'] },
+  { id: 9, name: 'Build a GPT (nanoGPT → Llama)', skills: ['nanogpt-llama-block', 'kv-cache', 'tokenizer-bpe'] },
+  { id: 10, name: 'Scaling, MLA & evaluation', skills: ['scaling-laws', 'mla', 'heldout-eval'] },
+  { id: 11, name: 'GPU kernels (Triton, FlashAttn)', skills: ['gpu-memory-hierarchy', 'triton-basics', 'flash-attention'] },
+  { id: 12, name: 'Compile, profile & parallelism', skills: ['torch-compile-cuda-graphs', 'profiling-nsight', 'parallelism-axes'] },
+  { id: 13, name: 'Distributed training', skills: ['fsdp-run', 'pipeline-schedules', 'collectives-interconnect', 'fault-tolerant-checkpointing'] },
+  { id: 14, name: 'Fine-tuning & inference', skills: ['peft-lora', 'quantization', 'inference-internals', 'serving-stacks'] },
+  { id: 15, name: 'RL foundations', skills: ['rl-foundations', 'rlvr-grpo', 'reward-modeling-verifiers'] },
+  { id: 16, name: 'Post-training & tools', skills: ['reasoning-distillation', 'rlhf-dpo', 'tool-calling'] },
+  { id: 17, name: 'Agents & retrieval (RAG)', skills: ['rag-production', 'agent-memory', 'agentic-rl', 'agent-evals-tracing'] },
+  { id: 18, name: 'Multimodal', skills: ['vit-clip-siglip', 'diffusion-flow-matching', 'vlm-fusion'] },
+  { id: 19, name: 'Safety & interpretability', skills: ['alignment-methods', 'interpretability-sae', 'ai-security'] },
+  { id: 20, name: 'Research, OSS & capstone', skills: ['research-method', 'paper-reproduction', 'oss-contribution', 'capstone-portfolio'] },
+];

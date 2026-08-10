@@ -10,7 +10,7 @@ import { openDb, getMeta, setMeta, logEvent, type DB } from './db.js';
 import { updateMastery, bumpConfidence, type EvidenceKind } from './mastery.js';
 import { advanceStreak, todayISO } from './streak.js';
 import { compileNotebook } from './notebook.js';
-import { PHASES, MISSION_TEMPLATES } from './curriculum.js';
+import { PHASES, MISSION_TEMPLATES, MODULES } from './curriculum.js';
 import { initCard, review as fsrsReview, gradeFromOutcome, type Card } from './fsrs.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -352,17 +352,19 @@ server.registerTool('faizos_progress', {
   for (const s of skills) { const p = byPhase.get(s.phase) ?? { sum: 0, n: 0 }; p.sum += s.mastery; p.n++; byPhase.set(s.phase, p); }
   const bar = (f: number, w = 20) => { const x = Math.max(0, Math.min(1, f)); const k = Math.round(x * w); return '▓'.repeat(k) + '░'.repeat(w - k); };
   const pct = (f: number) => `${Math.round(f * 100)}%`;
-  const phaseLines = [...byPhase.entries()].sort((a, b) => a[0] - b[0]).map(([ph, v]) => {
-    const m = v.n ? v.sum / v.n : 0;
-    return `  ${String(ph).padStart(2)}  ${(PHASES[ph] ?? '').padEnd(26)} ${bar(m, 12)} ${pct(m)}`;
-  });
+  // Coverage = the course as 20 modules (~5% each). A module's coverage = its skills touched / total.
+  const touchedIds = new Set((db.prepare('SELECT id FROM skills WHERE last_seen IS NOT NULL').all() as Array<{ id: string }>).map((r) => r.id));
+  const mods = MODULES.map((m) => ({ id: m.id, name: m.name, cov: m.skills.filter((s) => touchedIds.has(s)).length / m.skills.length }));
+  const coverage = mods.reduce((a, m) => a + m.cov, 0) / MODULES.length;
+  const done = mods.filter((m) => m.cov >= 0.999).length;
+  const modLines = mods.map((m) => `  ${String(m.id).padStart(2)}. ${m.name.padEnd(32).slice(0, 32)} ${bar(m.cov, 10)} ${pct(m.cov)}`);
   const rendered = [
-    'Course progress — the whole scope (Phases 0–15)',
-    `  OVERALL  ${bar(overall)} ${pct(overall)}    ·  ${touched}/${total} skills started  ·  ${shipped} shipped`,
+    `Course coverage — 20 modules, ~5% each   (${done}/20 complete)`,
+    `  OVERALL  ${bar(coverage)} ${pct(coverage)}   ·  ${done}/20 modules · ${touched} skills touched · avg mastery ${pct(overall)} · ${shipped} ships`,
     '',
-    ...phaseLines,
+    ...modLines,
   ].join('\n');
-  return ok({ overall_mastery_pct: Math.round(overall * 100), skills_touched: touched, skills_total: total, missions_shipped: shipped, rendered });
+  return ok({ coverage_pct: Math.round(coverage * 100), modules_done: done, modules_total: 20, avg_mastery_pct: Math.round(overall * 100), skills_touched: touched, missions_shipped: shipped, rendered });
 });
 
 await server.connect(new StdioServerTransport());
