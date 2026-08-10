@@ -9,3 +9,11 @@ _Auto-written after every session by the Stop hook. Newest first._
 **Coverage:** 24% · 3/20 modules complete · 15 total ships
 <!-- /session 2026-08-10T11:35:06.154Z -->
 
+<!-- session 2026-08-10-earlier -->
+## 2026-08-10 (earlier) — 5 ships
+**Shipped:** an MLP that learns XOR · self-attention from scratch · QKV attention (scaled dot-product) · RoPE — rotary positions · RMSNorm
+**Learned:** MLP & XOR · self-attention · QKV scaled dot-product · RoPE (rotary positions) · RMSNorm
+**🏁 Milestones:** Module 7 Complete — Attention & modern block basics
+**Coverage:** 19% · 2/20 modules complete · 11 total ships (at the time)
+<!-- /session 2026-08-10-earlier -->
+
