@@ -7,11 +7,13 @@ INPUT=$(cat)
 ROOT="/Users/faizr/AI OS for Learning"
 TSX="$ROOT/faizos-core/node_modules/.bin/tsx"
 
-# --- job 1: deterministic session summary (runs every stop, model-independent) ---
-"$TSX" "$ROOT/faizos-core/src/session-log.ts" >/dev/null 2>&1 || true
-if ! git -C "$ROOT" diff --quiet -- notebook/SESSIONS.md 2>/dev/null; then
-  git -C "$ROOT" add notebook/SESSIONS.md >/dev/null 2>&1 || true
-  git -C "$ROOT" commit -q -m "auto: session log" >/dev/null 2>&1 || true
+# --- job 1: deterministic summaries (run every stop, model-independent) ---
+#   SESSIONS.md = per-session log ; SUMMARY.md = full content+build summary (per lesson/module).
+"$TSX" "$ROOT/faizos-core/src/session-log.ts"   >/dev/null 2>&1 || true
+"$TSX" "$ROOT/faizos-core/src/build-summary.ts" >/dev/null 2>&1 || true
+git -C "$ROOT" add notebook/SESSIONS.md notebook/SUMMARY.md >/dev/null 2>&1 || true
+if ! git -C "$ROOT" diff --cached --quiet -- notebook/SESSIONS.md notebook/SUMMARY.md 2>/dev/null; then
+  git -C "$ROOT" commit -q -m "auto: session log + build summary" >/dev/null 2>&1 || true
   git -C "$ROOT" push -q >/dev/null 2>&1 || true
 fi
 
