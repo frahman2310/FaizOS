@@ -1,6 +1,47 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 5 entries, newest first.
+> Auto-compiled from every lesson. 6 entries, newest first.
+
+---
+
+## an MLP that learns XOR
+_2026-08-10_
+
+**📝 Revision — an MLP that learns XOR**
+
+**Why it matters:** an MLP (multi-layer perceptron) is a *real* neural network — layers of neurons stacked. It can learn things a single neuron provably cannot. This is the leap from "one unit" to "a network," and it's the shape underneath deep learning. *(Phase 4 — Deep Learning.)*
+
+**What you built + the core mechanism:** a **2-2-1** network (2 inputs → 2 hidden neurons → 1 output neuron), trained on the 4 XOR examples until it solved them.
+```python
+def forward(x1, x2):
+    inp = [Value(x1), Value(x2)]
+    hA = neuron(inp, a_w, a_b)          # hidden neuron A
+    hB = neuron(inp, b_w, b_b)          # hidden neuron B
+    return neuron([hA, hB], o_w, o_b)   # output neuron reads the hidden outputs
+# train: sum loss over the 4 examples → backward → step all 9 knobs (p.data -= lr*p.grad)
+```
+
+**The concept chain (with examples):**
+- **XOR** = "exclusive or": output 1 when the two inputs **differ**, 0 when they **agree**. Ex: `(1,1)` → agree → 0; `(0,1)` → differ → 1. (Like a hallway light with two switches.)
+- **Why one neuron can't** — a neuron draws **one straight fence** and calls one side 1, the other 0. XOR's corners **alternate** (🔴🔵🔴🔵 around the square), and one straight fence can't separate alternating corners. *Contrast:* OR is 🔴🔴🔴🔵 (one corner off) → one fence works.
+- **Stacking fixes it** — layer 1's neurons each draw a fence (a feature); layer 2 **combines** them into a bent boundary. 2 hidden neurons → 2 fences → XOR solvable.
+- **Lists + loops (Python)** — a `list` is a row of things, positions start at **0** (`[10,20,30][2]` = 30). A `for` loop repeats over each item. `range(n)` gives `0..n-1` (**n** passes — off-by-one: `range(5)` stops before 5).
+- **A neuron as a function** — `def neuron(inputs, weights, bias):` sums `weights[i]*inputs[i]` in a loop, adds bias, returns `.tanh()`. One line makes a neuron.
+- **Stacking = feeding forward** — the hidden outputs `[hA, hB]` become the **inputs** to the output neuron. One `total.backward()` sends gradients to **all 9 knobs**; each steps by `p.data -= lr*p.grad`.
+
+**Key formulas / rules:**
+- MLP output = `outNeuron( [ hiddenA, hiddenB ] )`, where each hidden = `tanh(weighted sum + bias)`.
+- update, per knob: **`p.data = p.data − lr * p.grad`** (old value = `p.data`, gradient = `p.grad`).
+
+**Gotchas / what to watch:**
+- **XOR + `tanh` wants targets `−1/+1`, not `0/1`** — with `0/1` it got stuck at loss ~0.64; `−1/+1` (matching tanh's range) dropped it to ~0.
+- `range(n)` runs **n** times at positions `0..n-1` (not `1..n`).
+- **"old" isn't a variable** — in the update it means the knob's *current* value, `p.data`.
+- Reset every knob's `.grad` to 0 each step before `backward()`.
+
+**The payoff:** this is a genuine neural network. Make the layers bigger and stack more of them and the same code learns images, language, anything. GPT is this idea, scaled to billions of knobs. You built the real thing.
+
+**Where it sits + next:** Phase 4 (Deep Learning) — this is a milestone. Next → either refactor into clean reusable `Layer`/`MLP` pieces (more Python), train on a richer dataset, or start toward the **transformer** path (attention).
 
 ---
 
