@@ -1,6 +1,44 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 21 entries, newest first.
+> Auto-compiled from every lesson. 22 entries, newest first.
+
+---
+
+## Held-out eval — perplexity
+_2026-08-10_
+
+**Why it matters:** You can build and train a model — but is it any *good*? Perplexity on held-out data is the standard, honest answer, reported in every LLM paper. Without a held-out set, a great score can just be memorization.
+
+**What you built + the core mechanism:**
+```python
+surprises     = [-log(p) for p in true_probs]     # surprise per token = -ln(p)
+mean_surprise = sum(surprises) / len(surprises)
+perplexity    = exp(mean_surprise)
+```
+
+**The concept chain — every brick, in order:**
+1. **Held-out:** measuring on training data rewards memorization (like testing a student on the exact questions they studied). Hold out unseen data; a big train-vs-held-out gap = **overfitting**.
+2. **Per-token signal:** the model gives a probability to the TRUE next token. High p = good prediction; low p = bad. (0.8 beats 0.2.)
+3. **Surprise:** `−ln(p)`. Perfect `p=1` → 0 surprise; small p → large surprise.
+4. **Perplexity:** `exp(mean surprise)`. Reads as **the effective number of equally-likely options the model is torn among**. Perfect = 1; uniform guess over K words = K; GPT-2 on English ≈ 20.
+5. **Worked case:** true word always p=0.5 → surprise `−ln(0.5)=0.693` → perplexity `exp(0.693)=2` → a 2-way coin flip. exp and ln are inverses.
+
+**Key formulas / rules:**
+```
+surprise    = -ln(p)
+perplexity  = exp( mean(-ln p) )          # lower is better
+uniform over K options -> perplexity K
+```
+
+**Gotchas / what to watch:**
+- **exp and ln are inverses**: `exp(ln 2) = 2`. Perplexity undoes the log so the score is in "number of choices," not log units.
+- Use the probability of the **true** token, not the model's max probability.
+- **Never** evaluate on data the model trained on — that's leakage, and the score becomes meaningless.
+- Lower perplexity = better; it can never go below 1.
+
+**Result:** good model 1.14, bad model 5.61, coin-flip model exactly 2.00.
+
+**Where it sits + next:** Module 10 skill `heldout-eval` (also nudged `ml-lifecycle-leakage`). Last piece of Module 10: **MLA** (Multi-head Latent Attention) — compress the KV cache even further than GQA.
 
 ---
 
