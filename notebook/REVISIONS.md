@@ -1,6 +1,41 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 6 entries, newest first.
+> Auto-compiled from every lesson. 7 entries, newest first.
+
+---
+
+## self-attention from scratch
+_2026-08-10_
+
+**📝 Revision — self-attention from scratch**
+
+**Why it matters:** attention is **THE** core mechanism of the transformer — and therefore of GPT and nearly every modern AI model. Everything else in a transformer is scaffolding around this one idea. *(Phase 5 — Sequence & the Transformer.)*
+
+**What you built + the core mechanism:** for a query and a set of items, produce a **relevance-weighted blend** of the items.
+```python
+scores  = [dot(query, item) for item in items]   # relevance of each item to the query
+weights = softmax(scores)                         # turn scores into weights that sum to 1
+out     = sum(weights[i] * items[i])              # blend the items, weighted by attention
+```
+
+**The concept chain (with examples):**
+- **Attention = focus on relevant items, not all equally.** Ex: in *"…the animal… because **it** was tired,"* "it" attends most to "animal."
+- **Relevance = similarity = the dot product.** Bigger dot product = vectors point the same way = more relevant. Ex: `[1,0]·[1,0]=1` (aligned), `[1,0]·[0,1]=0` (perpendicular).
+- **Scores → weights via softmax** (your own shipped code) — positive, summing to 1. Ex: `softmax([1,0]) ≈ [0.73, 0.27]`.
+- **Output = weighted sum of the items** using those weights. 100% weight on one item → output *is* that item; otherwise a blend. Ex: weights `[0.44, 0.16, 0.40]` on 3 items → `[0.798, 0.202]`.
+
+**Key rules:**
+- `attention(query, items)` = `weighted_sum(items, softmax([dot(query, item) for item in items]))`.
+- attention weights **always sum to 1**; the **softmax output** (not the raw scores) does the blending.
+
+**Gotchas / what to watch:**
+- The blend uses the **softmax weights**, not the raw scores (scores are just softmax's input).
+- Each item is turned into a **vector** first — you can't dot-product raw words.
+- (This version used items as their own keys/values — the full version adds learned Q/K/V projections + a `1/√d` scale.)
+
+**The payoff:** this is the beating heart of GPT. Every token attends to every other token, blending in what's relevant — that's how a model "uses context." Scale it up, add learned projections and many heads, and you have a transformer.
+
+**Where it sits + next:** Phase 5 — a **major milestone**. Next → add learned **Query/Key/Value** weight matrices + the `1/√d` scaling (full scaled dot-product attention), then **multi-head** attention, then assemble attention + an MLP into a **transformer block**.
 
 ---
 
