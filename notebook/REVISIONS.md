@@ -1,6 +1,38 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 8 entries, newest first.
+> Auto-compiled from every lesson. 9 entries, newest first.
+
+---
+
+## RoPE — rotary positions
+_2026-08-10_
+
+**📝 Revision — RoPE (rotary positional embeddings)**
+
+**Why it matters:** plain attention is **order-blind** — it can't tell "dog bites man" from "man bites dog." RoPE injects word *order/position*, and it's what Llama, GPT-NeoX and most modern LLMs use. *(Module 7.)*
+
+**What you built + the core mechanism:**
+```python
+def rotate(vec, angle):                 # spin a 2D vector
+    x, y = vec
+    return [x*cos(angle) - y*sin(angle), x*sin(angle) + y*cos(angle)]
+score(i, j) = dot(rotate(q, i*theta), rotate(k, j*theta))   # depends only on (i - j)
+```
+
+**The concept chain (with examples):**
+- **Attention ignores order** — reorder the items, same result. Bad for language.
+- **RoPE rotates Q and K by position × θ** — position 0 → no spin; position p → `p·θ` (like a clock hand turning more each step).
+- **Dot of rotated vectors depends on the angle *between* them** = `(i−j)·θ`. So the score depends only on the **distance** `i−j`. Ex: `(q@5,k@3)` = `(q@2,k@0)` = `−0.4161` (both distance 2).
+
+**Key rules:** rotate the Query by **`i·θ`** (its own position `i`), the Key by **`j·θ`**; score depends on **`i − j`**; `rotate([x,y],a) = [x cos a − y sin a, x sin a + y cos a]`.
+
+**Gotchas / what to watch:**
+- The Query rotates by **`i`** (its own position), the Key by **`j`** — don't mix `i`/`j` (using `j` for both makes every score 1.0).
+- Position 0 = no rotation. (Real RoPE rotates many 2D sub-pairs across the full vector; here it was one 2D pair.)
+
+**The payoff:** relative position **for free**, and it generalizes to longer sequences than seen in training. Universal in modern transformers.
+
+**Where it sits + next:** Module 7 → **RMSNorm** is the final piece to complete the module. Then multi-head attention + the full transformer block.
 
 ---
 
