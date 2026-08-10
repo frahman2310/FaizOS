@@ -1,6 +1,54 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 10 entries, newest first.
+> Auto-compiled from every lesson. 11 entries, newest first.
+
+---
+
+## Module 7 Complete — Attention & the modern block
+_2026-08-10_
+
+## 🏁 MODULE 7 COMPLETE — Attention & the modern block basics
+
+You just finished a whole module (self-attention → QKV → RoPE → RMSNorm). This is the milestone recap — read only this and you can rebuild the guts of a transformer's core.
+
+### The through-line (how the 4 builds are ONE idea)
+A transformer's job at each step: **let every token look at every other token, decide who's relevant, and mix in their information.** These 4 builds ARE that pipeline, in order:
+1. **Self-attention** — score relevance with a dot product, softmax it into weights, blend.
+2. **QKV** — don't compare tokens raw; first *project* each into a Query (what I'm looking for), Key (what I offer), Value (what I hand over). Scale scores by 1/√d so softmax stays sane.
+3. **RoPE** — inject *word order* by rotating Q and K by their position; the score then depends only on the **distance** between tokens.
+4. **RMSNorm** — before/after these steps, rescale each vector to a standard size so nothing blows up as layers stack.
+
+Stack that block N times and you have the engine inside GPT.
+
+### Build-by-build recap (each ship + its core mechanism)
+- **`attention/`** — self-attention. Core: `weights = softmax([dot(q,k) for k in keys]); out = Σ weights[i]·value[i]`. Bigger dot product = same direction = more relevant. Softmax turns raw scores into weights that sum to 1.
+- **`qkv-attention/`** — scaled dot-product attention. Core: `score = (Q·K)/√d → softmax → Σ w·V`. Q, K, V come from **learned** weight matrices (`project(vec, W)`). The `/√d` keeps big-dimension dot products from making softmax spiky (one weight ≈ 1, rest ≈ 0).
+- **`rope/`** — rotary positions. Core: `rotate(vec, pos·θ)` on both Q and K, then dot. Because rotating both and dotting cancels the absolute angles, `score(i,j)` depends only on `i − j` (the **distance**). Query rotates by ITS OWN position `i`, Key by `j`.
+- **`rmsnorm/`** — root-mean-square normalization. Core: `rms(x)=√(mean(xᵢ²)); out = x / rms(x)`. Rescales any vector so its RMS ≈ 1 — a standard "loudness" — keeping values stable as the block repeats.
+
+### Key formulas — all in one place
+```
+attention  : out = Σ softmax(scores)ᵢ · valueᵢ
+score      : scoreᵢ = q · kᵢ
+scaled     : score = (Q · K) / √d
+Q,K,V      : Q = Wq·x,  K = Wk·x,  V = Wv·x     (Wq,Wk,Wv are learned)
+RoPE       : score(i,j) = rotate(q, i·θ) · rotate(k, j·θ)   → depends on (i − j)
+rotate     : [x·cosθ − y·sinθ,  x·sinθ + y·cosθ]
+RMSNorm    : out = x / √(mean(xᵢ²))
+```
+
+### The big gotchas across this module
+- **Softmax holds the weights, not the raw scores.** Raw scores are just relevance; softmax converts them into the actual mixing weights (positive, sum to 1).
+- **Scale by 1/√d, not 1/d.** Standard deviation of a d-dim dot product grows like √d, so you divide by √d to undo it. Forgetting it → over-spiky softmax → the model can only look at one token.
+- **RoPE: Query uses ITS OWN position.** Writing `rotate(q, j·θ)` (Key's position) collapses every score to the same value — the classic bug you hit. Q gets `i`, K gets `j`.
+- **RoPE encodes distance, not absolute spot.** Two tokens 2 apart score the same whether they're at (5,3) or (2,0). That's the feature, not a bug.
+- **RMSNorm divides by RMS, not by the max or the sum.** RMS is the "typical size"; dividing by it makes the typical size 1.
+
+### How it all assembles (the payoff)
+One transformer block ≈ **RMSNorm → QKV attention (with RoPE positions) → add back → RMSNorm → a small MLP → add back.** Notice the pieces you now own: attention (Module 7), the MLP (Module 5's neuron→layer→MLP), gradients to train it (Module 5's autograd), Adam to optimize it (Module 6). You are genuinely most of the way to hand-building a mini-GPT block — the remaining glue is the residual "add back" and stacking.
+
+### Coverage now
+**19% of the course · 2 of 20 modules complete (Modules 5 & 7 at 100%).** Foundations M1–M3, M6 are partially covered from earlier builds. **Next up: Module 8** — assemble these parts into a full transformer block (residual connections + stacking), the first thing that looks like a real model.
 
 ---
 
