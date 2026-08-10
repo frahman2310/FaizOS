@@ -2,11 +2,11 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-10T14:31:14.815Z -->
-## 2026-08-10 — 8 ships
-**Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV) · SSM / Mamba: a running-state token mixer · Scaling laws: predict loss + Chinchilla-optimal sizing · Held-out eval: perplexity from scratch · MLA: latent-compressed KV cache · GPU memory hierarchy & MFU · Triton: a fused softmax kernel
-**Learned:** SwiGLU — a gated FFN upgrade · GQA — grouped-query attention · SSM / Mamba — a running-state token mixer · Scaling laws — predict loss + Chinchilla sizing · Held-out eval — perplexity · MLA — Multi-head Latent Attention · GPU memory hierarchy & MFU · Triton — a fused softmax kernel
-**🏁 Milestones:** Module 8 Complete — FFN, GQA & state-space models · Module 10 Complete — Scaling, MLA & evaluation
-**Coverage:** 38% · 5/20 modules complete · 23 total ships
+## 2026-08-10 — 9 ships
+**Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV) · SSM / Mamba: a running-state token mixer · Scaling laws: predict loss + Chinchilla-optimal sizing · Held-out eval: perplexity from scratch · MLA: latent-compressed KV cache · GPU memory hierarchy & MFU · Triton: a fused softmax kernel · FlashAttention: tiled attention with online softmax
+**Learned:** SwiGLU — a gated FFN upgrade · GQA — grouped-query attention · SSM / Mamba — a running-state token mixer · Scaling laws — predict loss + Chinchilla sizing · Held-out eval — perplexity · MLA — Multi-head Latent Attention · GPU memory hierarchy & MFU · Triton — a fused softmax kernel · FlashAttention — tiled attention with online softmax
+**🏁 Milestones:** Module 8 Complete — FFN, GQA & state-space models · Module 10 Complete — Scaling, MLA & evaluation · Module 11 Complete — GPU kernels (Triton, FlashAttention)
+**Coverage:** 40% · 6/20 modules complete · 24 total ships
 <!-- /session 2026-08-10T14:31:14.815Z -->
 
 <!-- session 2026-08-10T11:35:06.154Z -->
