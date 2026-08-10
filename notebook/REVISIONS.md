@@ -1,6 +1,45 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 16 entries, newest first.
+> Auto-compiled from every lesson. 17 entries, newest first.
+
+---
+
+## SwiGLU — a gated FFN upgrade
+_2026-08-10_
+
+**Why it matters:** The feed-forward network is ~2/3 of a transformer's parameters. Llama/PaLM replaced the plain ReLU FFN you built with **SwiGLU**, a gated version that routes information better. This is upgrade #1 that turns your vanilla block into a modern one.
+
+**What you built + the core mechanism:** An FFN with a learned, smooth gate.
+```python
+gate    = swish(W1 @ x)      # dimmer settings (smooth, learnable)
+content = W3 @ x             # raw brightness
+hidden  = ewmul(gate, content)   # apply the dials, feature by feature
+out     = W2 @ hidden
+```
+
+**The concept chain — every brick, in order:**
+1. **The old FFN:** `W2 @ relu(W1 @ x)`. ReLU = `max(0, n)`: keep positives, hard-zero negatives. `[3,-2,0,5,-1] → [3,0,0,5,0]`.
+2. **ReLU is crude:** negatives become *exactly* 0 → dead neurons, dead gradient there.
+3. **Swish (SiLU):** `swish(n) = n·sigmoid(n)`. Smooth: ≈ ReLU for big positives, but a small live dip for negatives (gradient everywhere). `swish(2) = 2·0.88 = 1.76`.
+4. **The gate (GLU):** two projections of x — a **content** branch and a **gate** branch — multiplied **element-wise** (`⊙`). The gate is a row of dimmer switches: `0` blocks a feature, `1` passes it fully, in between is partial. `[2,4,6] ⊙ [0.5,1,0] = [1,4,0]`. The dials are computed from the input and **learned**.
+5. **SwiGLU = GLU with a swish gate:** `W2 @ (swish(W1@x) ⊙ (W3@x))`. Three matrices (W1, W3 in; W2 out) vs the plain FFN's two.
+
+**Key formulas / rules:**
+```
+relu(n)   = max(0, n)
+swish(n)  = n * sigmoid(n)             # sigmoid(n) = 1/(1+e^-n)
+GLU gate  = A ⊙ G  (element-wise / Hadamard)
+SwiGLU    = W2 @ ( swish(W1@x) ⊙ (W3@x) )
+```
+
+**Gotchas / what to watch:**
+- **`⊙` is element-wise, NOT a dot product** — `[a0*b0, a1*b1, ...]`, same length in and out. (Used the `ewmul` helper, like `add` in the transformer-block build.)
+- Gate value `0` = feature blocked; `1` = fully open. It's a *per-feature volume knob*, not a single on/off.
+- Real SwiGLU uses a **larger hidden dim** (~8/3·d) so the 3-matrix version keeps a similar parameter count to the old 2-matrix FFN.
+
+**Result:** on input `-2`, ReLU FFN gives `0` (dead) but SwiGLU gives `-0.238` (alive) — information keeps flowing.
+
+**Where it sits + next:** Module 8 skill `swiglu` — upgrade #1 toward a Llama block. Next in Module 8: **GQA** (grouped-query attention — cheaper attention), then a **state-space model (Mamba)** taste to complete the module.
 
 ---
 
