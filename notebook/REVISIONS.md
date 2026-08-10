@@ -1,6 +1,77 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 22 entries, newest first.
+> Auto-compiled from every lesson. 24 entries, newest first.
+
+---
+
+## Module 10 Complete — Scaling, MLA & evaluation
+_2026-08-10_
+
+## 🏁 MODULE 10 COMPLETE — Scaling, MLA & evaluation
+
+You can now build a modern model (Modules 7–9). Module 10 is how you **plan, measure, and cheapen** it — the engineering discipline around the model.
+
+### The through-line
+Three questions every lab asks about a model: **How good will it be before I build it?** (scaling laws), **How good is it, really?** (held-out eval), **How do I serve it cheaply?** (MLA).
+
+### Build-by-build recap
+- **`scaling-laws/`** — `L(N) = A·N^(−α)`: loss falls predictably with size (straight line on log-log → extrapolate). Diminishing returns (100× size = 10× loss cut). Chinchilla: `C ≈ 6·N·D`, ~20 tokens/param → 10B params want 200B tokens.
+- **`heldout-eval/`** — perplexity = `exp(mean(−ln p))` on unseen data. Reads as the effective number of choices the model is torn among (coin flip = 2, GPT-2 ≈ 20). Held-out because training-set scores reward memorization.
+- **`mla-attention/`** — compress K/V to a small latent (down-proj), cache only the latent, reconstruct via up-proj. 32× smaller cache (2048→64).
+
+### Key formulas — one place
+```
+scaling  : L(N) = A * N^(-alpha) ;  C ≈ 6*N*D ;  D_opt ≈ 20*N
+eval     : perplexity = exp(mean(-ln p))          # lower better, ≥ 1
+MLA      : c = W_down @ x (cache) ;  K/V = W_up @ c (rebuild)
+```
+
+### The big gotchas
+- **Diminishing returns are multiplicative** — equal loss drops cost exponentially more compute.
+- **exp undoes ln** — perplexity `exp(-ln p)` puts the score back in "number of choices."
+- **Never evaluate on training data** (leakage) — the score becomes meaningless.
+- **Cache the latent, not K/V** (MLA), and reconstruction is approximate by design.
+
+### How it assembles — the KV-cache trilogy
+Three ways to tame the KV cache, now all yours: **KV cache** (M9, don't recompute) → **GQA** (M8, share heads, 4×) → **MLA** (M10, compress to a latent, 32×). Plus scaling laws to size the model and perplexity to grade it.
+
+### Coverage now
+**35% of the course · 5 of 20 modules complete (Modules 5, 7, 8, 9, 10) · 21 ships.** You've now covered the entire core of building, upgrading, sizing, and evaluating a modern LLM. Remaining frontier: GPU kernels (Modules 11–12), distributed training, fine-tuning/RLHF, agents, safety.
+
+---
+
+## MLA — Multi-head Latent Attention
+_2026-08-10_
+
+**Why it matters:** The KV cache is the memory bottleneck for long contexts. GQA shrank it by sharing; MLA shrinks it further by **compression** — it's how DeepSeek serves very long contexts cheaply. Upgrade #3 to the attention you built.
+
+**What you built + the core mechanism:**
+```python
+c      = compress(x, W_down)      # token -> small latent  (down-projection)  [CACHE THIS]
+K/V    = reconstruct(c, W_up)     # latent -> approx K/V    (up-projection, on the fly)
+```
+
+**The concept chain — every brick, in order:**
+1. **Two levers to shrink the cache:** GQA *shares* K/V heads; MLA *compresses* K/V.
+2. **The thumbnail idea:** squeeze each token's full Key+Value into a small **latent** vector `c`, cache only `c`. When attention needs K/V, blow the thumbnail back up. Works because K/V are **low-rank / redundant**.
+3. **Two projections:** `W_down` compresses (x → c), `W_up` reconstructs (c → K/V). Both are `matvec`.
+4. **Cache only the latent `c`** — never the reconstructed K/V. Cache/token = latent dim, not `2·n_heads·head_dim`.
+
+**Key formulas / rules:**
+```
+compress    : c = W_down @ x            # big -> small latent
+reconstruct : K = W_up  @ c             # small latent -> approx K (and V)
+cache/token : d_latent    (vs full 2*n_heads*head_dim)
+```
+
+**Gotchas / what to watch:**
+- **Cache the latent, not K/V.** Storing reconstructed K/V would defeat the point.
+- Reconstruction is **approximate** — you accept a little error for a big memory win (fine because K/V are redundant).
+- Real MLA folds the up-projection into the query so it never materializes full K/V at all (the speed trick); the toy here materializes them for clarity.
+
+**Result:** token `[1,2,3,4]` → latent `[2,3]` (cached) → reconstructed `[2,3,2,3]`; at scale 2048 → 64 = **32× smaller cache**.
+
+**Where it sits + next:** Module 10 skill `mla` — **completes Module 10**. The KV-cache trilogy is now yours: KV cache (M9) → GQA (M8) → MLA (M10).
 
 ---
 
