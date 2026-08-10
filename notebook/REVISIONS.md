@@ -1,6 +1,43 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 20 entries, newest first.
+> Auto-compiled from every lesson. 21 entries, newest first.
+
+---
+
+## Scaling laws — predict loss + Chinchilla sizing
+_2026-08-10_
+
+**Why it matters:** This is how labs decide what to build *before* spending millions. Scaling laws let you predict a giant model's loss from small runs, and Chinchilla tells you how to split a compute budget between model size and data. It's the economics of frontier AI.
+
+**What you built + the core mechanism:**
+```python
+predicted_loss(N)   = A * N ** (-alpha)     # power law: loss vs size
+chinchilla_tokens(N)= 20 * N                # ~20 tokens per parameter
+compute_flops(N, D) = 6 * N * D             # ~6 FLOPs per param per token
+```
+
+**The concept chain — every brick, in order:**
+1. **The surprise:** make a model bigger + train on more data → loss drops **smoothly and predictably**. You can forecast a huge model's loss from small ones.
+2. **Power law:** `L(N) = A · N^(−α)`, α ≈ 0.07 for real LLMs. Negative exponent → bigger N, smaller L. On a **log-log plot it's a straight line** — that's why you can extrapolate.
+3. **Diminishing returns:** improvement is a fixed *fraction* per 10×, not a fixed *amount*. With α=0.5, every **100×** in size = **10×** cut in loss (10 → 1 → 0.1). Equal drops cost exponentially more compute.
+4. **Two levers:** loss depends on size `N` AND data `D`. Compute `C ≈ 6·N·D`.
+5. **Chinchilla:** for a fixed compute budget, scale N and D **together** — ~**20 tokens per parameter**. Early models (GPT-3) were too big / under-trained; same compute, smaller model + more data = better.
+
+**Key formulas / rules:**
+```
+L(N)  = A * N^(-alpha)         # power law, straight line on log-log
+C     ≈ 6 * N * D              # training FLOPs
+D_opt ≈ 20 * N                 # Chinchilla-optimal tokens
+```
+
+**Gotchas / what to watch:**
+- **Negative exponent** = shrinking: `N^(-α) = 1/N^α`. In Python: `N ** (-alpha)`.
+- Real laws add an **irreducible loss** `L∞` (a floor you can't beat): `L = L∞ + A·N^(-α)`.
+- Chinchilla is about **compute-optimal training**; for cheap *inference* you may deliberately over-train a smaller model (e.g. Llama).
+
+**Result:** predicted loss 10 → 1 → 0.1 across N=100 → 10k → 1M; a 10B model wants 200B tokens and ~1.2×10²² FLOPs.
+
+**Where it sits + next:** Module 10 skill `scaling-laws`. Next in Module 10: **held-out evaluation** (perplexity — how you actually measure a trained model), then **MLA** (compress the KV cache further).
 
 ---
 
