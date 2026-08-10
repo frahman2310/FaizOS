@@ -1,6 +1,84 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 18 entries, newest first.
+> Auto-compiled from every lesson. 20 entries, newest first.
+
+---
+
+## Module 8 Complete — FFN, GQA & state-space models
+_2026-08-10_
+
+## 🏁 MODULE 8 COMPLETE — FFN, GQA & state-space models
+
+You upgraded your vanilla transformer block into a modern (Llama-style) one, and met the main alternative to attention.
+
+### The through-line
+Module 9 gave you a *vanilla* transformer block. Module 8 is the set of **upgrades that modernize it**, plus one rival architecture:
+1. **SwiGLU** — a better FFN (gated, smooth) replacing the ReLU MLP.
+2. **GQA** — cheaper attention (share K/V heads) shrinking the KV cache.
+3. **SSM / Mamba** — a non-attention token mixer that's O(n) by design.
+
+Together with RoPE + RMSNorm (Module 7), SwiGLU + GQA are exactly what turn a textbook transformer into a Llama block.
+
+### Build-by-build recap
+- **`swiglu-ffn/`** — `W2 @ (swish(W1@x) ⊙ (W3@x))`. Two branches: a swish-activated **gate** (dimmer switches) multiplied element-wise into a **content** branch. Smooth, learned gating vs ReLU's hard on/off; keeps negative channels alive.
+- **`gqa-attention/`** — KV cache scales with **K/V heads, not query heads**. 8 Q heads sharing 2 K/V = 4× smaller cache (MHA→GQA→MQA spectrum). 16→4→2 MB/layer.
+- **`ssm-mamba/`** — `state = a·state + b·x; y = c·state`, scanned left-to-right. A fading running memory, O(n), no growing cache. `a` controls memory length.
+
+### Key formulas — one place
+```
+SwiGLU : W2 @ ( swish(W1@x) ⊙ (W3@x) ) ,  swish(n)=n*sigmoid(n)
+GQA    : KV cache = 2*seq_len*n_kv_heads*head_dim*bytes ;  saving = n_q/n_kv
+SSM    : state = a*state + b*x ;  y = c*state           (O(n) scan)
+```
+
+### The big gotchas
+- **`⊙` is element-wise**, not a dot product (SwiGLU gate).
+- **KV cache scales with n_kv_heads**, the whole reason GQA saves memory.
+- **SSM: `a` multiplies the state, `b` the input**; step 0 the state = the input (old state is 0).
+
+### How it assembles
+A modern **Llama block** = RMSNorm → GQA attention (with RoPE) → residual → RMSNorm → **SwiGLU** FFN → residual. You now own every one of those pieces (Modules 7, 8, 9). SSM/Mamba is the parallel track that swaps attention for an O(n) recurrence.
+
+### Coverage now
+**29% of the course · 4 of 20 modules complete (Modules 5, 7, 8, 9) · 18 ships.** Next: **Module 10** (scaling laws, MLA & evaluation) — how you measure and scale the model you can now build.
+
+---
+
+## SSM / Mamba — a running-state token mixer
+_2026-08-10_
+
+**Why it matters:** Attention is O(n²) — it chokes on very long sequences. State-space models (Mamba) mix tokens in O(n) with constant memory per step, making million-token contexts feasible. The main competitor to attention.
+
+**What you built + the core mechanism:** A minimal SSM scanned over a sequence.
+```python
+for x in xs:
+    state = a * state + b * x     # update the fading memory
+    ys.append(c * state)          # read it out
+```
+
+**The concept chain — every brick, in order:**
+1. **A different mixer:** attention has every token look at every other (O(n²)). An SSM reads the sequence like a stream, carrying ONE running state, updated per token — like keeping a running summary instead of re-reading the whole book each page.
+2. **O(n):** constant work per token × n tokens = linear. No n² pairs, no growing KV cache.
+3. **The recurrence:** `state = a·state + b·x`, `y = c·state`. `a` = how much old memory to keep, `b` = how much new input to add, `c` = readout.
+4. **First-step subtlety:** `a` multiplies the OLD state (which is 0 at the start), `b` multiplies the input → step 0 makes state = the input. The decay only bites once there's memory to carry.
+5. **Fading memory:** impulse `[1,0,0,…]` → `1, 0.9, 0.81, 0.729…` with a=0.9. Bigger `a` = longer memory (a=0.99 stays ~0.95 after 5 steps).
+6. **Mamba's twist:** make `a, b, c` **input-dependent** (selective) so the model chooses what to remember — but the core is this recurrence.
+
+**Key formulas / rules:**
+```
+state_t = a * state_{t-1} + b * x_t
+y_t     = c * state_t
+memory length ~ controlled by a  (closer to 1 = longer)
+```
+
+**Gotchas / what to watch:**
+- **`a` hits the state, `b` hits the input** — not the other way round. (You got this right first try.)
+- Step 0: state = input, because the old state is 0.
+- This scalar version is the skeleton; real Mamba is multi-dimensional and *selective* (input-dependent knobs), and uses a parallel scan for GPU speed.
+
+**Result:** impulse response fades geometrically; a=0.9 → 0.59 by step 5, a=0.99 → 0.95 — one knob controls memory length.
+
+**Where it sits + next:** Module 8 skill `ssm-mamba` — **completes Module 8**. Next: Module 10 (scaling laws & evaluation) or wire these upgrades (SwiGLU/GQA) back into your Module 9 block.
 
 ---
 
