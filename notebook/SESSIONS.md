@@ -2,10 +2,11 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-10T14:31:14.815Z -->
-## 2026-08-10 — 2 ships
-**Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV)
-**Learned:** SwiGLU — a gated FFN upgrade · GQA — grouped-query attention
-**Coverage:** 27% · 3/20 modules complete · 17 total ships
+## 2026-08-10 — 3 ships
+**Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV) · SSM / Mamba: a running-state token mixer
+**Learned:** SwiGLU — a gated FFN upgrade · GQA — grouped-query attention · SSM / Mamba — a running-state token mixer
+**🏁 Milestones:** Module 8 Complete — FFN, GQA & state-space models
+**Coverage:** 29% · 4/20 modules complete · 18 total ships
 <!-- /session 2026-08-10T14:31:14.815Z -->
 
 <!-- session 2026-08-10T11:35:06.154Z -->
