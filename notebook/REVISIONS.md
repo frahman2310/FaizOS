@@ -1,6 +1,45 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 11 entries, newest first.
+> Auto-compiled from every lesson. 12 entries, newest first.
+
+---
+
+## Transformer block — residuals + stacking
+_2026-08-10_
+
+**Why it matters:** This is the first thing that looks like a *real model*. A GPT is nothing but this one block, stacked dozens of times. It ties together everything you built (attention, MLP, RMSNorm) with the one piece of glue that makes deep networks trainable: the **residual connection**.
+
+**What you built + the core mechanism:** A transformer block that stacks 30 deep and keeps its signal alive. The whole block is two residual-wrapped sub-layers:
+```python
+x = x + attention(norm(x))    # sub-layer 1: tokens talk to each other
+x = x + mlp(norm(x))          # sub-layer 2: each token thinks alone
+```
+Stacking is just: `for _ in range(N): x = block(x)`.
+
+**The concept chain — every brick, in order:**
+1. **Vanishing signal.** A layer that does `x → 0.5·x`, stacked 10 deep, gives `0.5¹⁰ ≈ 0.001` — the signal (and the gradient) vanishes. Deep naive stacks are untrainable.
+2. **The residual fix.** Wrap each layer: `out = x + layer(x)`. The original `x` flows straight through; the layer only computes a small *edit* on top. Like "track changes" — keep the original, layer edits on top.
+3. **Why it works.** With `+ x`, the default behavior is "do nothing" (`out = x + 0 = x`). Signal always has a clear path. Example: 10 layers each adding `+0.1` → `1.0 + 10×0.1 = 2.0`, no vanishing.
+4. **Two sub-layers.** attention = tokens talk to each other (cross-token mixing, your QKV build). MLP = each token thinks alone (same net applied per-position, no cross-token talk). Delete attention → token #5 can never depend on token #2.
+5. **Pre-norm.** `norm(x)` (your RMSNorm) goes *inside* each residual, before the heavy layer: `x = x + layer(norm(x))`. This is what Llama/GPT use.
+6. **Stacking.** Each block's output is the next block's input: `x = block(x)`, N times. That's depth.
+
+**Key formulas / rules:**
+```
+residual   : out = x + layer(norm(x))
+block      : x = x + attn(norm(x)) ;  x = x + mlp(norm(x))
+stack      : for _ in range(N): x = block(x)
+```
+
+**Gotchas / what to watch:**
+- **`+` on Python lists CONCATENATES, it doesn't add.** `[1,2]+[3,4]` → `[1,2,3,4]`, not `[4,6]`. Use an `add()` helper for elementwise vector addition — this is the residual in code.
+- **A list comprehension holds an expression, not an assignment** — `[add(a,b) for ...]`, never `[x = add(a,b) for ...]`.
+- **The stacking blank is `seq = block(seq)`** inside the loop — reassign so each block feeds the next; `return seq` comes after the loop.
+- attention = cross-token, MLP = per-token. Easy to flip; don't.
+
+**Proof it works:** 30 blocks deep — WITH residuals RMS stayed `27.7` (alive); WITHOUT residuals it fell to `0.07` (vanishing). Same layers, only the `+ x` differs. That single addition is why GPT can be 96 layers deep.
+
+**Where it sits + next:** Curriculum skill `nanogpt-llama-block` (Module 9: Build a GPT). Next gaps: (1) train the block end-to-end with gradients (you have autograd from Module 5), (2) add a tokenizer + KV cache to turn the forward pass into real text generation. Or double back to Module 8's modern component upgrades (SwiGLU, GQA, Mamba).
 
 ---
 

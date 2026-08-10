@@ -340,7 +340,7 @@ server.registerTool('faizos_curriculum', {
 // ---- faizos_progress: a course-wide progress bar (show it with the revision summary) ----
 server.registerTool('faizos_progress', {
   title: 'Course progress bar',
-  description: 'Progress across the WHOLE curriculum (Phases 0–15): overall mastery %, skills started, missions shipped, and a rendered progress bar (overall + per-phase). Show its `rendered` block with the revision summary.',
+  description: 'Course coverage across the 20 modules (~5% each): overall coverage %, modules complete, skills touched, avg mastery, missions shipped, and a rendered per-module progress bar. Show its `rendered` block with the revision summary.',
   inputSchema: {},
 }, async () => {
   const skills = db.prepare('SELECT phase, mastery, last_seen FROM skills WHERE on_curriculum=1').all() as Array<{ phase: number; mastery: number; last_seen: string | null }>;
