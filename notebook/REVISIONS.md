@@ -1,6 +1,46 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 12 entries, newest first.
+> Auto-compiled from every lesson. 13 entries, newest first.
+
+---
+
+## Train attention — a learned attention weight
+_2026-08-10_
+
+**Why it matters:** Until now every model you built used *fixed* numbers. This is the first time a transformer-family component **learned** its own weights from a goal, by gradient descent — the thing that makes a real network intelligent. It proves the block you assembled is *trainable*.
+
+**What you built + the core mechanism:** A tiny attention model with ONE learnable parameter `g`, trained until it learns to attend to the relevant token. The heart is the 4-step loop repeated 100×:
+```python
+output, wB = forward()               # 1. forward:  blend the tokens by their attention weight
+loss = (output - target)**2          # 2. loss:     how wrong (squared error)
+g.grad = 0.0; loss.backward()        # 3. backward: fill g.grad (your micrograd)
+g.data = g.data - lr * g.grad        # 4. update:   step g downhill
+```
+
+**The concept chain — every brick, in order:**
+1. **The training loop** = forward → loss → **backward** → update, repeated. (backward = backpropagation = your `Value.backward()` handing every weight its slope.)
+2. **What's learnable:** the attention weight. Before, it came from a fixed softmax; now a raw score `g` is a *parameter* gradient descent tunes.
+3. **The blend:** `output = wA·vA + wB·vB`, with `wA + wB = 1`. Worked example: `wB=0.9` → `0.1·1 + 0.9·5 = 4.6`. 50/50 → `3.0` (both terms count!).
+4. **Score → valid weight:** a raw `g` can be any number, but a weight must be in [0,1] — squish with **sigmoid** (S-curve: −∞→0, 0→0.5, +∞→1). Built from your tanh: `sigmoid(g) = 0.5 + 0.5·tanh(0.5·g)` — no new autograd rule needed.
+5. **The loss:** `(output − target)²`. Squares to stay positive and punish big misses. `(3−5)² = 4` at the start.
+6. **The update:** `g.data = g.data − lr·g.grad`. `lr` scales the STEP (the gradient), not the parameter. Downhill = minus the slope.
+
+**Key formulas / rules:**
+```
+sigmoid(g) = 0.5 + 0.5*tanh(0.5*g)         # any number -> (0,1)
+loss       = (output - target)**2           # squared error
+update     : p.data = p.data - lr * p.grad  # gradient descent step
+```
+
+**Gotchas / what to watch:**
+- **`lr` multiplies the gradient, not the current value.** `g.data - lr*g.grad`, NOT `g.data*lr - g.grad`. (With lr=1 both happen to match — which hides the bug. It breaks for any other lr.)
+- **Reset the grad each step** (`g.grad = 0.0`) before `backward()`, or slopes accumulate across steps and the update goes haywire. (Intermediate Values are rebuilt each forward pass, so only the persistent parameter needs manual reset.)
+- **Both blend terms count** — 50/50 of {1, 5} is 3.0, not 0.5.
+- Downhill = **minus** the slope. Plus would climb the loss.
+
+**The result:** loss `4.0 → 0.002`, `wB 0.5 → 0.99`, output `3.0 → 4.96`. Nobody told it `wB` should be high — it *discovered* that from the gradient. That's learning.
+
+**Where it sits + next:** Reinforces `autograd-backprop` (Module 5) + `attention` (Module 7); first step into training. Gaps to close next: (1) real attention learns whole **Q/K/V weight matrices**, not one scalar gate; (2) this used plain SGD with lr=1 — next is a real optimizer (Adam) + schedule. Immediate next build: **finish Module 9** — a tokenizer + KV cache to turn a forward pass into real text generation.
 
 ---
 
