@@ -1,6 +1,44 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 17 entries, newest first.
+> Auto-compiled from every lesson. 18 entries, newest first.
+
+---
+
+## GQA — grouped-query attention
+_2026-08-10_
+
+**Why it matters:** The KV cache (your Module 9 build) is the #1 memory cost for long contexts. GQA shrinks it by letting query heads share K/V heads — it's why Llama 2/3 can hold long conversations. Upgrade #2 toward a modern block.
+
+**What you built + the core mechanism:** A model of KV-cache memory across the MHA→GQA→MQA spectrum.
+```python
+kv_cache_bytes = 2 * seq_len * n_kv_heads * head_dim * bytes_per_num
+#                ^K & V        ^scales with K/V heads, NOT query heads
+```
+
+**The concept chain — every brick, in order:**
+1. **Heads:** real attention runs several in parallel (e.g. 8), each with its OWN Q, K, V, learning to track different things. You built one head; multi-head is many.
+2. **The cost:** the KV cache stores K,V per head → 8 heads = 8× the cache. For long chats this dominates GPU memory.
+3. **The GQA fix:** you need many *Query* heads (they look for different things) but not as many *K/V* heads — several Q heads can share one K/V. E.g. 8 Q heads, 2 K/V heads → groups of 4 share → 4× smaller cache.
+4. **The spectrum (8 Q heads):**
+   - **MHA**: 8 K/V heads — biggest cache, most expressive.
+   - **GQA**: 2 K/V heads — 4× smaller (the modern default).
+   - **MQA**: 1 K/V head — 8× smaller, slight quality loss.
+5. **Key fact:** the cache scales with **n_kv_heads**, not n_q_heads. That's why sharing K/V is the lever.
+
+**Key formulas / rules:**
+```
+KV cache/layer = 2 * seq_len * n_kv_heads * head_dim * bytes_per_num
+saving factor  = n_q_heads / n_kv_heads     # MHA=1x, GQA(8->2)=4x, MQA(8->1)=8x
+```
+
+**Gotchas / what to watch:**
+- The cache depends on **K/V head count**, not query-head count — the whole point. Using n_q_heads misses the savings.
+- The "2" is because you cache **both** K and V.
+- GQA doesn't reduce the number of Query heads (expressiveness is kept); it only reduces distinct K/V heads.
+
+**Result:** 8 Q heads, seq 4096, head_dim 128 → MHA 16 MB, GQA 4 MB (4×), MQA 2 MB (8×) per layer. Over ~80 layers: 1.28 GB → 320 MB.
+
+**Where it sits + next:** Module 8 skill `gqa`. Last piece of Module 8: a **state-space model (Mamba)** — a non-attention way to mix tokens that's O(n) by design.
 
 ---
 
