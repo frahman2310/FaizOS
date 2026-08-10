@@ -1,6 +1,88 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 14 entries, newest first.
+> Auto-compiled from every lesson. 16 entries, newest first.
+
+---
+
+## Module 9 Complete — Build a GPT (nanoGPT → Llama)
+_2026-08-10_
+
+## 🏁 MODULE 9 COMPLETE — Build a GPT (nanoGPT → Llama)
+
+You now own every core piece of a working language model: the block that thinks, the training that teaches it, the tokenizer that feeds it, and the cache that makes it fast.
+
+### The through-line (how the builds connect into a real GPT)
+A GPT is a pipeline: **text → tokens → stacked transformer blocks → next-token prediction**, generated one token at a time. This module built the parts that pipeline needs, plus proved they can *learn*:
+1. **Transformer block** (mission #12) — the repeating compute unit (attention + MLP + residuals), stacked deep.
+2. **Training** (mission #13) — gradient descent makes those blocks *learn* their weights from a goal.
+3. **BPE tokenizer** (mission #14) — turns raw text into the integer tokens the block eats.
+4. **KV cache** (mission #15) — makes one-token-at-a-time generation fast (O(n²)→O(n)).
+
+### Build-by-build recap (each ship + its core mechanism)
+- **`transformer-block-residuals-stacking/`** — `x = x + attn(norm(x)); x = x + mlp(norm(x))`, stacked N deep. Residuals (`+ x`) keep the signal alive so deep stacks train. Proof: 30 blocks, RMS 27.7 with residuals vs 0.07 without.
+- **`train-attention/`** — a learnable attention weight `wB = sigmoid(g)`, trained with the loop `forward → loss=(out−target)² → backward → g -= lr·g.grad`. Loss 4.0→0.002, wB 0.5→0.99. First component that *learned* instead of being hardcoded.
+- **`bpe-tokenizer/`** — count adjacent pairs (`get_stats`), merge the most frequent (`max(stats, key=stats.get)`) into a new token, repeat. Merges stack (aa→aaa→aaab). Compressed 11→5 tokens.
+- **`kv-cache/`** — cache past K,V; compute only the new token's K,V each step. `n(n+1)/2` computes → `n`. 50.5× at n=100.
+
+### Key formulas / rules — one place
+```
+block      : x = x + attn(norm(x)) ;  x = x + mlp(norm(x))
+stack      : for _ in range(N): x = block(x)
+train loop : forward -> loss=(out-target)**2 -> backward -> p.data -= lr*p.grad
+sigmoid    : 0.5 + 0.5*tanh(0.5*g)          # raw score -> weight in (0,1)
+BPE        : best = max(stats, key=stats.get) ; merge ; repeat
+KV cache   : cache.append(compute_kv(step))  # only the new token -> O(n) not O(n^2)
+```
+
+### The big gotchas across this module
+- **`+ x` is load-bearing** — remove residuals and a deep stack vanishes to ~0.
+- **`lr` scales the gradient, not the parameter:** `p - lr*grad`, never `p*lr - grad` (hidden when lr=1).
+- **Reset grads each step** or slopes accumulate.
+- **`max(dict, key=dict.get)`** returns the winning KEY, not its count.
+- **KV cache = compute only the new token** — looping over the past is the exact waste you're removing.
+
+### How it all assembles (the payoff)
+Everything now connects: **BPE** turns a prompt into tokens → embeddings run through **stacked transformer blocks** (attention + MLP + RoPE + RMSNorm, Modules 7 & 9) → the top predicts the next token → the **KV cache** makes each step cheap → and the **training loop** (Modules 5, 6, 9) is how the whole thing learned its weights. That's a GPT. You have hand-built every conceptual piece.
+
+### Coverage now
+**24% of the course · 3 of 20 modules complete (Modules 5, 7, 9 at 100%) · 15 ships.** Next options: **Module 8** (SwiGLU / GQA / Mamba — modern component upgrades) or **Module 10** (scaling laws, MLA & evaluation).
+
+---
+
+## KV cache — fast generation
+_2026-08-10_
+
+**Why it matters:** This is what makes generation *fast enough to use*. Without it, a long chat gets quadratically slower; with it, each new token costs the same. It's why ChatGPT streams smoothly.
+
+**What you built + the core mechanism:** A model of autoregressive generation that counts K,V computations with and without a cache. The heart:
+```python
+cache = []
+for step in range(n):
+    cache.append(compute_kv(step))   # compute ONLY the new token; the past is already cached
+```
+
+**The concept chain — every brick, in order:**
+1. **Autoregressive generation:** a GPT writes one token at a time, feeding each output back in. To predict a new token, attention needs the Key & Value of every token so far.
+2. **The naive waste:** recompute K,V for ALL tokens each step → step costs `1, 2, 3, …, n`. Total = `1+2+…+n = n(n+1)/2` → **O(n²)**.
+3. **The key fact:** a past token's K,V **never change**. Recomputing them is redundant.
+4. **The cache:** store each token's K,V once; each step compute only the NEW token's K,V and append. Total = `n` computes → **O(n)**.
+5. **Attention still reads the whole cache** — you just stopped *recomputing* the old entries.
+
+**Key numbers / rules:**
+```
+no cache : n(n+1)/2 computes   (O(n^2))
+cache    : n computes          (O(n))
+n=100    : 5050 vs 100  = 50.5x
+```
+
+**Gotchas / what to watch:**
+- **Don't loop over the past in the cached version.** `range(step+1)` re-does all previous tokens — that IS the waste you're removing. Compute only `step`.
+- The cache **grows** by one entry per token — real systems bound it with a sliding window / eviction for very long contexts.
+- The cache stores **K and V**, not Q — the new token brings its own Query; it needs the *past* Keys/Values to attend to.
+
+**Result:** no-cache `n(n+1)/2` vs cache `n` → **50.5× at n=100**, matching the `15 vs 5` you computed by hand at n=5.
+
+**Where it sits + next:** Module 9 skill `kv-cache` — and this **completes Module 9 (Build a GPT)**. Next gap: wire the cache into a real tensor attention forward pass. Or move to Module 8 (SwiGLU/GQA/Mamba) or Module 10 (scaling & evaluation).
 
 ---
 
