@@ -1,16 +1,16 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**37% coverage** · 5/20 modules complete · 22 builds shipped · 22/66 skills touched
+**38% coverage** · 5/20 modules complete · 23 builds shipped · 23/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 37%
+OVERALL  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ 38%
 ```
 
 ## Modules
 ### 🔄 Module 1 — Math: numbers, softmax, matmul (67%)
 - **skills:** · Dev setup: uv, ruff, one Python, CI · ✓ Numerically stable softmax & log-sum-exp · ✓ Matmul, shapes & FLOP cost
-- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch
+- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch · #23 Triton: a fused softmax kernel
 
 ### 🔄 Module 2 — Math: linear algebra & calculus (25%)
 - **skills:** · SVD & low-rank (PCA, LoRA) · ✓ Backprop as vector-Jacobian products · · Probability, covariance & expectation · · High-dimensional geometry
@@ -48,13 +48,14 @@ OVERALL  ▓▓▓▓▓▓▓░░░░░░░░░░░░░ 37%
 - **skills:** ✓ Scaling laws (inference-optimal) · ✓ Multi-head Latent Attention · ✓ Held-out evaluation harness
 - **builds:** #19 Scaling laws: predict loss + Chinchilla-optimal sizing · #20 Held-out eval: perplexity from scratch · #21 MLA: latent-compressed KV cache
 
-### 🔄 Module 11 — GPU kernels (Triton, FlashAttn) (33%)
-- **skills:** ✓ GPU memory hierarchy & MFU · · Triton kernels from zero · · FlashAttention (tiled attention kernel)
-- **builds:** #22 GPU memory hierarchy & MFU
+### 🔄 Module 11 — GPU kernels (Triton, FlashAttn) (67%)
+- **skills:** ✓ GPU memory hierarchy & MFU · ✓ Triton kernels from zero · · FlashAttention (tiled attention kernel)
+- **builds:** #22 GPU memory hierarchy & MFU · #23 Triton: a fused softmax kernel
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 23 | Triton: a fused softmax kernel | Triton kernels from zero, Numerically stable softmax & log-sum-exp | 2026-08-10 |
 | 22 | GPU memory hierarchy & MFU | GPU memory hierarchy & MFU, Arithmetic intensity & the roofline | 2026-08-10 |
 | 21 | MLA: latent-compressed KV cache | Multi-head Latent Attention | 2026-08-10 |
 | 20 | Held-out eval: perplexity from scratch | Held-out evaluation harness, Leakage-safe ML pipeline | 2026-08-10 |

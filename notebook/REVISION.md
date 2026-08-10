@@ -8,6 +8,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 8 — FFN, GQA & state-space models](#module-8)
 - [Module 9 — Build a GPT (nanoGPT → Llama)](#module-9)
 - [Module 10 — Scaling, MLA & evaluation](#module-10)
+- [Module 11 — GPU kernels (Triton, FlashAttn)](#module-11)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -863,6 +864,48 @@ Three ways to tame the KV cache, now all yours: **KV cache** (M9, don't recomput
 
 ### Coverage now
 **35% of the course · 5 of 20 modules complete (Modules 5, 7, 8, 9, 10) · 21 ships.** You've now covered the entire core of building, upgrading, sizing, and evaluating a modern LLM. Remaining frontier: GPU kernels (Modules 11–12), distributed training, fine-tuning/RLHF, agents, safety.
+
+---
+
+<a id="module-11"></a>
+# Module 11 — GPU kernels (Triton, FlashAttn)
+
+## Triton — a fused softmax kernel
+
+**Why it matters:** The previous lesson diagnosed the disease (memory-bound kernels). This is the cure. Fusion is the single biggest lever in GPU performance, and Triton is how you write it in Python instead of CUDA C++.
+
+**What you built + the core mechanism:** Every Triton kernel is three moves:
+```python
+x = tl.load(in_ptr + pid * n_cols + offs, mask=mask)        # 1. WALK — one trip from HBM
+x = x - tl.max(x, 0); e = tl.exp(x); y = e / tl.sum(e, 0)   # 2. CHOP — all steps in SRAM
+tl.store(out_ptr + pid * n_cols + offs, y, mask=mask)       # 3. WALK BACK — one trip
+```
+
+**The concept chain — every brick, in order:**
+1. **A kernel = one recipe** the GPU runs. `torch.softmax` is a pre-made recipe; Triton lets you write your own.
+2. **The cost of not fusing.** Softmax has 5 steps (max, subtract, exp, sum, divide). As 5 separate kernels that's **5 round trips** = 10 HBM accesses. Fused: **1 trip** = 2 accesses → **5× fewer**.
+3. **Programs & blocks.** You never loop over the data. You write the recipe for **one block**; the GPU launches many **programs** in parallel, and `pid = tl.program_id(0)` tells each which block is its job. (1000 chefs, same recipe card, each with a number.)
+4. **The grid** = number of programs = `ceil(n_elements / BLOCK_SIZE)`. 8192/1024 = 8; 4096/512 = 8; 5000/1024 = **5** (rounded up).
+5. **The mask.** Rounding up means the last program has slots past the end of the data — `mask = offs < n_cols` makes it ignore them. Without it you read garbage.
+6. **Fusion rule:** put as many steps as possible **between the load and the store**.
+
+**Key formulas / rules:**
+```
+unfused HBM trips = 2 * n_steps        # each step reads + writes
+fused HBM trips   = 2                  # independent of n_steps  <- the whole point
+grid              = ceil(n_elements / BLOCK_SIZE)
+```
+
+**Gotchas / what to watch:**
+- **Round the grid UP**, never down — 7 programs for 8192/1024 leaves 1024 elements unprocessed.
+- **Always mask** when the block doesn't divide the data evenly.
+- **Powers of two**: verify by doubling (1024 → 2048 → 4096 → 8192 = ×8).
+- **Python syntax**: units belong in comments, not code — `return 2`, never `return 2 trips`.
+- Fusion changes **speed, not math** — the fused softmax still sums to exactly 1.0.
+
+**The payoff:** fusion works when everything fits on the countertop. But attention's `n×n` score matrix **doesn't fit** — exactly the problem FlashAttention solves.
+
+**Where it sits + next:** Module 11 skill `triton-basics` (also raised `floating-point-logsumexp` from mission #1). Next: **FlashAttention** — the last skill of Module 11.
 
 ---
 
