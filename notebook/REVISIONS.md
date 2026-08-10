@@ -1,6 +1,45 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 13 entries, newest first.
+> Auto-compiled from every lesson. 14 entries, newest first.
+
+---
+
+## BPE tokenizer from scratch
+_2026-08-10_
+
+**Why it matters:** This is step 1 of *every* language model — text must become integer tokens before the network can touch it. BPE is the exact scheme GPT/Llama use, and now you've built it.
+
+**What you built + the core mechanism:** A tokenizer that learns its own vocabulary by merging frequent pairs. The heart of the train loop:
+```python
+stats = get_stats(ids)              # {pair: count} for every adjacent pair
+best  = max(stats, key=stats.get)   # the MOST FREQUENT pair  <- the whole idea
+ids   = merge(ids, best, new_id)    # replace it with one new token, repeat
+```
+
+**The concept chain — every brick, in order:**
+1. **Why tokenize:** nets do math on numbers, not letters. Turn text → list of ints.
+2. **Char tokens are wasteful** (sequences too long); **word tokens** need a huge vocab and break on unseen words. BPE is the middle ground.
+3. **The merge:** find the most frequent adjacent pair, replace every occurrence with ONE new token. `"aaabdaaabac"` (11) → merge `aa` → `Z a b d Z a b a c` (9). Greedy left-to-right: `aaa` → `Z a`, not `a Z`.
+4. **Repeat:** each merge adds one vocab token and shortens the sequence. Real GPT ≈ 50k merges.
+5. **Merges stack:** `256=(a,a)`, `257=(256,a)="aaa"`, `258=(257,b)="aaab"` — a merge can build on an earlier merge, so common multi-char chunks become single tokens automatically.
+
+**Key ideas / rules:**
+```
+get_stats : count every adjacent pair          -> {pair: count}
+best pair : max(stats, key=stats.get)           # highest count
+merge     : replace pair with new_id (greedy, left to right)
+new ids   : start at 256 (after the 256 byte values), then 257, 258, ...
+```
+
+**Gotchas / what to watch:**
+- **`max(dict, key=dict.get)`** returns the KEY with the biggest value — not the value. That's what you want (the pair, not its count).
+- **Greedy, non-overlapping merge:** after merging a pair, skip BOTH tokens (`i += 2`); don't re-use the second one.
+- Ties (two pairs with equal count) are broken by whichever `max` sees first — fine for learning.
+- New token ids must not collide with the 0–255 byte values → start at 256.
+
+**Result:** `"aaabdaaabac"` compressed 11 → 5 tokens in 3 merges, learning `aa → aaa → aaab`.
+
+**Where it sits + next:** Module 9 skill `tokenizer-bpe`. Gaps: add a `decode()` (ids → text) and train on a real corpus. Next: the **KV cache** — the last Module 9 skill — to make generation fast.
 
 ---
 
