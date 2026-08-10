@@ -1,6 +1,37 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 9 entries, newest first.
+> Auto-compiled from every lesson. 10 entries, newest first.
+
+---
+
+## RMSNorm
+_2026-08-10_
+
+**📝 Revision — RMSNorm**
+
+**Why it matters:** as vectors flow through many layers their magnitude drifts (explodes or vanishes), wrecking training. **Normalization** keeps them at a stable size. RMSNorm is the simple, modern version used in Llama & most current transformers. *(Completes Module 7.)*
+
+**What you built + the core mechanism:**
+```python
+def rms(vec):                       # root-mean-square = "size" of the vector
+    return sqrt(sum(x*x for x in vec) / len(vec))
+def rmsnorm(vec):
+    r = rms(vec)
+    return [x / r for x in vec]     # divide every element by the RMS -> new RMS ~ 1
+```
+
+**The concept chain (with examples):**
+- **A vector's "size" = its RMS** — square each number, average, square-root. Ex: `RMS([3,4]) = √(25/2) ≈ 3.54`.
+- **RMSNorm divides every element by the RMS** — this shrinks the whole vector by factor `r`, and its RMS shrinks by the same factor → **new RMS = r/r = 1**. Ex: `[3,4]` → `[0.85, 1.13]`, RMS `1.0`.
+- Result: every vector comes out at a **standard size**, regardless of how big/small it started → stable numbers deep in the network.
+
+**Key rule:** `rmsnorm(x) = x / rms(x)`, where `rms(x) = √(mean(x²))`. (Real RMSNorm also multiplies by a learned per-dim gain.)
+
+**Gotchas:** RMS uses the **mean** of squares (÷ length), then a square root; dividing by it forces the output RMS to exactly 1.
+
+**The payoff:** normalization is what makes deep networks trainable at all. RMSNorm + your RoPE + your QKV attention = the core of a modern transformer block.
+
+**Where it sits + next:** **Module 7 COMPLETE** ✅ (attention + RoPE + RMSNorm). Next → multi-head attention, then assemble the full **transformer block** (attention + RMSNorm + MLP + residual) → then a working GPT.
 
 ---
 
