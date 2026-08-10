@@ -2,10 +2,10 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-10T14:31:14.815Z -->
-## 2026-08-10 — 1 ship
-**Shipped:** SwiGLU: a gated FFN upgrade
-**Learned:** SwiGLU — a gated FFN upgrade
-**Coverage:** 25% · 3/20 modules complete · 16 total ships
+## 2026-08-10 — 2 ships
+**Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV)
+**Learned:** SwiGLU — a gated FFN upgrade · GQA — grouped-query attention
+**Coverage:** 27% · 3/20 modules complete · 17 total ships
 <!-- /session 2026-08-10T14:31:14.815Z -->
 
 <!-- session 2026-08-10T11:35:06.154Z -->
