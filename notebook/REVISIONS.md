@@ -1,6 +1,45 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 28 entries, newest first.
+> Auto-compiled from every lesson. 29 entries, newest first.
+
+---
+
+## torch.compile &amp; CUDA graphs
+_2026-08-11_
+
+**Why it matters:** In Module 11 you hand-wrote a fused kernel in Triton. You can't do that for every op in a model. `torch.compile` does it automatically — and CUDA graphs fix a *second*, unrelated cost that fusion can't touch.
+
+**What you built + the core mechanism:**
+```python
+trips_eager(n_ops)       = 2 * n_ops        # every op round-trips HBM
+trips_compiled(n_graphs) = 2 * n_graphs     # fusion is free INSIDE a graph
+launch_overhead          = n_kernels * 5us  ->  CUDA graph: 5us total
+```
+
+**The concept chain — every brick, in order:**
+1. **Eager mode is blind.** Each op runs the instant Python reaches it, with no knowledge of what comes next — so it *cannot* fuse. `x.relu().mul(2).add(1)` = 3 kernels = **6** trips.
+2. **Graph capture.** `torch.compile` traces your Python and records the ops as one connected **graph**. Only then can it emit a fused kernel → **2** trips (a 3× win, for free).
+3. **Graph breaks.** A `print()`, `.item()`, or data-dependent `if` can't be traced. The compiler compiles what it has, drops to Python, and starts a **new graph**. **Fusion cannot cross a break.**
+4. **Cost scales with graphs, not ops:** `2 × n_graphs`. For 6 ops — 0 breaks → 2 trips; 1 break → 4; **2 breaks → 6, exactly what eager cost.** Compilation bought nothing.
+5. **A second, separate cost:** every kernel launch takes the CPU ~**5 µs**. A step firing 1000 kernels burns `1000 × 5 = 5000 µs = 5 ms` of CPU overhead — the GPU idles waiting for order slips ("launch-bound").
+6. **CUDA graphs:** record the entire launch sequence **once**, replay with a single call → 5000 µs → **5 µs** (1000×). Fixes overhead, not memory traffic.
+
+**Key formulas / rules:**
+```
+eager trips     = 2 * n_ops
+compiled trips  = 2 * n_graphs        # n_graphs = breaks + 1
+launch overhead = n_kernels * ~5us
+CUDA graph      = one replay, overhead paid once
+```
+
+**Gotchas / what to watch:**
+- **The 2 never goes away.** Every graph still reads its input and writes its output; fusion only removes trips *between* ops inside it.
+- **Count graphs, not ops** — that's the whole point of compiling.
+- **`n_graphs = breaks + 1`** — 2 breaks means 3 graphs.
+- **Breaks are silent.** Nothing errors; you just quietly lose the speedup. Hunt them with `TORCH_LOGS=graph_breaks`.
+- **Two costs, two cures:** fusion fixes *memory traffic*; CUDA graphs fix *launch overhead*. Neither substitutes for the other.
+
+**Where it sits + next:** Module 12 skill `torch-compile-cuda-graphs`. Every number here assumed you *knew* where the time went — next is **profiling**, the tool that tells you.
 
 ---
 
