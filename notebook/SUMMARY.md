@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**43% coverage** · 6/20 modules complete · 26 builds shipped · 26/66 skills touched
+**45% coverage** · 7/20 modules complete · 27 builds shipped · 27/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 43%
+OVERALL  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 45%
 ```
 
 ## Modules
@@ -52,13 +52,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 43%
 - **skills:** ✓ GPU memory hierarchy & MFU · ✓ Triton kernels from zero · ✓ FlashAttention (tiled attention kernel)
 - **builds:** #22 GPU memory hierarchy & MFU · #23 Triton: a fused softmax kernel · #24 FlashAttention: tiled attention with online softmax
 
-### 🔄 Module 12 — Compile, profile & parallelism (67%)
-- **skills:** ✓ torch.compile & CUDA graphs · ✓ Profiling with Nsight / torch profiler · · Parallelism: data/tensor/pipeline/expert/sequence/context
-- **builds:** #25 torch.compile &amp; CUDA graphs · #26 Profiling: Amdahl&#39;s law &amp; finding the real bottleneck
+### ✅ Module 12 — Compile, profile & parallelism (100%)
+- **skills:** ✓ torch.compile & CUDA graphs · ✓ Profiling with Nsight / torch profiler · ✓ Parallelism: data/tensor/pipeline/expert/sequence/context
+- **builds:** #25 torch.compile &amp; CUDA graphs · #26 Profiling: Amdahl&#39;s law &amp; finding the real bottleneck · #27 Parallelism axes: data, tensor, pipeline
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 27 | Parallelism axes: data, tensor, pipeline | Parallelism: data/tensor/pipeline/expert/sequence/context | 2026-08-11 |
 | 26 | Profiling: Amdahl&#39;s law &amp; finding the real bottleneck | Profiling with Nsight / torch profiler | 2026-08-11 |
 | 25 | torch.compile &amp; CUDA graphs | torch.compile & CUDA graphs | 2026-08-11 |
 | 24 | FlashAttention: tiled attention with online softmax | FlashAttention (tiled attention kernel), Self-attention from scratch | 2026-08-10 |

@@ -1,6 +1,89 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 30 entries, newest first.
+> Auto-compiled from every lesson. 32 entries, newest first.
+
+---
+
+## Module 12 Complete — Compile, profile &amp; parallelism
+_2026-08-11_
+
+## 🏁 MODULE 12 COMPLETE — Compile, profile & parallelism
+
+Module 11 gave you the hand tools (write a fast kernel). Module 12 gives you the **engineering practice** around them: let the compiler do it, measure before you optimize, and scale past one GPU.
+
+### The through-line — automate → measure → scale
+1. **torch.compile & CUDA graphs** — *automate* the fusion you hand-wrote in Triton, and kill launch overhead.
+2. **Profiling & Amdahl** — *measure*, so you optimize the thing that actually matters.
+3. **Parallelism axes** — *scale* when one GPU isn't enough.
+
+The kitchen analogy completes here: the compiler is a **sous-chef** who reads the whole recipe list ahead; the profiler is the **stopwatch on the pass**; parallelism is **more kitchens** (identical / shared-dish / assembly-line).
+
+### Build-by-build recap
+- **`torch-compile/`** — graph capture enables automatic fusion: `trips = 2 × n_graphs`, **not** `2 × n_ops`. A graph break (print, `.item()`, data-dependent `if`) splits the graph and fusion can't cross it: 6 ops → 12 trips eager, 2 compiled, 4 with one break, **6 with two breaks (nothing gained)**. CUDA graphs replay a recorded launch sequence: 1000 × 5 µs = **5000 µs → 5 µs**.
+- **`profiling/`** — Amdahl: `speedup = 1/((1−f) + f/s)`. Infinite speedup on a 10% part caps at **1.11×**; a lazy 2× on an 80% part gives **1.67×**. Profiles also expose **idle time**: attention was the biggest kernel (42% → 1.27×) but 40% GPU idle → **1.67×** was the real win.
+- **`parallelism/`** — 70B = 140 GB won't fit in 80 GB. **DP replicates** (throughput, not capacity); **TP/PP shard** → 17.5 GB/GPU on 8 GPUs. Pipeline bubble `(P−1)/(M+P−1)`: 75% idle at 1 microbatch → **8.6%** at 32.
+
+### Key formulas — one place
+```
+compiled trips  = 2 * n_graphs           (n_graphs = breaks + 1)
+launch overhead = n_kernels * ~5us       -> CUDA graph: one replay
+Amdahl          = 1 / ((1-f) + f/s)      ceiling for size-f part = 1/(1-f)
+idle            = step_time - sum(kernel_times)
+mem/GPU         : DP = total ;  TP/PP = total / n
+bubble          = (P-1) / (M+P-1)
+```
+
+### The big gotchas
+- **Count graphs, not ops** — and breaks are silent (`TORCH_LOGS=graph_breaks`).
+- **Speedup puts time in the denominator** — if an improvement yields < 1, you've inverted it.
+- **The biggest kernel isn't always the biggest win** — idle time often is.
+- **Data parallel does not reduce per-GPU memory.** The most common misconception in the field.
+- Weights are only part of memory: gradients, optimizer states (~2× params), activations usually dominate.
+
+### How it assembles — the full performance loop
+**Profile** → read the shape of the timeline → pick the cure: one fat kernel → *fuse it* (Triton/compile); many small kernels + gaps → *CUDA graphs*; low arithmetic intensity → *tiling* (FlashAttention); doesn't fit or too slow → *shard it* (TP/PP) or *replicate it* (DP). Modules 11 + 12 together are one skill: **make a model actually run fast on real hardware.**
+
+### Coverage now
+**45% of the course · 7 of 20 modules complete (5, 7, 8, 9, 10, 11, 12) · 27 ships.** The entire build-and-optimize stack is done. Remaining frontier: distributed training runs (FSDP), fine-tuning & PEFT/LoRA, inference engines, RL & post-training, agents & retrieval, multimodal, safety, and the capstone.
+
+---
+
+## Parallelism axes — data, tensor, pipeline
+_2026-08-11_
+
+**Why it matters:** Frontier models don't fit on one GPU — not close. *How* you split across a cluster decides whether training is possible at all, and whether your expensive GPUs are busy or idle.
+
+**What you built + the core mechanism:**
+```python
+mem_per_gpu_data(total_gb, n)    = total_gb            # DP replicates
+mem_per_gpu_sharded(total_gb, n) = total_gb / n        # TP/PP shard
+bubble_fraction(P, M)            = (P - 1) / (M + P - 1)
+```
+
+**The concept chain — every brick, in order:**
+1. **The problem.** 70B params × 2 bytes = **140 GB**. An H100 holds 80 GB. It doesn't fit.
+2. **Data parallel (DP)** — many *identical kitchens*, each cooking different orders (batch slices), then averaging gradients. Every GPU keeps a **full copy** → buys **throughput, not capacity**. Adding GPUs does *not* make the model fit.
+3. **Tensor parallel (TP)** — several chefs share *one dish*: split each weight **matrix** across GPUs. 140/8 = **17.5 GB/GPU → fits.** But they communicate every layer, so they need fast links (NVLink, same node).
+4. **Pipeline parallel (PP)** — an *assembly line*: split the **layers** across GPUs. Also shards memory, and only communicates at stage boundaries, so it works **across nodes**.
+5. **The pipeline bubble.** With 4 stages and one batch in flight, GPU1 works while **3 of 4 idle** = **75% waste** — the line is filling and draining.
+6. **Microbatches fix it.** Split the batch so the line stays full: `(P−1)/(M+P−1)` → 4 stages gives 75% (M=1) → 27% (M=8) → **8.6%** (M=32).
+
+**Key formulas / rules:**
+```
+model bytes     = n_params * bytes_per_param        (70B bf16 = 140 GB)
+data parallel   : mem/GPU = total          (replicate)
+tensor/pipeline : mem/GPU = total / n      (shard)
+bubble fraction = (P - 1) / (M + P - 1)
+```
+
+**Gotchas / what to watch:**
+- **DP does not reduce per-GPU memory** — the most common misconception. It splits *data*, not the *model*.
+- **TP is chatty** (every layer) → keep it inside a node; **PP is cheap** → use it across nodes.
+- **More stages = a bigger bubble** — `P−1` is in the numerator, so deep pipelines need many microbatches.
+- **Weights aren't the whole story** — gradients, Adam optimizer states (~2× params) and activations usually dominate real memory. This model counted weights only.
+- Real clusters combine axes ("3D parallelism": TP within a node × PP across nodes × DP over replicas).
+
+**Where it sits + next:** Module 12 skill `parallelism-axes` — **completes Module 12** and the systems arc. Not yet covered: expert (MoE), sequence/context parallelism, and ZeRO/FSDP sharding of optimizer states.
 
 ---
 
