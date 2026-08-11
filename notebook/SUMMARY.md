@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**46% coverage** · 7/20 modules complete · 28 builds shipped · 28/66 skills touched
+**48% coverage** · 7/20 modules complete · 29 builds shipped · 29/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 46%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 48%
 ```
 
 ## Modules
@@ -56,13 +56,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░ 46%
 - **skills:** ✓ torch.compile & CUDA graphs · ✓ Profiling with Nsight / torch profiler · ✓ Parallelism: data/tensor/pipeline/expert/sequence/context
 - **builds:** #25 torch.compile &amp; CUDA graphs · #26 Profiling: Amdahl&#39;s law &amp; finding the real bottleneck · #27 Parallelism axes: data, tensor, pipeline
 
-### 🔄 Module 13 — Distributed training (25%)
-- **skills:** · FSDP multi-GPU training run · · Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · · Async & fault-tolerant checkpointing
-- **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather
+### 🔄 Module 13 — Distributed training (50%)
+- **skills:** ✓ FSDP multi-GPU training run · · Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · · Async & fault-tolerant checkpointing
+- **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather · #29 FSDP / ZeRO: shard the whole training state
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 29 | FSDP / ZeRO: shard the whole training state | FSDP multi-GPU training run | 2026-08-11 |
 | 28 | Collectives: all-reduce, reduce-scatter, all-gather | NCCL collectives & interconnect | 2026-08-11 |
 | 27 | Parallelism axes: data, tensor, pipeline | Parallelism: data/tensor/pipeline/expert/sequence/context | 2026-08-11 |
 | 26 | Profiling: Amdahl&#39;s law &amp; finding the real bottleneck | Profiling with Nsight / torch profiler | 2026-08-11 |
