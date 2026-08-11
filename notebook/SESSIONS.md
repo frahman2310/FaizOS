@@ -1,6 +1,13 @@
 # FaizOS — Session Log
 _Auto-written after every session by the Stop hook. Newest first._
 
+<!-- session 2026-08-11T09:22:47.735Z -->
+## 2026-08-11 — 1 ship
+**Shipped:** Profiling: Amdahl&#39;s law &amp; finding the real bottleneck
+**Learned:** torch.compile &amp; CUDA graphs · Profiling — Amdahl&#39;s law &amp; the real bottleneck
+**Coverage:** 43% · 6/20 modules complete · 26 total ships
+<!-- /session 2026-08-11T09:22:47.735Z -->
+
 <!-- session 2026-08-10T14:31:14.815Z -->
 ## 2026-08-10 — 9 ships
 **Shipped:** SwiGLU: a gated FFN upgrade · GQA: grouped-query attention (cheaper KV) · SSM / Mamba: a running-state token mixer · Scaling laws: predict loss + Chinchilla-optimal sizing · Held-out eval: perplexity from scratch · MLA: latent-compressed KV cache · GPU memory hierarchy & MFU · Triton: a fused softmax kernel · FlashAttention: tiled attention with online softmax

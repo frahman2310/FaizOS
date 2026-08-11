@@ -1038,6 +1038,44 @@ CUDA graph      = one replay, overhead paid once
 
 ---
 
+## Profiling — Amdahl&#39;s law &amp; the real bottleneck
+
+**Why it matters:** Every optimization in Modules 11–12 assumed you knew where the time went. Profiling is how you find out — and Amdahl's law is how you decide whether an optimization is worth your week.
+
+**What you built + the core mechanism:**
+```python
+new_total_time = (1 - fraction) + fraction / speedup
+return 1 / new_total_time          # shorter time -> bigger speedup, so time goes on the bottom
+```
+
+**The concept chain — every brick, in order:**
+1. **The trap.** A 100 ms step; you make a **10%** kernel *infinitely* fast. New time = **90 ms**, so speedup = `100/90` = **1.11×**. That's the ceiling for a perfect week's work.
+2. **Amdahl's law:** your speedup is capped by the part you **didn't** optimize.
+3. **The contrast.** An **80%** kernel made a lazy **2×** faster: 80 → 40, plus the untouched 20 = **60 ms** → `100/60` = **1.67×**. A modest win on the big thing beats a miracle on the small thing.
+4. **Profiles show gaps too.** If a 100 ms step contains only 60 ms of kernels, the GPU was **idle 40 ms** — the CPU couldn't keep it fed (launch overhead, or a graph break dropping into Python).
+5. **The timeline tells you which cure to reach for:**
+   - one kernel dominates → optimize/fuse *that* one
+   - many small kernels + big gaps → launch-bound → **CUDA graphs**
+   - kernels slow with low arithmetic intensity → memory-bound → **fusion / tiling**
+6. **The payoff that surprises people:** attention was the biggest *kernel* (42%; 2× on it → only 1.27×), but **40% was idle time** (killing it → **1.67×**). The bottleneck wasn't a kernel at all.
+
+**Key formulas / rules:**
+```
+Amdahl : speedup = 1 / ( (1 - fraction) + fraction / s )
+ceiling: making a part of size f infinitely fast caps at 1/(1-f)
+idle   = step_time - sum(kernel_times)
+```
+
+**Gotchas / what to watch:**
+- **Speedup puts time in the denominator** — `1 / new_time`. Shorter time must give a *bigger* number; if your formula returns < 1 after an improvement, you've inverted it.
+- **Rank by share of runtime**, not by how slow a kernel "feels."
+- **Idle time is invisible in a kernel list** — you only see it by comparing the kernel sum to the wall-clock step.
+- **The biggest kernel is not always the biggest win** (attention 1.27× vs idle 1.67×).
+
+**Where it sits + next:** Module 12 skill `profiling-nsight`. Last skill of the module (and of the systems arc): **parallelism axes** — what to do when one GPU isn't enough.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 
