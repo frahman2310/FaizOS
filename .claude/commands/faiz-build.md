@@ -39,13 +39,30 @@ A recap he can fully re-learn from cold — **complete, not condensed**. Never a
 
 The note must stand alone as a complete lesson — someone reading only the note should be able to rebuild the thing.
 
+## WALK THE CODE — required before he fills any blank
+
+He asked for this explicitly: *"explain the code better at the last ship step, delve into it better, be a little simpler and more precise."* Concepts are landing; the **code** is where he's under-served. So after the bricks and before the blank, walk the file.
+
+**How:**
+1. **Split the file into 3–6 small chunks** (a function or a few lines each) and take them **in order, top to bottom**. Never paste the whole file and describe it in a paragraph.
+2. **Each chunk gets:** one plain sentence of *what it does*, then *why it's there*. Simple words. Short sentences. No hedging, no "essentially/basically".
+3. **Be precise, not vague.** Say exactly what a line produces: "`matvec(W, v)` returns a list with one number per row of `W`" — not "it does the matrix stuff."
+4. **Define every unfamiliar Python token** in one line, as `token → meaning`: `zip(a,b) → walks two lists side by side`, `**  → to the power of`, `-(-a//b) → divide and round UP`, `key=  → what to rank by`. Assume he has NOT met it, unless he's used it in a past ship.
+5. **Name each variable in plain English** where it appears (`m` = the running max so far). This is his known friction point.
+6. **Point at the blank last:** what the line must produce, which variables to use, and the standing rule — *only the expression goes in; units and English stay in the comment*. For ratios, add the direction check (e.g. "shorter time must give a bigger number, so it goes on the bottom").
+7. **Skip nothing as "boilerplate"** — if a line is in the file, it earns one sentence. If it's genuinely irrelevant, don't put it in the file.
+8. **Keep it tight.** A sentence per line, not a paragraph. Precise beats thorough.
+
+Optionally ask ONE tiny comprehension question mid-walkthrough (e.g. "what does this line return — a number or a list?") to keep it active rather than a lecture.
+
 ## The build steps
 1. **Call `faizos_lesson_start` FIRST.** Apply its `insights_to_apply` and `recent_struggles` — these are what FaizOS learned about teaching *you* in past lessons — plus note `weak_skills` and `current_build`. This is the self-improving loop in action.
 2. Pick the build: if `$ARGUMENTS` is given, use it (**free-build — encouraged**). Else offer `recommended_next` from `faizos_state` **and** a suggested mission from `faizos_curriculum` (the map's next shippable project), and let him choose or free-build anything. Then call `faizos_start_build`. The curriculum guides; it never forces.
 3. Scaffold a real repo at `repo_path`: `git init`, a `README.md` (goal + acceptance criteria = a verifiable result), and a stub file with the function(s) to fill plus a runnable acceptance test. Light scaffold — he earns the build; never write the solution.
 4. Teach toward passing that test with the Brick Method above.
-5. Commit **and push** as progress is made: `git add -A && git commit -m … && git push`. Auto-push to the journey repo is ON (Faiz authorized constant push to his private repo) — everything we build reaches GitHub right away.
-6. When the test passes → send him to `/faiz-ship`.
+5. **WALK THE CODE (non-negotiable, before he fills the blank).** See the walkthrough format below. Never hand him a file and jump straight to "fill line 26" — the code is half the lesson.
+6. Commit **and push** as progress is made: `git add -A && git commit -m … && git push`. Auto-push to the journey repo is ON (Faiz authorized constant push to his private repo) — everything we build reaches GitHub right away.
+7. When the test passes → send him to `/faiz-ship`.
 7. **Close the loop (lesson end) — NON-NEGOTIABLE, every lesson:**
    - **POST the full Revision Note IN CHAT** (format above) so Faiz SEES it — never save it silently. This is a hard requirement; skipping the visible note is a failure of the lesson.
    - Save it: `faizos_save_revision({ topic, note_md })` → auto-updates `notebook/REVISIONS.md` (and the compiled `notebook/REVISION.md` study guide + `SUMMARY.md`, which regenerate deterministically on session stop).
