@@ -1,6 +1,53 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 33 entries, newest first.
+> Auto-compiled from every lesson. 34 entries, newest first.
+
+---
+
+## FSDP / ZeRO — shard the whole training state
+_2026-08-11_
+
+**Why it matters:** In the parallelism lesson we counted only weights. Real training memory is **8× that**, and it's why large models don't fit. FSDP is how every serious training run today makes them fit — built from the two collectives from the previous build.
+
+**What you built + the core mechanism:**
+```python
+for name, b in BYTES.items():
+    if name in SHARDED[stage]:  total += b / n_gpus   # split across GPUs
+    else:                       total += b            # every GPU keeps it whole
+```
+
+**The concept chain — every brick, in order:**
+1. **The hidden 16 bytes.** Per parameter, training with Adam in mixed precision stores: weight 2 + gradient 2 + fp32 master 4 + Adam `m` 4 + Adam `v` 4 = **16 bytes**. A 1B model = **16 GB/GPU** — 8× the 2 GB of weights.
+2. **The optimizer is the problem**, not the model — 12 of those 16 bytes are optimizer state.
+3. **ZeRO shards in stages:** ZeRO-1 = optimizer states; ZeRO-2 = + gradients; **ZeRO-3 = FSDP** = + the weights themselves.
+4. **The numbers (1B params, 8 GPUs):** 16 → 5.50 → 3.75 → **2.00 GB/GPU**. ZeRO-1 alone does most of the work.
+5. **The price is communication.** Each GPU stores only 1/N of a layer, so before computing it must **all-gather** the full weights, compute, then free them; on the way back it **reduce-scatters** the gradients.
+6. **The trade:** ~**8× less memory for ~1.5× more communication** (4 → 6 GB/step). Worth it when memory is the blocker — which it usually is.
+
+**Key formulas / rules:**
+```
+training bytes/param = 2 + 2 + 4 + 4 + 4 = 16      (bf16 weights & grads, Adam, fp32 master)
+per-GPU bytes        = sum( b/n_gpus if sharded else b )
+ZeRO-3 memory        = 16 * n_params / n_gpus
+FSDP comms           ~ 1.5x DDP  (all-gather fwd+bwd + reduce-scatter)
+```
+
+**Python you met here:**
+- `{"a": 1}` → **dictionary** (name → value); `{"a", "b"}` → **set** (a bag you ask "is it in here?")
+- `set()` → an *empty* set — `{}` would mean an empty dictionary
+- `.items()` → walk a dictionary as name-and-value pairs
+- `in` → "is it present in this collection?" → True/False
+- `+=` → add to a running total · `1e9` → 1 followed by nine zeros
+- `:>12.2f` in an f-string → formatting only (width 12, 2 decimals), no logic
+
+**Gotchas / what to watch:**
+- **Weights are a small fraction** of training memory — always count optimizer state.
+- **Sharded ⇒ divide by `n_gpus`; replicated ⇒ full cost.** That one line *is* ZeRO.
+- **FSDP still needs the full layer to compute** — it gathers, computes, then frees. Sharding storage ≠ sharding compute.
+- **Memory savings are paid for in bandwidth** — on slow interconnect FSDP can be *slower* than fitting a smaller model.
+- **Activations aren't in this model** and are often the biggest term at long sequence length (fixed with activation checkpointing).
+
+**Where it sits + next:** Module 13 skill `fsdp-run`. Two skills left in Module 13: **pipeline schedules** (GPipe vs 1F1B) and **fault-tolerant checkpointing**.
 
 ---
 
