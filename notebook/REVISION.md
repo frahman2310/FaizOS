@@ -1293,6 +1293,91 @@ activation GB = sets_held * gb_per_set
 
 ---
 
+## Fault-tolerant checkpointing — the optimal interval
+
+**Why it matters:** At scale, hardware failure isn't an edge case — it's the *normal operating condition*. A 40-day run on 1000 GPUs will crash ~96 times. Checkpointing is the only reason such runs ever finish.
+
+**What you built + the core mechanism:**
+```python
+cluster_mtbf = gpu_mtbf / n_gpus
+overhead     = write_min/interval + (interval/2)/mtbf     # writing + rework
+optimal      = sqrt(2 * write_min * mtbf_min)             # where the two balance
+```
+
+**The concept chain — every brick, in order:**
+1. **More GPUs, more failures.** One GPU fails every 10,000 h; **1000** GPUs → a crash every **10 h**. And since training is synchronous, **one dead GPU kills the whole job**.
+2. **Checkpointing** saves the full training state; on a crash you reload and resume. Everything since the last save is **rework**.
+3. **Expected rework = T/2.** A crash lands at a random point in the interval, so on average you lose **half** of it (60-min interval → 30 min lost).
+4. **Two opposing costs.** Small T → tiny rework but constant writing. Large T → cheap writing but expensive crashes.
+5. **The overhead curve:** `write/T + (T/2)/mtbf`. U-shaped: 100.4% at 5 min, **12.9%** at 77 min, 50.8% at 600 min.
+6. **The optimum is where the costs are equal** — at 77 min, writing 6.5% ≈ rework 6.4%. That's exactly what `sqrt(2·write·mtbf)` finds.
+
+**Key formulas / rules:**
+```
+cluster MTBF  = gpu_mtbf / n_gpus
+rework share  = (T / 2) / mtbf          # half an interval, per crash-interval
+writing share = write_cost / T
+optimal T     = sqrt(2 * write_cost * mtbf)     (Young/Daly)
+```
+
+**Gotchas / what to watch:**
+- **Failure rate scales with GPU count** — a "reliable" GPU is irrelevant at 1000×.
+- **You lose half an interval, not the whole one** — crashes are uniformly distributed.
+- **Keep units consistent.** The code converts everything to minutes; mixing hours and minutes gives a silently wrong answer.
+- **Even optimal checkpointing costs ~13%** — the tax on scale. (Async checkpointing, overlapping writes with compute, is how real systems shrink it.)
+
+**Python you met here:**
+- `10_000` → just `10000`; underscores are allowed in long numbers for readability
+- `n_gpus=1000` → passing an argument **by name** so it's unambiguous
+- `sqrt(x)` → square root, from `math`
+- `(a / 2) / b` == `a / (2 * b)` → dividing twice is the same as dividing by the product
+
+**Where it sits + next:** Module 13 skill `fault-tolerant-checkpointing` — **completes Module 13 (Distributed training)**.
+
+---
+
+## 🏁 Module 13 Complete — Distributed training
+
+Module 12 gave you the *theory* of splitting work across GPUs. Module 13 is what actually happens on a real cluster: how GPUs talk, how the training state is sharded, how the pipeline is scheduled, and how the run survives constant hardware failure.
+
+### The through-line — talk → shard → schedule → survive
+1. **Collectives** — the primitives GPUs use to combine work, and the identity everything else is built on.
+2. **FSDP / ZeRO** — shard the *whole training state*, not just the weights.
+3. **Pipeline schedules** — get a full pipeline without paying for it in memory.
+4. **Fault-tolerant checkpointing** — finish a 40-day run on hardware that crashes every 10 hours.
+
+### Build-by-build recap
+- **`collectives/`** — **all-reduce** (everyone gets the full result), **reduce-scatter** (each keeps a slice), **all-gather** (slices become the whole). The identity **all-reduce = reduce-scatter + all-gather**, verified exactly. Ring cost `2·data·(n−1)/n`: a 1 GB all-reduce = 1.5 GB moved → **15 ms on NVLink, 150 ms on Ethernet**.
+- **`fsdp-zero/`** — training costs **16 bytes per parameter** (weight 2 + grad 2 + fp32 master 4 + Adam m 4 + Adam v 4), not 2. ZeRO-1/2/3 shard progressively: 1B params on 8 GPUs → 16 / 5.5 / 3.75 / **2.0 GB per GPU**. Price: all-gather weights + reduce-scatter grads ≈ **1.5× comms for 8× memory**.
+- **`pipeline-schedules/`** — GPipe holds **M** sets of activations, 1F1B holds **P** (one per stage, capped by depth). Same bubble; at 128 microbatches that's **192 GB vs a flat 6 GB**.
+- **`checkpointing/`** — cluster MTBF = `gpu_mtbf / n_gpus` (10,000 h / 1000 = **10 h**). Overhead `write/T + (T/2)/mtbf`, minimised at `sqrt(2·write·mtbf)` = **77 min**, where writing 6.5% ≈ rework 6.4%, total **12.9%**.
+
+### Key formulas — one place
+```
+all-reduce      = reduce-scatter + all-gather
+ring bytes/GPU  = 2 * data * (n-1)/n
+training bytes  = 16 per parameter (Adam, mixed precision)
+ZeRO-3 memory   = 16 * n_params / n_gpus
+GPipe peak      = M sets      |   1F1B peak = P sets
+cluster MTBF    = gpu_mtbf / n_gpus
+checkpoint opt  = sqrt(2 * write_cost * mtbf)
+```
+
+### The big gotchas
+- **"all" in a collective name means everyone ends with the full result** — reduce-scatter has no "all" for a reason.
+- **Weights are a small fraction of training memory** — the optimizer is 12 of the 16 bytes.
+- **Backward frees activations, it doesn't store more** — don't double the count.
+- **Sharding storage ≠ sharding compute** — FSDP still gathers the full layer to run it.
+- **Even perfect checkpointing costs ~13%** of a large run.
+
+### How it assembles
+A real training job stacks all of it: **FSDP** shards the state across GPUs in a node, **pipeline parallel** (on a **1F1B** schedule) splits layers across nodes, every step moves gradients with **reduce-scatter** and weights with **all-gather** over the interconnect, and a **checkpoint** every ~77 minutes means a crash costs an hour instead of a month. Modules 11–13 together are the complete answer to *"how do you actually train a frontier model?"*
+
+### Coverage now
+**50% of the course · 8 of 20 modules complete (5, 7, 8, 9, 10, 11, 12, 13) · 31 ships.** Halfway. The entire *build-and-train* stack is done. Remaining: fine-tuning & inference (M14), RL & post-training, agents & retrieval, multimodal, safety, and the capstone.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 

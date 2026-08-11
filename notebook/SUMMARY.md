@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**49% coverage** · 7/20 modules complete · 30 builds shipped · 30/66 skills touched
+**50% coverage** · 8/20 modules complete · 31 builds shipped · 31/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 49%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 50%
 ```
 
 ## Modules
@@ -56,13 +56,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 49%
 - **skills:** ✓ torch.compile & CUDA graphs · ✓ Profiling with Nsight / torch profiler · ✓ Parallelism: data/tensor/pipeline/expert/sequence/context
 - **builds:** #25 torch.compile &amp; CUDA graphs · #26 Profiling: Amdahl&#39;s law &amp; finding the real bottleneck · #27 Parallelism axes: data, tensor, pipeline
 
-### 🔄 Module 13 — Distributed training (75%)
-- **skills:** ✓ FSDP multi-GPU training run · ✓ Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · · Async & fault-tolerant checkpointing
-- **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather · #29 FSDP / ZeRO: shard the whole training state · #30 Pipeline schedules: GPipe vs 1F1B
+### ✅ Module 13 — Distributed training (100%)
+- **skills:** ✓ FSDP multi-GPU training run · ✓ Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · ✓ Async & fault-tolerant checkpointing
+- **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather · #29 FSDP / ZeRO: shard the whole training state · #30 Pipeline schedules: GPipe vs 1F1B · #31 Fault-tolerant checkpointing: the optimal interval
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 31 | Fault-tolerant checkpointing: the optimal interval | Async & fault-tolerant checkpointing | 2026-08-11 |
 | 30 | Pipeline schedules: GPipe vs 1F1B | Pipeline schedules (1F1B, zero-bubble, DualPipe) | 2026-08-11 |
 | 29 | FSDP / ZeRO: shard the whole training state | FSDP multi-GPU training run | 2026-08-11 |
 | 28 | Collectives: all-reduce, reduce-scatter, all-gather | NCCL collectives & interconnect | 2026-08-11 |
