@@ -1251,6 +1251,48 @@ FSDP comms           ~ 1.5x DDP  (all-gather fwd+bwd + reduce-scatter)
 
 ---
 
+## Pipeline schedules — GPipe vs 1F1B
+
+**Why it matters:** Module 12 said microbatches shrink the bubble. It left out the catch: microbatches cost **memory**. The schedule you pick decides whether you can actually afford a full pipeline.
+
+**What you built + the core mechanism:**
+```python
+peak_activations_gpipe(stages, m) = m         # one set per microbatch
+peak_activations_1f1b(stages, m)  = stages    # one set per stage — flat in m
+bubble_fraction(stages, m) = (stages-1)/(m+stages-1)   # same for both
+```
+
+**The concept chain — every brick, in order:**
+1. **Forwards cost memory.** Every forward must **save its activations** so the backward can compute gradients. They're freed only when that microbatch's backward runs.
+2. **GPipe** runs *all* forwards, then all backwards → at peak it holds **M** sets (8 microbatches → 8; 32 → 32).
+3. **The conflict.** The bubble wants M **big**; memory wants M **small**. GPipe forces you to choose.
+4. **1F1B** — once the pipeline is full, **alternate** one forward with one backward. Each backward **frees** a set exactly as the next forward takes one, so holdings stop growing.
+5. **Why the cap is `stages`.** A microbatch is "**in flight**" from its forward until its backward. The pipeline has **one slot per stage**, so at most `stages` microbatches are in flight → at most `stages` sets of activations. **Depth caps memory, not microbatch count.**
+6. **The payoff.** 4 stages, 128 microbatches: bubble **2.3%** for both — but GPipe needs **192 GB** of activations, 1F1B needs a flat **6 GB**.
+
+**Key formulas / rules:**
+```
+bubble        = (P - 1) / (M + P - 1)      # identical for GPipe and 1F1B
+GPipe peak    = M sets                     # grows with microbatches
+1F1B peak     = P sets                     # flat — set by pipeline depth
+activation GB = sets_held * gb_per_set
+```
+
+**Gotchas / what to watch:**
+- **Backward does not add storage — it frees it.** Don't double the count for forward+backward. Peak = sets *saved and not yet consumed*. (This caught you twice: 16 for 8, and 8 for 4.)
+- **1F1B's peak is independent of M** — that's its entire reason to exist.
+- **Both schedules have the same bubble** — 1F1B buys memory, not speed.
+- **`stages` is unused in the GPipe function** on purpose, so both take the same arguments.
+
+**Python you met here:**
+- `(4, 8, 32, 128)` → a **tuple**: a fixed list you don't intend to change
+- `for m in (...)` → run the loop once per value, with `m` taking each in turn
+- `:>7.1%` → format as a percentage with 1 decimal; `:>10.1f` → right-align, 1 decimal. Formatting only.
+
+**Where it sits + next:** Module 13 skill `pipeline-schedules`. Not covered: **interleaved/virtual stages** (each GPU owns several non-contiguous stages, shrinking the bubble further) and zero-bubble schedules. One skill left in Module 13: **fault-tolerant checkpointing**.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 

@@ -2,10 +2,10 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-11T11:06:56.391Z -->
-## 2026-08-11 — 1 ship
-**Shipped:** FSDP / ZeRO: shard the whole training state
-**Learned:** Collectives — all-reduce, reduce-scatter, all-gather · FSDP / ZeRO — shard the whole training state
-**Coverage:** 48% · 7/20 modules complete · 29 total ships
+## 2026-08-11 — 2 ships
+**Shipped:** FSDP / ZeRO: shard the whole training state · Pipeline schedules: GPipe vs 1F1B
+**Learned:** Collectives — all-reduce, reduce-scatter, all-gather · FSDP / ZeRO — shard the whole training state · Pipeline schedules — GPipe vs 1F1B
+**Coverage:** 49% · 7/20 modules complete · 30 total ships
 <!-- /session 2026-08-11T11:06:56.391Z -->
 
 <!-- session 2026-08-11T09:22:47.735Z -->
