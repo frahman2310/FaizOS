@@ -10,6 +10,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 10 — Scaling, MLA & evaluation](#module-10)
 - [Module 11 — GPU kernels (Triton, FlashAttn)](#module-11)
 - [Module 12 — Compile, profile & parallelism](#module-12)
+- [Module 13 — Distributed training](#module-13)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -1152,6 +1153,55 @@ bubble          = (P-1) / (M+P-1)
 
 ### Coverage now
 **45% of the course · 7 of 20 modules complete (5, 7, 8, 9, 10, 11, 12) · 27 ships.** The entire build-and-optimize stack is done. Remaining frontier: distributed training runs (FSDP), fine-tuning & PEFT/LoRA, inference engines, RL & post-training, agents & retrieval, multimodal, safety, and the capstone.
+
+---
+
+<a id="module-13"></a>
+# Module 13 — Distributed training
+
+## Collectives — all-reduce, reduce-scatter, all-gather
+
+**Why it matters:** Multi-GPU training is mostly *communication*. These three operations are how GPUs combine work, and the identity between them is what makes FSDP possible. On slow interconnect, communication — not math — becomes the bottleneck.
+
+**What you built + the core mechanism:**
+```python
+all_reduce(gpus)            # everyone ends with the full sum
+reduce_scatter(gpus)        # everyone contributes, each keeps ONE slice
+all_gather(pieces)          # each holds a slice -> everyone holds all slices
+all_reduce_via_pieces(gpus) = all_gather(reduce_scatter(gpus))   # the identity
+```
+
+**The concept chain — every brick, in order:**
+1. **Why talk at all.** Data-parallel GPUs hold identical models but train on different batch slices, so each measures a *different* gradient. They must average and all apply the **same** correction, or the copies drift apart. (+2,+4,+6,+8 → average **5**, and **all 4** GPUs need it.)
+2. **all-reduce** — everyone contributes, everyone leaves with the whole result. The workhorse of data-parallel training.
+3. **reduce-scatter** — everyone contributes, but each GPU keeps only **its own piece** (1 of 4 numbers).
+4. **all-gather** — each GPU holds one piece; afterwards **everyone holds all pieces**.
+5. **The identity:** `all-reduce = reduce-scatter + all-gather`. Verified exactly — both routes gave `[10,10,10,10]` on every GPU. FSDP is built on this.
+6. **The cost.** The ring algorithm moves `2 × data × (n−1)/n` per GPU — about 2×, roughly **independent of GPU count**. A 1 GB all-reduce moves 1.5 GB: **15 ms** on NVLink (100 GB/s), **150 ms** on Ethernet (10 GB/s).
+
+**Key formulas / rules:**
+```
+all-reduce      = reduce-scatter + all-gather
+ring bytes/GPU  = 2 * data * (n_gpus - 1) / n_gpus     (~2x data)
+time            = bytes_moved / bandwidth
+```
+
+**Python you met here:**
+- `len(x)` → how many items · `//` → divide and drop the remainder
+- `sum(g[i] for g in gpus)` → walk every GPU, take position `i`, add them
+- `_` in a loop → "I don't need this value, just repeat"
+- `list(total)` → make a **fresh copy** (so GPUs don't share one object)
+- `[x for piece in pieces for x in piece]` → **flatten**: each piece, then each item in it
+- `rank` → a GPU's ID number (standard distributed-training word)
+- `all_gather(pieces)` → names take **underscores, not spaces**; **round brackets call** the function
+
+**Gotchas / what to watch:**
+- **All GPUs need the result**, not just one — that's why it's *all*-reduce, not plain reduce.
+- **Reduce-scatter alone leaves each GPU with only a slice** — useless by itself; it's half of the pair.
+- **The ring factor is `(n−1)/n`, slightly under 2×** — 1.5 GB for 4 GPUs, approaching 2 GB as GPUs grow.
+- **Cost barely depends on GPU count, but hugely on the wire** — 10× between NVLink and Ethernet.
+
+**Where it sits + next:** Module 13 skill `collectives-interconnect`. Next: **FSDP** — use exactly these two halves to shard a model across GPUs and still train it.
 
 ---
 
