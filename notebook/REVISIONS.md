@@ -1,6 +1,51 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 39 entries, newest first.
+> Auto-compiled from every lesson. 40 entries, newest first.
+
+---
+
+## Inference internals — paged KV, continuous batching, speculative decoding
+_2026-08-12_
+
+**Why it matters:** Training a model is one problem; **serving** it to thousands of users is another. These three tricks are the difference between an expensive demo and a viable product — together, roughly 10× the throughput on the same hardware. This is what vLLM is.
+
+**What you built + the core mechanism:**
+```python
+paged_kv_waste(n)      = ceil(n/PAGE)*PAGE - n    # pages on demand, not max reservation
+static_batch_idle(ls)  = sum(max(ls) - n for n in ls)   # continuous batching makes this 0
+tokens_per_big_pass(a) = a + 1                    # accepted drafts + the verifier's own token
+```
+
+**The concept chain — every brick, in order:**
+1. **The KV reservation problem.** You must allocate cache *before* knowing the answer's length, so naive serving reserves the max: **2048 reserved, 200 used → 1848 wasted (~90%)**.
+2. **PagedAttention.** Hand out small **fixed pages** (16 tokens) on demand, like an OS gives memory pages. 200 tokens → **13 pages**, only **8** wasted. Waste 1848 → 8.
+3. **The batching problem.** Static batching runs until the **slowest** sequence ends. Lengths `[100,100,100,1000]` → three slots idle **900 steps each** = **2700** wasted slot-steps.
+4. **Continuous batching.** Evict a finished sequence and admit a waiting one **immediately** → idle = **0**.
+5. **Why speculative decoding is possible.** Generating one token reads **every weight** to produce **one number** — deeply memory-bound (Module 11). Since the GPU is starved anyway, verifying *many* tokens in one pass costs barely more than one.
+6. **How it works.** A small **draft** model proposes k tokens; the big model **verifies all of them in a single pass** and keeps the longest correct prefix — **plus one free token** the verifier produced itself. 3 accepted → **4 tokens per pass**.
+7. **It's safe.** Output is **identical** to plain decoding, and with 0 accepted you still get 1 — never slower.
+
+**Key formulas / rules:**
+```
+naive KV waste  = max_len - actual_len
+paged KV waste  = ceil(n/page)*page - n        (only the last partial page)
+static idle     = sum(longest - n for each n)
+continuous idle = 0
+tokens per pass = accepted + 1
+```
+
+**Gotchas / what to watch:**
+- **It's `accepted + 1`, not `accepted`.** The verification pass computes the big model's own prediction at the position after the last accepted token — correct by construction, so it's free.
+- **A partial page costs a whole page** — round up, always.
+- **Speculative decoding doesn't change the output**, only the speed. It is not an approximation.
+- **The real speedup depends on the acceptance rate** — a bad draft model gets rejected often and gains little.
+
+**Python you met here:**
+- `-(-a // b)` → divide and **round up** (`//` rounds down; negating twice flips it)
+- `page=PAGE` → a **default argument**: omit it and it fills itself in
+- `sum(expr for x in list)` → build values and add them in one line
+
+**Where it sits + next:** Module 14 skill `inference-internals`. Not covered: prefix caching, chunked prefill, and how draft quality sets the acceptance rate. **One skill left in Module 14: serving stacks.**
 
 ---
 
