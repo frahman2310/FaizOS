@@ -1,16 +1,16 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**50% coverage** · 8/20 modules complete · 31 builds shipped · 31/66 skills touched
+**51% coverage** · 8/20 modules complete · 32 builds shipped · 32/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 50%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 51%
 ```
 
 ## Modules
 ### 🔄 Module 1 — Math: numbers, softmax, matmul (67%)
 - **skills:** · Dev setup: uv, ruff, one Python, CI · ✓ Numerically stable softmax & log-sum-exp · ✓ Matmul, shapes & FLOP cost
-- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch · #23 Triton: a fused softmax kernel
+- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch · #23 Triton: a fused softmax kernel · #32 LoRA: fine-tune 0.1% of the parameters
 
 ### 🔄 Module 2 — Math: linear algebra & calculus (25%)
 - **skills:** · SVD & low-rank (PCA, LoRA) · ✓ Backprop as vector-Jacobian products · · Probability, covariance & expectation · · High-dimensional geometry
@@ -60,9 +60,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 50%
 - **skills:** ✓ FSDP multi-GPU training run · ✓ Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · ✓ Async & fault-tolerant checkpointing
 - **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather · #29 FSDP / ZeRO: shard the whole training state · #30 Pipeline schedules: GPipe vs 1F1B · #31 Fault-tolerant checkpointing: the optimal interval
 
+### 🔄 Module 14 — Fine-tuning & inference (25%)
+- **skills:** ✓ PEFT: LoRA / QLoRA / DoRA · · Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) · · Inference internals: paged KV, continuous batching, speculative decoding · · Serving: vLLM / SGLang / TensorRT-LLM / Dynamo
+- **builds:** #32 LoRA: fine-tune 0.1% of the parameters
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 32 | LoRA: fine-tune 0.1% of the parameters | PEFT: LoRA / QLoRA / DoRA, Matmul, shapes & FLOP cost | 2026-08-12 |
 | 31 | Fault-tolerant checkpointing: the optimal interval | Async & fault-tolerant checkpointing | 2026-08-11 |
 | 30 | Pipeline schedules: GPipe vs 1F1B | Pipeline schedules (1F1B, zero-bubble, DualPipe) | 2026-08-11 |
 | 29 | FSDP / ZeRO: shard the whole training state | FSDP multi-GPU training run | 2026-08-11 |
