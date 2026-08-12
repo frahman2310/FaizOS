@@ -1645,6 +1645,49 @@ clipped   = min(max(ratio, 1-eps), 1+eps)      eps ~ 0.2
 
 ---
 
+## GRPO &amp; RLVR — group-relative RL with verifiable rewards
+
+**Why it matters:** This is the algorithm behind DeepSeek-R1 and modern reasoning models. It's the REINFORCE baseline taken one step further — and it deletes an entire neural network in the process.
+
+**What you built + the core mechanism:**
+```python
+verify(answer, correct)   = 1.0 if answer == correct else 0.0   # RLVR: no human
+group_advantages(rewards) = [r - mean(rewards) for r in rewards] # the group IS the baseline
+has_signal(rewards)       = max(rewards) != min(rewards)         # uniform group = wasted
+```
+
+**The concept chain — every brick, in order:**
+1. **RLVR — let a machine score it.** Human ratings are slow, costly, noisy, and charmable. For **maths** and **code**, a checker gives a perfect **1/0** reward instantly and infinitely. (Poetry can't be verified — which is exactly why reasoning models are trained on maths and code.)
+2. **PPO's hidden cost.** It trains a **critic** network to predict the baseline — another model the size of the policy.
+3. **GRPO's trick.** Sample a **group** of answers to the **same** prompt; use the group's own mean as the baseline. **Critic: 7B → 0B.**
+4. **The advantage is unchanged** from REINFORCE — only the source of the baseline moved. Group `1, 0, 0, 1` → mean **0.5** → correct **+0.5**, wrong **−0.5**.
+5. **The failure mode.** If every answer scores the same, the mean *equals* every reward, so **every advantage is 0** and the group teaches nothing. True for all-correct (too easy) *and* all-wrong (too hard).
+6. **So difficulty must be tuned.** A group is only useful when its answers **disagree** — which is what DAPO fixes by filtering uniform groups and resampling.
+
+**Key formulas / rules:**
+```
+reward     = 1 if verifier passes else 0
+baseline   = mean of the GROUP (no critic network)
+advantage  = reward - group mean
+useful group  <=>  max(rewards) != min(rewards)
+```
+
+**Gotchas / what to watch:**
+- **Pair each reward with its own advantage** — correct → positive, wrong → negative. (The table format is worth reusing whenever values must match sources.)
+- **A uniform group is wasted compute**, not a mild inefficiency — the gradient is exactly zero.
+- **Too easy and too hard fail identically** — both give a flat group.
+- **The verifier must be hard to game** — a weak checker gets exploited (reward hacking).
+
+**Python you met here:**
+- `==` compares, `=` assigns, `!=` means "not equal"
+- `1.0 if test else 0.0` → a one-line if-expression
+- `max(list)` / `min(list)` → biggest and smallest
+- `[0.0] * 4` → repeats a list · `{a!r}` → show a value with its quotes
+
+**Where it sits + next:** Module 15 skill `rlvr-grpo`. Not covered: Dr.GRPO's length-bias fix, the KL penalty against a reference model, DAPO's dynamic sampling. **One skill left in Module 15: reward modeling & verifiers** — what to do when the task *can't* be auto-checked.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 
