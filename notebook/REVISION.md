@@ -12,6 +12,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 12 — Compile, profile & parallelism](#module-12)
 - [Module 13 — Distributed training](#module-13)
 - [Module 14 — Fine-tuning & inference](#module-14)
+- [Module 15 — RL foundations](#module-15)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -1592,6 +1593,55 @@ Take a base model → **quantize** it to 4 bits so it fits on one GPU → attach
 
 ### Coverage now
 **55% of the course · 9 of 20 modules complete (5, 7, 8, 9, 10, 11, 12, 13, 14) · 35 ships.** Remaining: RL & post-training, agents & retrieval, multimodal, safety & interpretability, frontier research, and the capstone.
+
+---
+
+<a id="module-15"></a>
+# Module 15 — RL foundations
+
+## RL foundations — REINFORCE, baselines and PPO clipping
+
+**Why it matters:** Everything up to now trained against a **target**. Every modern chat model is finished with **RL**, where there is no target — only a score. This is the mechanism behind RLHF, GRPO, and reasoning models.
+
+**What you built + the core mechanism:**
+```python
+b   = sum(rewards) / len(rewards)          # baseline: the average
+adv = [r - b for r in rewards]             # advantage: better or worse than typical
+ratio = new_prob / old_prob                # how far the policy moved
+clipped = min(max(ratio, 0.8), 1.2)        # PPO: never move too far at once
+```
+
+**The concept chain — every brick, in order:**
+1. **Score, not target.** A 7/10 on your poem doesn't tell you what the 10/10 poem was. You can't compute a distance to the right answer, because none was given.
+2. **So the only available rule** is: do more of what scored well, less of what scored badly.
+3. **The policy** is the model's probability distribution over actions (for an LLM: probability of each next token). "Do more of it" = raise those probabilities.
+4. **Raw rewards don't work.** If all rewards are positive (5, 7, 9), every probability rises — you learn nothing about which is *better*.
+5. **The baseline fixes it.** `advantage = reward − mean`. Rewards `5, 7, 9` → mean **7** → advantages **−2, 0, +2**. The worst goes **down**, the best goes **up**.
+   - **sign** = which way to push · **size** = how hard
+   - Advantages always **sum to zero** — the policy shifts *between* actions instead of drifting.
+6. **PPO's safety catch.** The advantage came from a small, noisy sample. Too big a step wrecks the policy permanently. So measure `new_prob / old_prob` and **clip to ±20%**: `0.45/0.30 = 1.5 → 1.2`, `0.15/0.30 = 0.5 → 0.8`, while `1.1` passes untouched.
+
+**Key formulas / rules:**
+```
+baseline  = mean(rewards)
+advantage = reward - baseline          (sums to zero)
+update    = prob + lr * advantage      (positive advantage pushes UP)
+ratio     = new_prob / old_prob
+clipped   = min(max(ratio, 1-eps), 1+eps)      eps ~ 0.2
+```
+
+**Gotchas / what to watch:**
+- **Pair each reward with its OWN advantage.** Lowest reward → most **negative**. Listing `2, 0, −2` for rewards `5, 7, 9` would push the model toward the *worst* answer.
+- **Subtracting the mean is what creates meaning** — 5 isn't "bad" in the abstract, it's bad *next to 7 and 9*.
+- **Advantage is added, not subtracted**, in the update — positive advantage means "more of this."
+- **The clip works both ways** — it stops collapses as well as spikes.
+
+**Python you met here:**
+- `[r - b for r in rewards]` → `r` takes each reward in turn; the expression runs once per item and the results become a new list
+- `min(max(x, lo), hi)` → the standard "keep `x` between `lo` and `hi`" idiom
+- `clip=CLIP` → a default argument, filled in unless you override it
+
+**Where it sits + next:** Module 15 skill `rl-foundations`. Not covered: the MDP formalism, multi-step credit assignment, and a learned critic as the baseline. Next: **RLVR & GRPO** — where the baseline becomes a *group* of sampled answers and the reward comes from a **verifier** instead of a human.
 
 ---
 

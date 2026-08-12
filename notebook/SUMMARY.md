@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**55% coverage** · 9/20 modules complete · 35 builds shipped · 35/66 skills touched
+**57% coverage** · 9/20 modules complete · 36 builds shipped · 36/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 55%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 57%
 ```
 
 ## Modules
@@ -64,9 +64,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 55%
 - **skills:** ✓ PEFT: LoRA / QLoRA / DoRA · ✓ Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) · ✓ Inference internals: paged KV, continuous batching, speculative decoding · ✓ Serving: vLLM / SGLang / TensorRT-LLM / Dynamo
 - **builds:** #32 LoRA: fine-tune 0.1% of the parameters · #33 Quantization: run a model in 4 bits · #34 Inference internals: paged KV, continuous batching, speculative decoding · #35 Serving stacks: prefill vs decode, throughput vs latency
 
+### 🔄 Module 15 — RL foundations (33%)
+- **skills:** ✓ RL foundations: MDP, policy gradient, PPO · · RLVR & GRPO (Dr.GRPO/DAPO/GSPO) · · Reward models & verifiers (PRM vs ORM)
+- **builds:** #36 RL foundations: REINFORCE, baselines and PPO clipping
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 36 | RL foundations: REINFORCE, baselines and PPO clipping | RL foundations: MDP, policy gradient, PPO | 2026-08-13 |
 | 35 | Serving stacks: prefill vs decode, throughput vs latency | Serving: vLLM / SGLang / TensorRT-LLM / Dynamo | 2026-08-12 |
 | 34 | Inference internals: paged KV, continuous batching, speculative decoding | Inference internals: paged KV, continuous batching, speculative decoding | 2026-08-12 |
 | 33 | Quantization: run a model in 4 bits | Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) | 2026-08-12 |
