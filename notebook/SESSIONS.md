@@ -1,6 +1,13 @@
 # FaizOS — Session Log
 _Auto-written after every session by the Stop hook. Newest first._
 
+<!-- session 2026-08-12T11:56:44.943Z -->
+## 2026-08-12 — 1 ship
+**Shipped:** Quantization: run a model in 4 bits
+**Learned:** LoRA — fine-tune 0.8% of the parameters · Quantization — run a model in 4 bits
+**Coverage:** 53% · 8/20 modules complete · 33 total ships
+<!-- /session 2026-08-12T11:56:44.943Z -->
+
 <!-- session 2026-08-11T11:06:56.391Z -->
 ## 2026-08-11 — 3 ships
 **Shipped:** FSDP / ZeRO: shard the whole training state · Pipeline schedules: GPipe vs 1F1B · Fault-tolerant checkpointing: the optimal interval

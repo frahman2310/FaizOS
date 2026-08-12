@@ -1426,6 +1426,51 @@ saving disappears at r = d/2
 
 ---
 
+## Quantization — run a model in 4 bits
+
+**Why it matters:** LoRA shrank the *trainable* state; quantization shrinks the **weights themselves**. It's why a 7B model runs on a laptop, and combined with LoRA (that's **QLoRA**) it's why you can fine-tune one there too.
+
+**What you built + the core mechanism:**
+```python
+step = (hi - lo) / (n_levels - 1)      # gap between neighbouring levels
+q    = round((x - lo) / step)          # ENCODE: which level is x nearest
+back = lo + q * step                   # DECODE: start at lo, climb q steps
+```
+
+**The concept chain — every brick, in order:**
+1. **Bits → levels.** Each bit **doubles** the count: 1→2, 2→4, 3→8, **4→16**, 8→256. fp16 gives ~65,000 values per weight.
+2. **That precision is unnecessary.** Round weights onto a coarse grid and the model still works — 65,000 paint shades vs 16; nobody sees the difference on most walls.
+3. **Per-group mapping.** Take ~64 weights, find their `min` and `max`, and slice that range into `2**bits` evenly spaced levels. Small groups keep the range tight, which keeps the step small.
+4. **The step.** `(max − min)/(levels − 1)`. For −1.0 to 1.0 with 5 levels → step **0.5**, levels `−1, −0.5, 0, 0.5, 1`. It's `levels − 1` because 5 fenceposts have 4 gaps.
+5. **Encode then decode.** Encode: how far above `lo`, divided by `step`, rounded. Decode: `lo + q*step`. The `round` is the only lossy operation.
+6. **Error is bounded by half a step** — you always round to the nearer side.
+7. **The memory.** `bits/8` bytes per weight. 7B: **14 GB → 7 GB → 3.5 GB** at 16/8/4 bits.
+
+**The degradation curve:** 8-bit error 0.002 (invisible) · **4-bit 0.063** (fine) · 2-bit **0.330** — at 2-bit, `−0.42` and `−0.05` both collapse to `−0.333`. **Distinct weights become the same number.** That's why 4-bit is the practical floor.
+
+**Key formulas / rules:**
+```
+levels     = 2 ** bits
+step       = (max - min) / (levels - 1)
+encode     = round((x - lo) / step)
+decode     = lo + q * step
+max error  = step / 2
+bytes/wt   = bits / 8
+```
+
+**Gotchas / what to watch:**
+- **Decode is `lo + q*step`, not `lo * q * step`.** You *start* at the bottom of the range and *add* steps. A multiply would scale the range instead of offsetting into it.
+- **`lo`, not `min`.** `min` is Python's built-in for finding a smallest value; the group's minimum is stored in `lo`.
+- **`levels − 1`, not `levels`** — count gaps, not posts.
+- **The endpoints are always exact** — `lo` and `hi` land on levels at every bit width.
+- **Per-group, not per-tensor** — one outlier would stretch the whole range and blow up the step.
+
+**Python you met here:** `2 ** bits` → to the power of · `round(x)` → nearest whole number · `min(list)`/`max(list)` → smallest/largest · `zip(a, b)` → walk two lists in pairs · `abs(x)` → size ignoring sign.
+
+**Where it sits + next:** Module 14 skill `quantization`. Not covered: outlier handling, GPTQ/AWQ calibration, activation quantization, and **QLoRA** (4-bit frozen base + a LoRA adapter — the last two builds combined). Next: **inference internals** — paged KV, continuous batching, speculative decoding.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 

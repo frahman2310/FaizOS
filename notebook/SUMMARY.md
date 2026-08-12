@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**51% coverage** · 8/20 modules complete · 32 builds shipped · 32/66 skills touched
+**53% coverage** · 8/20 modules complete · 33 builds shipped · 33/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 51%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 53%
 ```
 
 ## Modules
@@ -60,13 +60,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░ 51%
 - **skills:** ✓ FSDP multi-GPU training run · ✓ Pipeline schedules (1F1B, zero-bubble, DualPipe) · ✓ NCCL collectives & interconnect · ✓ Async & fault-tolerant checkpointing
 - **builds:** #28 Collectives: all-reduce, reduce-scatter, all-gather · #29 FSDP / ZeRO: shard the whole training state · #30 Pipeline schedules: GPipe vs 1F1B · #31 Fault-tolerant checkpointing: the optimal interval
 
-### 🔄 Module 14 — Fine-tuning & inference (25%)
-- **skills:** ✓ PEFT: LoRA / QLoRA / DoRA · · Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) · · Inference internals: paged KV, continuous batching, speculative decoding · · Serving: vLLM / SGLang / TensorRT-LLM / Dynamo
-- **builds:** #32 LoRA: fine-tune 0.1% of the parameters
+### 🔄 Module 14 — Fine-tuning & inference (50%)
+- **skills:** ✓ PEFT: LoRA / QLoRA / DoRA · ✓ Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) · · Inference internals: paged KV, continuous batching, speculative decoding · · Serving: vLLM / SGLang / TensorRT-LLM / Dynamo
+- **builds:** #32 LoRA: fine-tune 0.1% of the parameters · #33 Quantization: run a model in 4 bits
 
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 33 | Quantization: run a model in 4 bits | Quantization (GPTQ/AWQ/GGUF/FP8/FP4, KV-quant) | 2026-08-12 |
 | 32 | LoRA: fine-tune 0.1% of the parameters | PEFT: LoRA / QLoRA / DoRA, Matmul, shapes & FLOP cost | 2026-08-12 |
 | 31 | Fault-tolerant checkpointing: the optimal interval | Async & fault-tolerant checkpointing | 2026-08-11 |
 | 30 | Pipeline schedules: GPipe vs 1F1B | Pipeline schedules (1F1B, zero-bubble, DualPipe) | 2026-08-11 |
