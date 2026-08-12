@@ -1,6 +1,90 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 40 entries, newest first.
+> Auto-compiled from every lesson. 42 entries, newest first.
+
+---
+
+## Module 14 Complete — Fine-tuning &amp; inference
+_2026-08-12_
+
+## 🏁 MODULE 14 COMPLETE — Fine-tuning & inference
+
+Modules 5–13 were about **building and training** a model. Module 14 is the pivot to **using** one: adapt it cheaply, shrink it, and serve it to real users. This is the most directly employable module so far.
+
+### The through-line — adapt → shrink → serve
+1. **LoRA** — adapt a model by training 0.8% of it.
+2. **Quantization** — shrink the weights themselves to 4 bits.
+3. **Inference internals** — stop wasting the GPU while serving.
+4. **Serving stacks** — the two-phase structure that tells you *which* optimization matters.
+
+### Build-by-build recap
+- **`lora/`** — freeze `W`, train `B(d×r) @ A(r×d)` beside it. `B@A` keeps W's shape (the inner `r` cancels) while storing only `2·d·r` numbers. A 1000×1000 layer: **1,000,000 → 8,000** trainable at rank 4. For 7B: **112 GB → 0.1 GB** of trainable state. Catch: only **low-rank** updates (4 stencils, not any mural) — fine, because fine-tuning is a small structured nudge.
+- **`quantization/`** — per group, `step = (max−min)/(levels−1)`; encode `round((x−lo)/step)`, decode `lo + q*step`. Error bounded by **half a step**. 8-bit 0.002, **4-bit 0.063**, 2-bit 0.330 (distinct weights collapse together). 7B: **14 → 3.5 GB**.
+- **`inference-internals/`** — **paged KV** (waste 1848 → **8** tokens), **continuous batching** (idle 2700 → **0** slot-steps), **speculative decoding** (`accepted + 1` tokens per big pass; 3 accepted → **4×**, never worse than 1×, output identical).
+- **`serving-stack/`** — **prefill is compute-bound** (TTFT 14 ms), **decode is memory-bound** (7 ms/step *regardless of batch*). Batching is free: **143 → 18,286** tokens/s while each user still sees a steady **143**.
+
+### Key formulas — one place
+```
+LoRA params   = 2 * d * r          (vs d*d)      shape: (d x r)@(r x d) -> d x d
+quant step    = (max - min) / (levels - 1)       decode: lo + q*step,  error <= step/2
+bytes/weight  = bits / 8                         levels = 2 ** bits
+paged waste   = ceil(n/page)*page - n
+spec decoding = accepted + 1 tokens per big pass
+decode step   = weights_bytes / bandwidth        (independent of batch)
+throughput    = batch * 1000 / step_ms
+```
+
+### The big gotchas
+- **"Stored" ≠ "produced"** — LoRA stores 8,000 numbers that produce a 1,000,000-entry grid.
+- **Decode is `lo + q*step`** — start at the bottom and *add* steps, don't multiply.
+- **`accepted + 1`** — the verifier's own token is free.
+- **A duration is not a rate** — to get tokens/sec, the time goes on the **bottom**.
+- **Optimize decode, not prefill** — decode is ~99% of a request (Amdahl).
+
+### How it assembles
+Take a base model → **quantize** it to 4 bits so it fits on one GPU → attach a **LoRA** adapter and fine-tune it for your task on a single card (that combination is **QLoRA**) → serve it with **paged KV**, **continuous batching** and **speculative decoding** → and know from the **prefill/decode** split which knob to turn when it's too slow. That is a complete, deployable product path — and it's exactly what a small team shipping on open models does.
+
+### Coverage now
+**55% of the course · 9 of 20 modules complete (5, 7, 8, 9, 10, 11, 12, 13, 14) · 35 ships.** Remaining: RL & post-training, agents & retrieval, multimodal, safety & interpretability, frontier research, and the capstone.
+
+---
+
+## Serving stacks — prefill vs decode, throughput vs latency
+_2026-08-12_
+
+**Why it matters:** This is where a model becomes a product. Understanding the two phases tells you *which* optimizations matter, what to promise users, and what it costs to run.
+
+**What you built + the core mechanism:**
+```python
+decode_step_ms(batch)    = WEIGHTS_GB / BANDWIDTH_GB * 1000    # same for ANY batch size
+decode_throughput(batch) = batch * 1000 / decode_step_ms(batch)
+latency = prefill_ms(prompt) + (output_tokens - 1) * decode_step_ms(batch)
+```
+
+**The concept chain — every brick, in order:**
+1. **Two phases, opposite bottlenecks.** **Prefill** pushes the whole prompt through at once → lots of math per weight read → **compute-bound**. **Decode** makes one token at a time, each reading every weight → **memory-bound**.
+2. **The decode step is a fixed cost.** 14 GB ÷ 2000 GB/s = **7 ms**, whether you serve 1 user or 128 — you read the weights once either way.
+3. **So batching is free.** One read → one token *per user*. Batch 32 gives 32 tokens for the same 7 ms.
+4. **Throughput scales, per-user speed doesn't move.** 143 → 4,571 → 18,286 tokens/s total, while every user still sees a steady **143 tokens/s**.
+5. **Latency = TTFT + decode.** A 500-token prompt prefills in **14 ms**; 200 output tokens take **1393 ms** more. Decode is ~99% of the request.
+6. **Which is why** paged KV, continuous batching and speculative decoding all target **decode** — optimizing prefill would be optimizing the 1% (Amdahl, Module 12).
+
+**Key formulas / rules:**
+```
+decode step   = weights_bytes / bandwidth        (independent of batch)
+throughput    = batch * 1000 / step_ms           (tokens/sec, all users)
+prefill FLOPs = 2 * n_params * prompt_tokens
+latency       = TTFT + (output_tokens - 1) * step_ms
+```
+
+**Gotchas / what to watch:**
+- **A duration is not a rate.** `decode_step_ms(...)` gives 7 ms *per step*; tokens/sec needs `1000 / step`, then `× batch`. If an improvement should make the number *bigger*, the time belongs on the **bottom**. (Same inversion as the Amdahl blank.)
+- **Call functions with brackets.** `decode_step_ms` names it; `decode_step_ms(batch)` runs it.
+- **`batch` is deliberately unused** in `decode_step_ms` — that *is* the insight.
+- **`output_tokens - 1`** because prefill already produced the first token.
+- **What really caps batch size is KV-cache memory**, not compute — exactly what paged KV relieved.
+
+**Where it sits + next:** Module 14 skill `serving-stacks` — **completes Module 14 (Fine-tuning & inference)**.
 
 ---
 
