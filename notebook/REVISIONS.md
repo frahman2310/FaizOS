@@ -1,6 +1,51 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 37 entries, newest first.
+> Auto-compiled from every lesson. 38 entries, newest first.
+
+---
+
+## LoRA — fine-tune 0.8% of the parameters
+_2026-08-12_
+
+**Why it matters:** Full fine-tuning a 7B model needs 112 GB — out of reach. LoRA makes it fit on one consumer GPU, and it's how essentially all open-model fine-tuning is done today.
+
+**What you built + the core mechanism:**
+```python
+output = W @ x  +  (B @ A) @ x       # W frozen; only A and B are trained
+lora_params(d, r) = d * r + r * d    # vs full fine-tuning's d * d
+```
+
+**The concept chain — every brick, in order:**
+1. **Full fine-tuning is unaffordable.** 16 bytes per parameter (Module 13) × 7B = **112 GB**.
+2. **Freeze the base.** No gradients, no optimizer state for `W`. It still gets *loaded* (2 bytes each) but costs none of the other 14.
+3. **Train a skinny add-on** instead: `B` is `d×r`, `A` is `r×d`, and `r` (the **rank**) is small.
+4. **The shape rule.** `B(1000×4) @ A(4×1000)` → the inner 4s **match and cancel**, leaving **1000×1000** — the same shape as `W`, so it can be added.
+5. **Stored vs produced — the key distinction.** You *store* `2·d·r` = **8,000** numbers, but they *produce* a `d×d` = **1,000,000** grid. You keep the recipe, not the result.
+6. **The honest catch.** Those 8,000 numbers can only produce **low-rank** updates — like painting a huge mural with 4 stencils. It works because fine-tuning is a small structured nudge, not a rebuild.
+
+**Key formulas / rules:**
+```
+full fine-tune params = d * d
+LoRA params           = d*r + r*d = 2*d*r
+shape                 = B(d x r) @ A(r x d) -> d x d      (inner r cancels)
+saving disappears at r = d/2
+```
+
+**The numbers (1000×1000 layer):** rank 1 → 0.20% · rank 4 → **0.80%** · rank 16 → 3.20% · rank 64 → 12.80%. For 7B: **112 GB → 0.1 GB** of trainable state.
+
+**Gotchas / what to watch:**
+- **"How many stored" ≠ "what shape is produced."** 8,000 stored, 1,000,000 produced. Different questions.
+- **The LoRA count must contain `r`.** If the expression doesn't use the rank, it isn't LoRA — that's how you catch accidentally writing `d*d`.
+- **Matrix shapes: keep the outside, cancel the inside.** `(3×2) @ (2×3)` → `3×3`.
+- **Rank must stay small** — at `r = d/2` you're back to full fine-tuning.
+- **The frozen base still occupies memory** — LoRA saves *optimizer* state, not the weights themselves.
+
+**Python you met here:**
+- `len(Y)` → number of **rows**; `len(Y[0])` → number of **columns**
+- nested `[[... for j ...] for i ...]` → build a grid: outer loop makes rows, inner makes cells
+- `{p:>10,}` → right-align with thousands commas; `{x:6.2%}` → percentage, 2 decimals
+
+**Where it sits + next:** Module 14 skill `peft-lora` (also raised `linalg-matmul`). Not covered: QLoRA (4-bit frozen base), the alpha scaling factor, and merging `B@A` into `W` for zero-latency inference. Next in Module 14: **quantization**.
 
 ---
 
