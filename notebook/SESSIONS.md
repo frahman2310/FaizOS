@@ -2,10 +2,11 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-12T11:56:44.943Z -->
-## 2026-08-12 — 2 ships
-**Shipped:** Quantization: run a model in 4 bits · Inference internals: paged KV, continuous batching, speculative decoding
-**Learned:** LoRA — fine-tune 0.8% of the parameters · Quantization — run a model in 4 bits · Inference internals — paged KV, continuous batching, speculative decoding
-**Coverage:** 54% · 8/20 modules complete · 34 total ships
+## 2026-08-12 — 3 ships
+**Shipped:** Quantization: run a model in 4 bits · Inference internals: paged KV, continuous batching, speculative decoding · Serving stacks: prefill vs decode, throughput vs latency
+**Learned:** LoRA — fine-tune 0.8% of the parameters · Quantization — run a model in 4 bits · Inference internals — paged KV, continuous batching, speculative decoding · Serving stacks — prefill vs decode, throughput vs latency
+**🏁 Milestones:** Module 14 Complete — Fine-tuning &amp; inference
+**Coverage:** 55% · 9/20 modules complete · 35 total ships
 <!-- /session 2026-08-12T11:56:44.943Z -->
 
 <!-- session 2026-08-11T11:06:56.391Z -->
