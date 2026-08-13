@@ -15,6 +15,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 15 — RL foundations](#module-15)
 - [Module 16 — Post-training & tools](#module-16)
 - [Module 17 — Agents & retrieval (RAG)](#module-17)
+- [Module 18 — Multimodal](#module-18)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -1878,6 +1879,60 @@ diagnosis = big pass@k gap -> reliability ; small gap -> capability
 - **Never report a single agent score** — always pass@1 *and* pass@k.
 
 **Where it sits + next:** Module 17 skills `rag-production`, `agent-memory`, `agentic-rl`, `agent-evals` — **completes Module 17**. Next: **Module 18, Multimodal** (ViT/CLIP, diffusion, VLM fusion).
+
+---
+
+<a id="module-18"></a>
+# Module 18 — Multimodal
+
+## 🏁 Module 18 Complete — Multimodal (ViT/CLIP, diffusion, VLM fusion)
+
+**Why it matters:** Everything so far was text. This module is how the *same* machinery handles images — and the answer is genuinely surprising: almost nothing new is needed.
+
+**What you built:**
+```python
+n_patches(img, patch)         = per_side ** 2                     # 224/16 -> 14 -> 196
+clip_score(img_vec, txt_vec)  = sum(a*b for a,b in zip(...))      # your dot product, unchanged
+sampling_speedup(50, 4)       = diffusion_steps / flow_steps      # 12.5x
+context_tokens(t, n, per)     = t + n * per                       # images cost real context
+```
+
+**Concept 1 — ViT and CLIP**
+- **No new architecture.** Cut the image into **patches**, flatten each into a vector, treat each as a **token**, and run the transformer from Module 9 unchanged.
+- **224×224 with 16×16 patches** → `224//16 = 14` per side → `14² = ` **196 tokens**. At **384px** it's **576** — the cost is **quadratic in image size**.
+- **CLIP**: train an image encoder and a text encoder so a matching image–caption pair has a **high dot product** (Module 7's scoring, reused). Result: images and text share **one space**.
+- That shared space is what makes **zero-shot classification** work — compare the image against "a photo of a cat" (scored 1.02) vs "a photo of a car" (0.02), with no cat training data.
+- **SigLIP** replaces the batch-wide softmax with a per-pair sigmoid: simpler, scales better.
+
+**Concept 2 — diffusion and rectified flow**
+- The trick: turn generation back into a **supervised** problem. Take a real image, add a **known** amount of noise, train the model to **predict the noise you added**. There's a target, so it's ordinary loss.
+- **Generating**: start from pure noise → predict the noise → subtract a little → repeat. The image emerges.
+- The path from noise to image is **curved**, so it needs many small steps. **Rectified flow** trains that path to be a **straight line** — same destination, fewer stops.
+- **50 steps → 4 steps = 12.5× faster.** (Not 12 — the half matters; it's the whole selling point.)
+
+**Concept 3 — VLM fusion**
+- An LLM only understands **tokens**. So: `image → ViT → 196 patch vectors → a projection into the LLM's token dimension → prepended like text`.
+- **The LLM never sees an image.** It sees vectors that look like tokens — which is why this works with no change to the language model.
+- **Images are paid for in context:** `text + n_images × tokens_per_image`. A 1000-token question with **5 images = 1,980 tokens** — the pictures outweigh the words. This is the real constraint in VLM products.
+- **Cross-attention** (Flamingo) avoids the context cost by attending to image features directly — more capable, more complex.
+
+**Key rules:**
+```
+patches      = (img_size // patch_size) ** 2     (quadratic in image size)
+CLIP         = dot product in a shared space -> zero-shot
+diffusion    = predict the added noise, then subtract it, repeatedly
+rectified flow = straighten the path -> far fewer steps
+VLM context  = text + n_images * tokens_per_image
+```
+
+**Gotchas / what to watch:**
+- **Doubling image size quadruples the tokens** (196 → 576 from 224 → 384).
+- **Diffusion predicts the noise, not the image** — that's what makes it supervised.
+- **Keep the .5 in 12.5×** — rounding away the fraction hides the size of the win.
+- **Python names must match exactly** — `tokens_per_iimage` is a different name from `tokens_per_image`.
+- **`//` drops the remainder**; `**` is "to the power of".
+
+**Where it sits + next:** Module 18 skills `vit-clip-siglip`, `diffusion-flow-matching`, `vlm-fusion` — **completes Module 18**. Next: **Module 19, Safety & interpretability**.
 
 ---
 

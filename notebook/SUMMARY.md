@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**70% coverage** · 12/20 modules complete · 40 builds shipped · 45/66 skills touched
+**75% coverage** · 13/20 modules complete · 41 builds shipped · 48/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░ 70%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░ 75%
 ```
 
 ## Modules
@@ -76,9 +76,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░ 70%
 - **skills:** ✓ Production RAG (hybrid + rerank + GraphRAG) · ✓ Agent memory (persistent: mem0/Letta) · ✓ Agentic RL over multi-turn tool use · ✓ Agent evals (tau-bench, SWE-bench, GAIA) + tracing
 - **builds:** #40 Agents &amp; retrieval: RAG, memory, agentic RL, evals
 
+### ✅ Module 18 — Multimodal (100%)
+- **skills:** ✓ ViT, CLIP & SigLIP · ✓ Diffusion & flow matching / rectified flow · ✓ VLM fusion patterns
+- **builds:** #41 Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 41 | Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion | ViT, CLIP & SigLIP, Diffusion & flow matching / rectified flow, VLM fusion patterns | 2026-08-13 |
 | 40 | Agents &amp; retrieval: RAG, memory, agentic RL, evals | Production RAG (hybrid + rerank + GraphRAG), Agent memory (persistent: mem0/Letta), Agentic RL over multi-turn tool use, agent-evals | 2026-08-13 |
 | 39 | Post-training: distillation vs RL, DPO, and tool calling | Reasoning distillation vs RL, SFT, RLHF, DPO & variants, Tool calling (Responses API, Anthropic tool-use, MCP) | 2026-08-13 |
 | 38 | Reward modeling: preferences, proxies and reward hacking | Reward models & verifiers (PRM vs ORM) | 2026-08-13 |
