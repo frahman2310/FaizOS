@@ -2,11 +2,11 @@
 _Auto-written after every session by the Stop hook. Newest first._
 
 <!-- session 2026-08-13T12:14:37.952Z -->
-## 2026-08-13 — 3 ships
-**Shipped:** Post-training: distillation vs RL, DPO, and tool calling · Agents &amp; retrieval: RAG, memory, agentic RL, evals · Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion
+## 2026-08-13 — 4 ships
+**Shipped:** Post-training: distillation vs RL, DPO, and tool calling · Agents &amp; retrieval: RAG, memory, agentic RL, evals · Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion · Safety &amp; interpretability: oversight, SAEs, prompt injection
 **Learned:** Reward modeling — preferences, proxies and reward hacking
-**🏁 Milestones:** Module 15 Complete — RL foundations · Module 16 Complete — Post-training &amp; tools (distillation vs RL, DPO, tool calling) · Module 17 Complete — Agents &amp; retrieval (RAG, memory, agentic RL, evals) · Module 18 Complete — Multimodal (ViT/CLIP, diffusion, VLM fusion)
-**Coverage:** 75% · 13/20 modules complete · 41 total ships
+**🏁 Milestones:** Module 15 Complete — RL foundations · Module 16 Complete — Post-training &amp; tools (distillation vs RL, DPO, tool calling) · Module 17 Complete — Agents &amp; retrieval (RAG, memory, agentic RL, evals) · Module 18 Complete — Multimodal (ViT/CLIP, diffusion, VLM fusion) · Module 19 Complete — Safety &amp; interpretability
+**Coverage:** 80% · 14/20 modules complete · 42 total ships
 <!-- /session 2026-08-13T12:14:37.952Z -->
 
 <!-- session 2026-08-12T11:56:44.943Z -->
