@@ -16,7 +16,25 @@ roadmap: gamification chrome, portfolio builder, weekly audit, mobile.
   All the math runs here as code, so the model is only used for teaching and judgment (keeps tokens low).
 - **`.claude/commands/`** — the `/faiz*` slash commands (the UX).
 - **`.mcp.json`** — registers `faizos-core` with Claude Code.
-- **`projects/`** — your real built repos live here (each its own git repo). Git-ignored by this repo.
+- **`projects/`** — every project built with FaizOS, from scratch in plain Python (no frameworks).
+- **`notebook/`** — auto-generated and always current: [`REVISION.md`](notebook/REVISION.md) (study
+  guide by module), [`REVISIONS.md`](notebook/REVISIONS.md) (per-lesson notes),
+  [`SUMMARY.md`](notebook/SUMMARY.md) (coverage + build index), [`SESSIONS.md`](notebook/SESSIONS.md)
+  (session log). All written deterministically from the database by a Stop hook — no model in the loop.
+
+## What's been built with it
+
+38 projects, from a numerically stable softmax to GRPO — each one built by hand, with a written
+revision note. The current index and coverage live in [`notebook/SUMMARY.md`](notebook/SUMMARY.md).
+
+| | |
+|---|---|
+| **Transformers** | micrograd autograd · neuron → layer → MLP (XOR) · self-attention · QKV · RoPE · RMSNorm · transformer block (residuals + stacking) · BPE tokenizer · KV cache |
+| **Modern blocks** | SwiGLU · GQA · SSM/Mamba · MLA |
+| **Scale & systems** | scaling laws + Chinchilla · perplexity eval · GPU memory & MFU · Triton fused softmax · FlashAttention · torch.compile & CUDA graphs · profiling & Amdahl · parallelism axes |
+| **Distributed** | collectives (all-reduce = reduce-scatter + all-gather) · FSDP/ZeRO · GPipe vs 1F1B · fault-tolerant checkpointing |
+| **Serve & adapt** | LoRA · quantization · paged KV / continuous batching / speculative decoding · prefill-vs-decode serving |
+| **RL** | REINFORCE + baselines + PPO clipping · GRPO with verifiable rewards |
 
 ## Setup (one time)
 
