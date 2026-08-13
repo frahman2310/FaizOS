@@ -1688,6 +1688,80 @@ useful group  <=>  max(rewards) != min(rewards)
 
 ---
 
+## Reward modeling — preferences, proxies and reward hacking
+
+**Why it matters:** RLVR only works where a checker exists. For everything else — helpfulness, tone, judgment — the reward must be *learned* from humans. And a learned reward is a **proxy**, which is where alignment gets genuinely hard.
+
+**What you built + the core mechanism:**
+```python
+prob_a_preferred(a, b) = sigmoid(a - b)              # Bradley-Terry: only the GAP matters
+flawed_rm(quality, n)  = quality + 0.1 * n           # a proxy with a length leak
+penalised_reward(...)  = rm_score - beta * drift     # the KL leash
+```
+
+**The concept chain — every brick, in order:**
+1. **Comparisons beat scores.** Humans are inconsistent at "rate this out of 100" but reliable at "which of these two is better." So preference data is collected in **pairs**.
+2. **Turning pairs into numbers.** Train a reward model to output a score per answer such that the winner scores higher. `P(A beats B) = sigmoid(score_A − score_B)`.
+3. **Only the gap matters.** `3 vs 1` and `5 vs 3` give the identical 0.88. Equal scores → `sigmoid(0) = 0.5` → no preference.
+4. **The reward model is a proxy**, not the real goal — trained on finite data, with flaws.
+5. **RL finds the flaws.** A leak of `+0.1 per sentence` is enough: a padded 5/10 answer scores **9.0** while a genuinely good 8/10 answer scores **8.3**. **The worse answer wins.** That's **Goodhart's law** — when a measure becomes a target, it stops being a good measure.
+6. **The defence: a leash.** `reward_used = rm_score − beta × drift`. Moving further from the reference model costs you. `beta` sets the leash length. Same spirit as PPO clipping — *don't go too far*.
+
+**Key formulas / rules:**
+```
+P(A preferred) = sigmoid(score_A - score_B)     # gap only; sigmoid(0) = 0.5
+penalised      = rm_score - beta * drift        # more drift -> lower reward
+```
+
+**Gotchas / what to watch:**
+- **No `=` inside a `return`.** `return` already means "hand this back" — only an expression follows. (Same shape as `residual = seq[i] + attn[i]` earlier.)
+- **Build a signed formula in two steps:** compute the penalty (`beta * drift`), *then* subtract it. Cheaper than getting the whole line right at once.
+- **A tiny proxy flaw is not a tiny problem** — RL amplifies it until it dominates.
+- **The best defence is a verifier, not a bigger reward model** — which is why maths/code RL scaled so much faster than RLHF.
+
+**Where it sits + next:** Module 15 skill `reward-modeling-verifiers` — **completes Module 15 (RL foundations)**. Not covered: DPO (skips the reward model entirely), constitutional/rubric rewards, LLM-as-judge.
+
+---
+
+## 🏁 Module 15 Complete — RL foundations
+
+Modules 5–14 all trained against a **target**. Module 15 is the shift to learning from a **score** — the mechanism that turns a raw pretrained model into a chat model or a reasoning model.
+
+### The through-line — score → group → proxy
+1. **REINFORCE + PPO** — the core rule: do more of what beat the average, and never move too far at once.
+2. **GRPO + RLVR** — let a verifier give the score and let the group be its own baseline; delete the critic.
+3. **Reward modeling** — what to do when nothing can be verified, and why that's dangerous.
+
+### Build-by-build recap
+- **`rl-foundations/`** — a 7/10 tells you nothing about the 10/10 answer, so the only rule available is *more of what scored above average*. `advantage = reward − mean`: rewards `5,7,9` → **−2, 0, +2** (worst goes down, best goes up, always summing to zero). PPO then clips `new_prob/old_prob` to **±20%** so one noisy sample can't wreck the policy: `1.5 → 1.2`, `0.5 → 0.8`.
+- **`grpo/`** — **RLVR**: for maths and code a checker gives a perfect 1/0 reward, free and infinite (poetry can't be verified — hence why reasoning models train on maths and code). **GRPO**: sample a group of answers to one prompt and use the group's mean as the baseline, deleting PPO's critic network (**7B → 0B**). Failure mode: a uniform group (`1,1,1,1` or `0,0,0,0`) gives all-zero advantages and teaches **nothing**.
+- **`reward-modeling/`** — humans compare better than they score, so train a reward model on pairs: `P(A beats B) = sigmoid(gap)`. But it's a **proxy**: a leak of `+0.1/sentence` makes a padded 5/10 answer score **9.0** against a good 8/10 answer's **8.3**. Goodhart's law. Defence: `reward − beta × drift` from the reference model.
+
+### Key formulas — one place
+```
+advantage   = reward - baseline            (sums to zero)
+PPO clip    = min(max(new/old, 1-eps), 1+eps)
+GRPO        = baseline is the GROUP mean   (no critic)
+usable group <=> max(rewards) != min(rewards)
+Bradley-Terry = sigmoid(score_A - score_B) (gap only)
+KL leash    = rm_score - beta * drift
+```
+
+### The big gotchas
+- **Pair each reward with its own advantage** — worst reward → most negative.
+- **A uniform group is wasted compute**, not a small inefficiency — the gradient is exactly zero.
+- **Tiny proxy flaws become huge** under optimization pressure.
+- **Only expressions go in a `return`** — no `=` (this caught you three times across modules; worth a permanent note).
+- **Signed formulas: compute the penalty first, then subtract it.**
+
+### How it assembles
+A modern post-training pipeline uses **all three**: verifiable tasks (maths, code) get **GRPO with a verifier** because the reward is free and unhackable; unverifiable tasks (helpfulness, tone) get a **reward model from human preferences**; and both are held on a **KL leash** to the reference model so the policy improves without drifting into gibberish or gaming the proxy. The reason reasoning models exploded in 2024–25 is precisely that RLVR removed the human from the loop.
+
+### Coverage now
+**60% of the course · 10 of 20 modules complete · 38 ships.** Remaining: post-training & tools (M16), agents & retrieval, multimodal, safety & interpretability, frontier research, and the capstone.
+
+---
+
 <a id="foundations"></a>
 # Foundations & other
 
