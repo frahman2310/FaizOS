@@ -1,6 +1,66 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 47 entries, newest first.
+> Auto-compiled from every lesson. 48 entries, newest first.
+
+---
+
+## Module 17 Complete — Agents &amp; retrieval (RAG, memory, agentic RL, evals)
+_2026-08-13_
+
+**Why it matters:** Module 16 gave the model a tool. Module 17 is everything needed to make a *system* out of that — feeding it the right knowledge, letting it remember, training it over many steps, and measuring whether it actually works.
+
+**What you built:**
+```python
+survives_to_context(rank, n_kept) = rank <= n_kept        # did the chunk reach the model?
+hybrid_hits(v, k)                 = set(v) | set(k)       # meaning OR exact match
+trajectory_advantage(r, mean)     = r - mean              # GRPO, applied to a whole run
+credit_per_step(adv, n)           = [adv] * n             # every step, same credit
+reliability_gap(p1, pk)           = pk - p1               # capability minus reliability
+```
+
+**Concept 1 — production RAG: retrieve twice**
+- **Vector search** finds *meaning* ("cancel" → "subscription termination") but is blind to exact strings like `XR-4471B`. **Keyword search (BM25)** is exactly the reverse.
+- **Hybrid** = run both, keep the union. One character in code: `|`.
+- Then **rerank**: retrieval is fast and sloppy, so pull ~50 cheap candidates and let a slow, accurate model score them down to ~5.
+- **Recall then precision.** A chunk at **rank 37** never reaches a top-5 context — the answer was retrieved and still lost. Reranking moves it to rank 2. Retrieval's job is *don't lose it*; reranking's job is *put it first*.
+
+**Concept 2 — agent memory**
+- The context window is **big but finite, and it resets**. An agent that forgets between sessions can never improve.
+- Keep a **persistent store outside** it; retrieve only what's relevant this turn. 10M-token history in a 200k window → retrieve **20 items × 500 tokens = 10k**, which fits easily.
+- Live example: FaizOS's `insights` table — written every lesson, retrieved at every `faizos_lesson_start`.
+
+**Concept 3 — agentic RL: credit assignment**
+- One action/one reward (Module 15) becomes **many actions, one delayed reward**. Which of the 10 steps deserves the credit? You don't know.
+- Blunt but effective: credit the **whole trajectory**. `advantage = reward − group_mean` (GRPO again), applied identically to **every step**. Trajectory 1.0 vs group mean 0.4 → **+0.6 on all 10 steps**.
+- Noisy, but over many attempts genuinely useful steps appear in successful runs more often.
+
+**Concept 4 — evals: capability vs reliability**
+- Agents are **stochastic**, so one score is meaningless. **pass@1** = reliability; **pass@k** = capability.
+- **pass@1 40%, pass@8 75%** (gap 35%) → it *can* do it, inconsistently → **reliability**: retries, verification, better prompting.
+- **pass@1 35%, pass@8 38%** (gap 3%) → it genuinely can't → **capability**: a better model.
+- Same low pass@1, **opposite fixes**. Without pass@k you can't tell them apart.
+- **Tracing**: log every step and tool call. "40%" is not actionable; "failed at step 3, wrong tool" is.
+
+**Key rules:**
+```
+hybrid    = vector union keyword         rerank = many cheap -> few accurate
+memory    = store outside, retrieve in
+credit    = reward - group_mean, applied to every step
+diagnosis = big pass@k gap -> reliability ; small gap -> capability
+```
+
+**Python you met here:**
+- **Comparisons (`<=`, `>`) give yes/no; arithmetic (`-`) gives a size.** Choosing the wrong one is how `reward > group_mean` (True) replaced `reward - group_mean` (0.6).
+- `set(list)` drops duplicates · `|` between sets = **union**
+- `[value] * n` → repeat a value into a list of length n
+
+**Gotchas / what to watch:**
+- **Retrieved ≠ seen.** A chunk can be found and still never reach the model.
+- **Vector search alone fails on codes, names and rare terms** — the most common production RAG bug.
+- **The context is working memory, not storage** — it resets.
+- **Never report a single agent score** — always pass@1 *and* pass@k.
+
+**Where it sits + next:** Module 17 skills `rag-production`, `agent-memory`, `agentic-rl`, `agent-evals` — **completes Module 17**. Next: **Module 18, Multimodal** (ViT/CLIP, diffusion, VLM fusion).
 
 ---
 
