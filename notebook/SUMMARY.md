@@ -1,36 +1,36 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**80% coverage** · 14/20 modules complete · 42 builds shipped · 51/66 skills touched
+**95% coverage** · 19/20 modules complete · 43 builds shipped · 62/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 80%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95%
 ```
 
 ## Modules
-### 🔄 Module 1 — Math: numbers, softmax, matmul (67%)
-- **skills:** · Dev setup: uv, ruff, one Python, CI · ✓ Numerically stable softmax & log-sum-exp · ✓ Matmul, shapes & FLOP cost
-- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch · #23 Triton: a fused softmax kernel · #32 LoRA: fine-tune 0.1% of the parameters
+### ✅ Module 1 — Math: numbers, softmax, matmul (100%)
+- **skills:** ✓ Dev setup: uv, ruff, one Python, CI · ✓ Numerically stable softmax & log-sum-exp · ✓ Matmul, shapes & FLOP cost
+- **builds:** #2 Matmul FLOP estimator · #8 self-attention from scratch · #23 Triton: a fused softmax kernel · #32 LoRA: fine-tune 0.1% of the parameters · #43 Foundations sweep: SVD, probability, geometry, regression, complexity, init
 
-### 🔄 Module 2 — Math: linear algebra & calculus (25%)
-- **skills:** · SVD & low-rank (PCA, LoRA) · ✓ Backprop as vector-Jacobian products · · Probability, covariance & expectation · · High-dimensional geometry
-- **builds:** #3 micrograd: autograd from scratch
+### ✅ Module 2 — Math: linear algebra & calculus (100%)
+- **skills:** ✓ SVD & low-rank (PCA, LoRA) · ✓ Backprop as vector-Jacobian products · ✓ Probability, covariance & expectation · ✓ High-dimensional geometry
+- **builds:** #3 micrograd: autograd from scratch · #43 Foundations sweep: SVD, probability, geometry, regression, complexity, init
 
-### 🔄 Module 3 — Python & the cost model (50%)
-- **skills:** ✓ Modern Python craft (uv, ruff, typing, CI) · · Core data structures & complexity · ✓ Arithmetic intensity & the roofline · · Profiling (cProfile, torch profiler)
-- **builds:** #2 Matmul FLOP estimator · #3 micrograd: autograd from scratch · #4 tiny net that learns · #5 a real neuron · #6 a layer of neurons · #7 an MLP that learns XOR · #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm · #22 GPU memory hierarchy & MFU
+### ✅ Module 3 — Python & the cost model (100%)
+- **skills:** ✓ Modern Python craft (uv, ruff, typing, CI) · ✓ Core data structures & complexity · ✓ Arithmetic intensity & the roofline · ✓ Profiling (cProfile, torch profiler)
+- **builds:** #2 Matmul FLOP estimator · #3 micrograd: autograd from scratch · #4 tiny net that learns · #5 a real neuron · #6 a layer of neurons · #7 an MLP that learns XOR · #8 self-attention from scratch · #9 QKV attention (scaled dot-product) · #10 RoPE — rotary positions · #11 RMSNorm · #22 GPU memory hierarchy & MFU · #43 Foundations sweep: SVD, probability, geometry, regression, complexity, init
 
-### 🔄 Module 4 — Classical ML (25%)
-- **skills:** · Regression from scratch · ✓ Leakage-safe ML pipeline · · Bias-variance & double descent · · PCA via SVD
-- **builds:** #20 Held-out eval: perplexity from scratch
+### ✅ Module 4 — Classical ML (100%)
+- **skills:** ✓ Regression from scratch · ✓ Leakage-safe ML pipeline · ✓ Bias-variance & double descent · ✓ PCA via SVD
+- **builds:** #20 Held-out eval: perplexity from scratch · #43 Foundations sweep: SVD, probability, geometry, regression, complexity, init
 
 ### ✅ Module 5 — Autograd from scratch (100%)
 - **skills:** ✓ Autograd from scratch (micrograd) · ✓ PyTorch tensors & training loop
 - **builds:** #3 micrograd: autograd from scratch · #4 tiny net that learns · #5 a real neuron · #6 a layer of neurons · #7 an MLP that learns XOR · #13 Train attention: a learned attention weight
 
-### 🔄 Module 6 — Optimization & DL foundations (33%)
-- **skills:** ✓ SGD, Adam & schedules · · Initialization & normalization · · torch.compile & CUDA graphs
-- **builds:** #4 tiny net that learns · #5 a real neuron · #7 an MLP that learns XOR · #13 Train attention: a learned attention weight
+### ✅ Module 6 — Optimization & DL foundations (100%)
+- **skills:** ✓ SGD, Adam & schedules · ✓ Initialization & normalization · ✓ torch.compile & CUDA graphs
+- **builds:** #4 tiny net that learns · #5 a real neuron · #7 an MLP that learns XOR · #13 Train attention: a learned attention weight · #43 Foundations sweep: SVD, probability, geometry, regression, complexity, init
 
 ### ✅ Module 7 — Attention & modern block basics (100%)
 - **skills:** ✓ Self-attention from scratch · ✓ RoPE rotary positions · ✓ RMSNorm
@@ -87,6 +87,7 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 80%
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 43 | Foundations sweep: SVD, probability, geometry, regression, complexity, init | SVD & low-rank (PCA, LoRA), PCA via SVD, Probability, covariance & expectation, High-dimensional geometry, Regression from scratch, Bias-variance & double descent, Core data structures & complexity, Profiling (cProfile, torch profiler), Initialization & normalization, Dev setup: uv, ruff, one Python, CI, torch.compile & CUDA graphs | 2026-08-13 |
 | 42 | Safety &amp; interpretability: oversight, SAEs, prompt injection | Alignment: RLAIF, scalable oversight, weak-to-strong, debate, Interpretability: SAEs + circuit tracing, Prompt-injection defenses & red-teaming | 2026-08-13 |
 | 41 | Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion | ViT, CLIP & SigLIP, Diffusion & flow matching / rectified flow, VLM fusion patterns | 2026-08-13 |
 | 40 | Agents &amp; retrieval: RAG, memory, agentic RL, evals | Production RAG (hybrid + rerank + GraphRAG), Agent memory (persistent: mem0/Letta), Agentic RL over multi-turn tool use, agent-evals | 2026-08-13 |

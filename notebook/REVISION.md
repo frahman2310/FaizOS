@@ -2035,3 +2035,49 @@ MFU                  = achieved FLOPs-per-sec / peak FLOPs-per-sec
 **Where it sits + next:** Module 11 skill `gpu-memory-hierarchy` (also raised `roofline-cost-model` from mission #2). Next: **Triton** (write a fused kernel), then **FlashAttention**.
 
 ---
+
+## Foundations sweep — SVD, probability, geometry, regression, complexity, init
+
+**Why it matters:** These are the foundations *underneath* everything already built. Most of it doesn't teach you something new — it **names** what you already own, and shows why it works.
+
+**What you built:**
+```python
+energy_kept(sv, k) = top / total                  # top-2 of 5 carry 96.3%
+variance(xs)       = sum(sq_dists)/len(sq_dists)  # [2,4,6] -> 2.67
+attention_scale(d) = sqrt(d)                      # d=64 -> 8: the origin of 1/sqrt(d)
+total_error(b, v)  = b**2 + v                     # the bias is SQUARED
+init_std(fan_in)   = 1/sqrt(fan_in)               # Xavier: 0.1 for fan_in 100
+```
+
+**SVD & low-rank (and PCA).** Any matrix splits into a **sum of rank-1 pieces**, each with an importance score (a **singular value**), sorted biggest first. Keeping the top `k` gives the **best possible** rank-`k` approximation — a guarantee, not a heuristic. `[10,6,2,1,0.5]`: top **1** keeps 70.8%, top **2** keeps **96.3%**.
+→ **This is why LoRA works** (fine-tuning updates are low-rank, so `B@A` captures nearly everything) and why **MLA's latent compression** works. **PCA is SVD applied to data** — the top pieces are the directions of greatest variance.
+
+**Probability.** **Expectation** = long-run average (*your GRPO baseline is one*). **Variance** = average squared distance from the mean. **Covariance** = do two things move together (positive/negative/zero).
+
+**High-dimensional geometry.** In high dimensions, two random vectors are almost always **nearly perpendicular** — space is far roomier than intuition suggests. Two consequences you'd already met: it's what makes **superposition** possible (Module 19), and the typical size of a random `d`-dim dot product is **~√d**.
+→ **That is where attention's `1/√d` comes from.** In Module 7 you learned the rule; this is the reason. `d=64` → random scores ±8 → divide by 8.
+
+**Regression from scratch.** `y = w·x + b` — **your neuron without the tanh**. Closed form: `w = cov(x,y)/var(x)`, `b = mean(y) − w·mean(x)`. Recovers `y = 2x + 1` exactly.
+
+**Bias–variance & double descent.** **Bias** = too simple (underfits). **Variance** = fits the noise (overfits). `total ≈ bias² + variance`. Classically a **U-curve** with a sweet spot in the middle. **Double descent**: push the model *past* perfectly fitting the training data and test error **falls again**. The U-curve is only the first half — and this is why enormous models work at all, when classical theory said they'd overfit catastrophically.
+
+**Complexity.** List lookup scans → **O(n)** = 1,000,000 checks. Dict/set hashes → **O(1)** = **1** check. *You've been relying on this*: `stats` in the BPE build and `TOOLS` in the safety build are dicts for exactly this reason.
+
+**Profiling.** `cProfile` ranks functions by cumulative time — **Amdahl again**: measure, then fix the biggest share.
+
+**Initialization.** Each layer scales the signal's variance by ~`fan_in × weight_variance`; 50 layers on it explodes or vanishes. **Xavier**: std `1/√fan_in` (**0.1** at fan_in 100); **He**: `√(2/fan_in)` for ReLU.
+→ **The same disease** residual connections (M9) and RMSNorm (M7) treat. Three defences, one problem.
+
+**Dev setup.** `uv` + `ruff` + one **pinned** Python + CI on every push. Reproducibility beats cleverness.
+
+**Gotchas / what to watch:**
+- **`**` is "to the power of", `/` is divide** — `1 ** d` is always 1; `1 / sqrt(fan_in)` is what you want.
+- **`sqrt(d)`, not `d`** — the typical dot product grows as the *square root* of the dimension.
+- **The bias is squared, the variance is not** — and watch whether you're given `bias` or `bias²`.
+- **A share is part ÷ whole** — when both are already computed, use those variables, not the function that made them.
+
+**Pacing note (worth recording):** nine concepts in one build was too many. You got **5/5 conceptual questions right** and only **1/5 code blanks** — the same session where a three-concept build produced 3/3. Understanding was never the issue; density was. Future builds cap at four concepts.
+
+**Where it sits:** backfills Modules 1, 2, 3, 4 and 6. Next: **Module 20 — research method, paper reproduction, OSS contribution, capstone.**
+
+---
