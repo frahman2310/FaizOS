@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**75% coverage** · 13/20 modules complete · 41 builds shipped · 48/66 skills touched
+**80% coverage** · 14/20 modules complete · 42 builds shipped · 51/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░ 75%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 80%
 ```
 
 ## Modules
@@ -80,9 +80,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░ 75%
 - **skills:** ✓ ViT, CLIP & SigLIP · ✓ Diffusion & flow matching / rectified flow · ✓ VLM fusion patterns
 - **builds:** #41 Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion
 
+### ✅ Module 19 — Safety & interpretability (100%)
+- **skills:** ✓ Alignment: RLAIF, scalable oversight, weak-to-strong, debate · ✓ Interpretability: SAEs + circuit tracing · ✓ Prompt-injection defenses & red-teaming
+- **builds:** #42 Safety &amp; interpretability: oversight, SAEs, prompt injection
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 42 | Safety &amp; interpretability: oversight, SAEs, prompt injection | Alignment: RLAIF, scalable oversight, weak-to-strong, debate, Interpretability: SAEs + circuit tracing, Prompt-injection defenses & red-teaming | 2026-08-13 |
 | 41 | Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion | ViT, CLIP & SigLIP, Diffusion & flow matching / rectified flow, VLM fusion patterns | 2026-08-13 |
 | 40 | Agents &amp; retrieval: RAG, memory, agentic RL, evals | Production RAG (hybrid + rerank + GraphRAG), Agent memory (persistent: mem0/Letta), Agentic RL over multi-turn tool use, agent-evals | 2026-08-13 |
 | 39 | Post-training: distillation vs RL, DPO, and tool calling | Reasoning distillation vs RL, SFT, RLHF, DPO & variants, Tool calling (Responses API, Anthropic tool-use, MCP) | 2026-08-13 |
