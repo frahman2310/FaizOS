@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**95% coverage** · 19/20 modules complete · 43 builds shipped · 62/66 skills touched
+**100% coverage** · 20/20 modules complete · 44 builds shipped · 66/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%
 ```
 
 ## Modules
@@ -84,9 +84,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95%
 - **skills:** ✓ Alignment: RLAIF, scalable oversight, weak-to-strong, debate · ✓ Interpretability: SAEs + circuit tracing · ✓ Prompt-injection defenses & red-teaming
 - **builds:** #42 Safety &amp; interpretability: oversight, SAEs, prompt injection
 
+### ✅ Module 20 — Research, OSS & capstone (100%)
+- **skills:** ✓ Research method: seeds, ablations, compute-matched baselines · ✓ Reproduce a paper to a public number · ✓ Merged PR into vLLM/TRL/transformers · ✓ Capstone: the 8-rung portfolio
+- **builds:** #44 Research method: seeds, ablations, compute-matched baselines
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 44 | Research method: seeds, ablations, compute-matched baselines | Research method: seeds, ablations, compute-matched baselines, Capstone: the 8-rung portfolio, Reproduce a paper to a public number, Merged PR into vLLM/TRL/transformers | 2026-08-14 |
 | 43 | Foundations sweep: SVD, probability, geometry, regression, complexity, init | SVD & low-rank (PCA, LoRA), PCA via SVD, Probability, covariance & expectation, High-dimensional geometry, Regression from scratch, Bias-variance & double descent, Core data structures & complexity, Profiling (cProfile, torch profiler), Initialization & normalization, Dev setup: uv, ruff, one Python, CI, torch.compile & CUDA graphs | 2026-08-13 |
 | 42 | Safety &amp; interpretability: oversight, SAEs, prompt injection | Alignment: RLAIF, scalable oversight, weak-to-strong, debate, Interpretability: SAEs + circuit tracing, Prompt-injection defenses & red-teaming | 2026-08-13 |
 | 41 | Multimodal: ViT/CLIP, diffusion &amp; flow matching, VLM fusion | ViT, CLIP & SigLIP, Diffusion & flow matching / rectified flow, VLM fusion patterns | 2026-08-13 |

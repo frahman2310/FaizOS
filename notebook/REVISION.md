@@ -17,6 +17,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 17 — Agents & retrieval (RAG)](#module-17)
 - [Module 18 — Multimodal](#module-18)
 - [Module 19 — Safety & interpretability](#module-19)
+- [Module 20 — Research, OSS & capstone](#module-20)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -1991,6 +1992,62 @@ injection defence = gate the tools, not the prompt
 - **Weak supervision can exceed the supervisor** when the capability is already latent; it cannot create capability that isn't there.
 
 **Where it sits + next:** Module 19 skills `alignment-methods`, `interpretability-sae`, `ai-security` — **completes Module 19**. Next: the two backfill sweeps, then Module 20 (research method & capstone).
+
+---
+
+<a id="module-20"></a>
+# Module 20 — Research, OSS & capstone
+
+## 🏁 Module 20 Complete — Research method &amp; capstone (COURSE COMPLETE)
+
+**Why it matters:** The last module isn't about building models — it's about whether the things you claim are **true**, and whether anyone else can verify them. Most published improvements don't survive these three checks.
+
+**What you built:**
+```python
+is_real_improvement(runs, new) = gain > noise                    # clear the spread or say nothing
+real_gain(method, matched)     = method - baseline_same_compute  # +3.8 becomes +0.5
+contribution(full, without)    = full - score_without            # which piece actually did it
+```
+
+**Concept 1 — seeds.** Identical code, different random seed, different number. Baseline `[71.2, 68.9, 70.4]` → mean **70.2**, spread **2.3**. A "new best" of **70.9** is a 0.7 gain against 2.3 of noise: **you have measured nothing.** Never report a single run — report mean ± spread over ≥3 seeds, and only claim a gain that clears the spread.
+
+**Concept 2 — compute-matched baselines.** Your method trains 10 h and scores 74.0; the baseline's 5 h run scores 70.2 → looks like **+3.8**. Give the baseline the *same* 10 h → 73.5 → the real gain is **+0.5**, which is inside the noise. Did your method help, or did the extra five hours? This is the most common way results mislead, including in good-faith papers.
+
+**Concept 3 — ablations.** Three changes, +4 points. Remove one at a time: new loss costs **0.2**, new schedule costs **0.4**, extra data costs **3.7**. The paper would have been titled *"our novel loss."* The data did the work.
+
+**Reproduction protocol.** Pick a small, well-specified published result with a public number. Match it within noise (mean ± spread, ≥3 seeds). It's the most credible artifact you can produce, because almost nobody does it and it cannot be faked — and you learn what papers leave out.
+
+**OSS path.** The bar is a **merged** PR, not an opened one. `vLLM`, `TRL`, `transformers`, `nanoGPT` all label beginner issues. A wrong docstring, a missing type hint, a failing edge case. **Small and merged beats ambitious and ignored.**
+
+**Key rules:**
+```
+report mean +/- spread over >=3 seeds; a gain must EXCEED the spread
+compute-matched: give the baseline your budget before comparing
+ablate: remove one component at a time; the biggest drop is the real cause
+```
+
+**Gotchas / what to watch:**
+- **A single run is not a result.** It's an anecdote.
+- **"We beat the baseline" usually means "we spent more."**
+- **The component you're proud of is often not the one that helped** — ablate before you claim.
+- **Reproduce before you innovate.** If you can't match a known number, you can't trust a new one.
+
+---
+
+## 🎓 The capstone audit — see `CAPSTONE.md`
+
+43 builds assessed against 8 hire-grade rungs: **2 solid, 3 partial, 3 missing.**
+
+- ✅ **From-scratch fundamentals** — a transformer built from nothing, plus the modern upgrades. Genuinely strong; most people have *used* one, few have *written* every part.
+- ✅ **A working system** — FaizOS itself: MCP server, SQLite, hooks, deterministic notebook compiler. The strongest single artifact, and easy to undersell.
+- ⚠️ **Trained model / eval harness / capstone framing** — built correctly, never run at real scale.
+- ❌ **Measured performance win / reproduction / merged PR** — all missing.
+
+**The honest verdict:** depth of *understanding* is well ahead of depth of *evidence*. That's the opposite of the usual problem and the easier one to fix — understanding can't be faked, but evidence can be generated.
+
+**The bottleneck is compute.** Rungs 3, 4, 5 and 7 all need a real GPU. **One rented hour unlocks four rungs.**
+
+**Where it sits:** Module 20 — **the course is complete. 20/20 modules, 100% coverage, 44 builds.**
 
 ---
 
