@@ -13,6 +13,7 @@ _Auto-compiled from your revision notes, grouped by module, regenerated after ev
 - [Module 13 — Distributed training](#module-13)
 - [Module 14 — Fine-tuning & inference](#module-14)
 - [Module 15 — RL foundations](#module-15)
+- [Module 16 — Post-training & tools](#module-16)
 - [Foundations & other](#foundations)
 
 <a id="module-1"></a>
@@ -1759,6 +1760,61 @@ A modern post-training pipeline uses **all three**: verifiable tasks (maths, cod
 
 ### Coverage now
 **60% of the course · 10 of 20 modules complete · 38 ships.** Remaining: post-training & tools (M16), agents & retrieval, multimodal, safety & interpretability, frontier research, and the capstone.
+
+---
+
+<a id="module-16"></a>
+# Module 16 — Post-training & tools
+
+## 🏁 Module 16 Complete — Post-training &amp; tools (distillation vs RL, DPO, tool calling)
+
+**Why it matters:** A raw pretrained model is a text-continuation engine, not an assistant. Post-training is what turns it into one — and tool calling is what turns an assistant into an **agent**.
+
+**What you built:**
+```python
+distilled_ceiling(t) = t                    # a copier cannot pass the copied
+rl_ceiling(t)        = None                 # no teacher, no ceiling
+RLHF: 2 stages, 3 models  |  DPO: 1 stage, 2 models
+run_tool_call: if name not in tools: refuse ;  else tools[name](args)
+```
+
+**Concept 1 — distillation vs RL**
+- **Distillation**: a strong teacher solves thousands of problems *showing its working*; you train a student on those traces. Ordinary supervised learning — there **is** a target. Cheap, fast, very effective.
+- **The catch**: the student is **copying**, so it climbs toward the teacher's score and stops. Teacher 70% → student ceiling **70%**.
+- **RL**: no teacher, so **no ceiling**. Slower and far more compute-hungry, but the only route to a model better than anything that trained it.
+- **In practice both**: distil to get a good starting point cheaply, then RL to go past it.
+
+**Concept 2 — RLHF vs DPO**
+- **RLHF**: preference pairs → train a **reward model** → RL the policy against it. **2 training stages, 3 models** (policy, reward model, frozen reference).
+- **DPO**: if the reward model only ever says "prefer A over B," skip it — optimise the pair **directly**, pushing the chosen answer up and the rejected one down relative to the frozen reference. **1 stage, 2 models.**
+- Simpler, cheaper, no proxy to hack — which is why most open fine-tunes use DPO.
+
+**Concept 3 — tool calling**
+- The model is a **text predictor**. It cannot execute anything. It emits text that *looks like* a call: `{"tool": "calculator", "args": {...}}`.
+- **Your code** reads it, checks it against an approved registry, runs it, and writes the result back into the conversation.
+- **That gate is the entire safety story.** In the demo the model asked for `delete_file` on `/` — **refused**, because it isn't in `TOOLS`. Not a model property; four lines of your code.
+- Exactly what **MCP** standardises — and how `faizos-core` works: the model emits a call, the server runs it.
+
+**Key rules:**
+```
+distilled ceiling = teacher's score      RL ceiling = none
+RLHF = 2 stages / 3 models               DPO = 1 stage / 2 models
+tool loop = model asks -> code gates -> code runs -> result fed back
+```
+
+**Python you met here — and one important rule:**
+- **`[ ]` looks up · `( )` runs.** `tools[name]` *finds* the function; `tools[name](args)` *runs* it. Finding someone in your contacts isn't the same as phoning them.
+- Functions can be **stored in a dictionary** — that's what a tool registry is.
+- `None` → "no value", used deliberately to mean *no ceiling exists* (different from zero).
+- `PIPELINE["DPO"]["stages"]` → nested lookup, read left to right.
+- `eval(s, {"__builtins__": {}})` → run a string as Python with everything dangerous stripped out.
+
+**Gotchas / what to watch:**
+- **The model never executes.** It asks. (The single most important idea in the module.)
+- **Distillation's ceiling is real** — a distilled model can look excellent and still be structurally incapable of passing its teacher.
+- **DPO removes the reward model, not the reference model** — you still need something to measure drift against.
+
+**Where it sits + next:** Module 16 skills `reasoning-distillation`, `rlhf-dpo`, `tool-calling` — **completes Module 16**. Next: **Module 17, Agents & retrieval**.
 
 ---
 

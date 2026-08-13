@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**60% coverage** · 10/20 modules complete · 38 builds shipped · 38/66 skills touched
+**65% coverage** · 11/20 modules complete · 39 builds shipped · 41/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 60%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░ 65%
 ```
 
 ## Modules
@@ -68,9 +68,14 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░ 60%
 - **skills:** ✓ RL foundations: MDP, policy gradient, PPO · ✓ RLVR & GRPO (Dr.GRPO/DAPO/GSPO) · ✓ Reward models & verifiers (PRM vs ORM)
 - **builds:** #36 RL foundations: REINFORCE, baselines and PPO clipping · #37 GRPO: group-relative RL with verifiable rewards · #38 Reward modeling: preferences, proxies and reward hacking
 
+### ✅ Module 16 — Post-training & tools (100%)
+- **skills:** ✓ Reasoning distillation vs RL · ✓ SFT, RLHF, DPO & variants · ✓ Tool calling (Responses API, Anthropic tool-use, MCP)
+- **builds:** #39 Post-training: distillation vs RL, DPO, and tool calling
+
 ## All builds shipped (newest first)
 | # | build | skills exercised | shipped |
 |---|-------|------------------|---------|
+| 39 | Post-training: distillation vs RL, DPO, and tool calling | Reasoning distillation vs RL, SFT, RLHF, DPO & variants, Tool calling (Responses API, Anthropic tool-use, MCP) | 2026-08-13 |
 | 38 | Reward modeling: preferences, proxies and reward hacking | Reward models & verifiers (PRM vs ORM) | 2026-08-13 |
 | 37 | GRPO: group-relative RL with verifiable rewards | RLVR & GRPO (Dr.GRPO/DAPO/GSPO) | 2026-08-13 |
 | 36 | RL foundations: REINFORCE, baselines and PPO clipping | RL foundations: MDP, policy gradient, PPO | 2026-08-13 |
