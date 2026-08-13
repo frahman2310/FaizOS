@@ -1,6 +1,14 @@
 # FaizOS — Session Log
 _Auto-written after every session by the Stop hook. Newest first._
 
+<!-- session 2026-08-13T12:14:37.952Z -->
+## 2026-08-13 — 1 ship
+**Shipped:** Post-training: distillation vs RL, DPO, and tool calling
+**Learned:** Reward modeling — preferences, proxies and reward hacking
+**🏁 Milestones:** Module 15 Complete — RL foundations · Module 16 Complete — Post-training &amp; tools (distillation vs RL, DPO, tool calling)
+**Coverage:** 65% · 11/20 modules complete · 39 total ships
+<!-- /session 2026-08-13T12:14:37.952Z -->
+
 <!-- session 2026-08-12T11:56:44.943Z -->
 ## 2026-08-12 — 3 ships
 **Shipped:** Quantization: run a model in 4 bits · Inference internals: paged KV, continuous batching, speculative decoding · Serving stacks: prefill vs decode, throughput vs latency
