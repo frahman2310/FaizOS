@@ -1,10 +1,10 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**69% coverage** · 11/20 modules complete · 40 builds shipped · 44/66 skills touched
+**70% coverage** · 12/20 modules complete · 40 builds shipped · 45/66 skills touched
 
 ```
-OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░ 69%
+OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░ 70%
 ```
 
 ## Modules
@@ -72,8 +72,8 @@ OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░ 69%
 - **skills:** ✓ Reasoning distillation vs RL · ✓ SFT, RLHF, DPO & variants · ✓ Tool calling (Responses API, Anthropic tool-use, MCP)
 - **builds:** #39 Post-training: distillation vs RL, DPO, and tool calling
 
-### 🔄 Module 17 — Agents & retrieval (RAG) (75%)
-- **skills:** ✓ Production RAG (hybrid + rerank + GraphRAG) · ✓ Agent memory (persistent: mem0/Letta) · ✓ Agentic RL over multi-turn tool use · · Agent evals (tau-bench, SWE-bench, GAIA) + tracing
+### ✅ Module 17 — Agents & retrieval (RAG) (100%)
+- **skills:** ✓ Production RAG (hybrid + rerank + GraphRAG) · ✓ Agent memory (persistent: mem0/Letta) · ✓ Agentic RL over multi-turn tool use · ✓ Agent evals (tau-bench, SWE-bench, GAIA) + tracing
 - **builds:** #40 Agents &amp; retrieval: RAG, memory, agentic RL, evals
 
 ## All builds shipped (newest first)
