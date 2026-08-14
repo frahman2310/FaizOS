@@ -52,7 +52,21 @@ than the v1 hand audit and correctly so.
 
 ## Venture arm (Phase 6)
 
-Written at Phase 6.
+Five stages in src/venture.ts, split so everything deterministic lives in code and everything
+semantic happens in session. Stage 1 ingest fetches the prompt's 8 free-tier sources
+(HN Algolia, GitHub, SEC EDGAR with a proper User-Agent, Companies House and Product Hunt
+behind env keys that skip gracefully, YC RFS, MCP registry, arXiv) sequentially with a polite
+delay, dedupes on url+excerpt, and never scrapes G2, Capterra, Upwork, Fiverr or app stores.
+Stage 2 classification runs in session: faizos_venture_pending surfaces unclassified rows,
+faizos_venture_classify_save writes JTBD, importance and dissatisfaction back and groups rows
+into candidate ventures. Stage 3 corroboration is deterministic: two or more independent
+source families advance a venture; multiple hits within one family do not count. Stage 4
+scores the six axes with fixed weights (2,3,3,3,1,2) normalised to 0..5, and refuses
+uncorroborated ventures. Stage 5 activates with a 14 day deadline and a five milestone spine;
+the partial unique index makes the database refuse a second active venture, and a kill
+requires a post mortem that lands in insights. The four spec 8.7 opportunities are seeded as
+candidates with their evidence. scripts/install-crons.sh contains the daily ingest line and
+is never run automatically. All ten venture tests mock the fetcher; zero network in tests.
 
 ## Frontier ingest (Phase 7)
 

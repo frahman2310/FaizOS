@@ -553,4 +553,102 @@ server.registerTool('faizos_unlock_build', {
   return ok(result);
 });
 
+// ================= v2: the venture evidence engine =================
+
+server.registerTool('faizos_venture_ingest', {
+  title: 'Venture ingest (stage 1)',
+  description: 'Fetch fresh evidence from the free tier sources (HN, GitHub, SEC EDGAR, Companies House, YC RFS, MCP registry, Product Hunt, arXiv). Deterministic fetch; classification happens separately in session. Sources without configured keys are skipped and reported.',
+  inputSchema: {},
+}, async () => {
+  const { ingest } = await import('./venture.js');
+  const result = await ingest(db, (url, init) => fetch(url, init));
+  logEvent(db, now(), 'venture_ingest', `${result.inserted} rows`);
+  const pending = (db.prepare('SELECT COUNT(*) c FROM evidence WHERE importance IS NULL').get() as { c: number }).c;
+  return ok({ ...result, pending_classification: pending, next: 'Call faizos_venture_pending, classify each item (jtbd, importance 1-5, dissatisfaction 1-5, optional venture_title to group), then faizos_venture_classify_save.' });
+});
+
+server.registerTool('faizos_venture_pending', {
+  title: 'Pending evidence (stage 2 input)',
+  description: 'Unclassified evidence rows. Classify each in session: the job to be done, importance 1-5, dissatisfaction 1-5, and an optional venture_title to group related evidence.',
+  inputSchema: { limit: z.number().optional() },
+}, async ({ limit }) => {
+  const { pendingClassification } = await import('./venture.js');
+  return ok({ pending: pendingClassification(db, limit ?? 25) });
+});
+
+server.registerTool('faizos_venture_classify_save', {
+  title: 'Save classifications (stage 2)',
+  description: 'Write the in-session classifications back. Grouping by venture_title creates candidate ventures. Every record keeps its source URL and raw excerpt.',
+  inputSchema: {
+    items: z.array(z.object({
+      evidence_id: z.number(),
+      jtbd: z.string(),
+      importance: z.number().min(1).max(5),
+      dissatisfaction: z.number().min(1).max(5),
+      venture_title: z.string().optional(),
+    })),
+  },
+}, async ({ items }) => {
+  const { saveClassifications } = await import('./venture.js');
+  const result = saveClassifications(db, items);
+  logEvent(db, now(), 'venture_classify', `${result.classified} items, ${result.ventures_created} new candidates`);
+  return ok(result);
+});
+
+server.registerTool('faizos_venture_score', {
+  title: 'Corroborate and score (stages 3-4)',
+  description: 'With no arguments: run the corroboration gate (2 or more INDEPENDENT source families advance; everything else fails with the reason). With venture_id + axes (each 1-5): compute the fixed-weight score for a corroborated venture. Axes: opportunity_gap(2), distribution_reachability(3), lab_absorption_risk_inverted(3), buildable_14d(3), teaches_curriculum(1), regulatory_feasibility(2).',
+  inputSchema: {
+    venture_id: z.number().optional(),
+    axes: z.object({
+      opportunity_gap: z.number(),
+      distribution_reachability: z.number(),
+      lab_absorption_risk_inverted: z.number(),
+      buildable_14d: z.number(),
+      teaches_curriculum: z.number(),
+      regulatory_feasibility: z.number(),
+    }).optional(),
+  },
+}, async ({ venture_id, axes }) => {
+  const venture = await import('./venture.js');
+  if (venture_id !== undefined && axes !== undefined) {
+    try {
+      const result = venture.scoreVenture(db, venture_id, axes);
+      logEvent(db, now(), 'venture_score', `#${venture_id} -> ${result.weighted_score}`);
+      return ok(result);
+    } catch (e) {
+      return ok({ error: e instanceof Error ? e.message : String(e) });
+    }
+  }
+  const gate = venture.corroborate(db);
+  logEvent(db, now(), 'venture_corroborate', `${gate.advanced.length} advanced, ${gate.failed.length} failed`);
+  return ok({ ...gate, note: 'Present the failures with their reasons. They teach as much as the passes. Never recommend which venture to pick.' });
+});
+
+server.registerTool('faizos_venture_activate', {
+  title: 'Activate a venture (stage 5, WIP limit 1)',
+  description: 'Set one scored venture active with a falsifiable 14 day v0 metric. The database physically refuses a second active venture. Returns the milestone spine for Build Mode.',
+  inputSchema: { venture_id: z.number(), v0_metric: z.string().describe('one falsifiable success metric for the 14 day v0') },
+}, async ({ venture_id, v0_metric }) => {
+  const { activateVenture } = await import('./venture.js');
+  const result = activateVenture(db, venture_id, v0_metric);
+  if (result.activated) logEvent(db, now(), 'venture_activate', `#${venture_id}: ${v0_metric}`);
+  return ok(result);
+});
+
+server.registerTool('faizos_venture_review', {
+  title: 'The 14 day kill review (stage 5)',
+  description: 'Exactly three outcomes for the active venture: continue (requires a new metric), park (written reason), kill (mandatory post mortem, written into the insight loop). No fourth option.',
+  inputSchema: {
+    outcome: z.enum(['continue', 'park', 'kill']),
+    note: z.string().describe('continue: what the number showed. park: the written reason. kill: the post mortem.'),
+    new_metric: z.string().optional(),
+  },
+}, async ({ outcome, note, new_metric }) => {
+  const { reviewVenture } = await import('./venture.js');
+  const result = reviewVenture(db, outcome, note, new_metric);
+  if (result.done) logEvent(db, now(), 'venture_review', `${outcome}: ${note.slice(0, 80)}`);
+  return ok(result);
+});
+
 await server.connect(new StdioServerTransport());
