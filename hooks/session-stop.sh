@@ -18,10 +18,29 @@ if ! git -C "$ROOT" diff --cached --quiet -- notebook/SESSIONS.md notebook/SUMMA
   git -C "$ROOT" push -q >/dev/null 2>&1 || true
 fi
 
-# --- job 2: nudge the model to analyze an un-closed ship (one nudge only; guarded vs loops) ---
+# --- job 2: refuse to close with unfinished v2 work (one nudge only; guarded vs loops) ---
 if echo "$INPUT" | grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; then
   exit 0
 fi
+
+# v2: an open write-from-empty build must be finished (reviewed via /faiz-review), unlocked
+# (/faiz-unlock, recorded), or explicitly parked before the session may close.
+OPEN_BUILD=$(cd "$ROOT/faizos-core" && node --input-type=commonjs -e '
+try {
+  const Database = require("better-sqlite3");
+  const db = new Database("data/faiz.db", { readonly: true, fileMustExist: true });
+  const b = db.prepare("SELECT id, solution_path, state FROM builds WHERE state IN (\x27awaiting_student\x27, \x27in_review\x27) ORDER BY id DESC LIMIT 1").get();
+  db.close();
+  if (b) process.stdout.write(b.id + " " + b.state + " " + b.solution_path);
+} catch (e) {}
+' 2>/dev/null)
+if [ -n "$OPEN_BUILD" ]; then
+  cat <<EOF
+{"decision":"block","reason":"FaizOS v2: build $OPEN_BUILD is still open. Before finishing: if the tests pass or he gives up, run the three-pass review (/faiz-review, which records it via faizos_review_code); if he is handing it over, /faiz-unlock records that honestly. A session never closes over an unreviewed, unrecorded build."}
+EOF
+  exit 0
+fi
+
 STATE=$("$TSX" "$ROOT/faizos-core/src/faiz.ts" faizos_state 2>/dev/null)
 PENDING=$(printf '%s' "$STATE" | python3 -c "import json,sys
 try: print(json.load(sys.stdin).get('pending_close') or '')

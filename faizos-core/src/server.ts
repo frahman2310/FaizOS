@@ -12,13 +12,20 @@ import { advanceStreak, todayISO } from './streak.js';
 import { compileNotebook } from './notebook.js';
 import { PHASES, MISSION_TEMPLATES, MODULES } from './curriculum.js';
 import { initCard, review as fsrsReview, gradeFromOutcome, type Card } from './fsrs.js';
+import { migrateUp } from './migrate.js';
+import {
+  activeBuild, activeVenture, currentTrack, grantHint, logExperiment, recordErrors,
+  recordReview, specBuild, studentWroteRatio, topOpenErrors, trackStatus, unlockBuild,
+} from './v2.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = process.env.FAIZOS_HOME || join(HERE, '..', 'data');
 const PROJECT_ROOT = process.env.FAIZOS_PROJECT || join(HERE, '..', '..');
 const NOTEBOOK_PATH = process.env.FAIZOS_NOTEBOOK || join(PROJECT_ROOT, 'notebook', 'REVISIONS.md');
 mkdirSync(DATA_DIR, { recursive: true });
-const db: DB = openDb(join(DATA_DIR, 'faiz.db'));
+const DB_PATH = join(DATA_DIR, 'faiz.db');
+const db: DB = openDb(DB_PATH);
+migrateUp(DB_PATH); // idempotent: brings any database (including fresh smoke-test ones) to the v2 schema
 
 const now = () => new Date().toISOString();
 const ok = (obj: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(obj, null, 2) }] });
@@ -59,7 +66,20 @@ server.registerTool('faizos_state', {
     recommended = { action: 'build', label: `Build something that exercises "${target?.name}".`, skill: target?.id, build_hint: target?.build_hint };
   }
 
+  // v2, build heavy: the active write-from-empty build and venture lead the dashboard.
+  const build = activeBuild(db);
+  const venture = activeVenture(db);
+  const track = currentTrack(db);
+  const ratio = studentWroteRatio(db);
+
   return ok({
+    active_build: build
+      ? { ...build, note: 'He writes the solution file. The guard blocks anyone else. /faiz-hint for help, /faiz-unlock to hand it over (recorded).' }
+      : null,
+    active_venture: venture,
+    current_track: track ? { code: track.code, title: track.title, status: track.status, current_as_of: track.current_as_of } : null,
+    open_errors: topOpenErrors(db, 3),
+    student_wrote: ratio,
     streak, best_streak: best, last_active_date: getMeta(db, 'last_active_date') || null,
     pending_close: getMeta(db, 'pending_close') || null,
     current_build: current,
@@ -67,7 +87,7 @@ server.registerTool('faizos_state', {
     shipped_count: shippedCount,
     skills: { total: (db.prepare('SELECT COUNT(*) c FROM skills').get() as { c: number }).c, avg_mastery: Number(avg.toFixed(3)), weakest, recently_moved: recentlyMoved },
     recommended_next: recommended,
-    menu: ['/faiz-build <idea>', '/faiz-ship', '/faiz-analyze', '/faiz-review'],
+    menu: ['/faiz-learn [track|next]', '/faiz-build <idea>', '/faiz-spec', '/faiz-hint', '/faiz-review', '/faiz-run', '/faiz-errors', '/faiz-ship'],
   });
 });
 
@@ -92,8 +112,17 @@ server.registerTool('faizos_start_build', {
 server.registerTool('faizos_ship', {
   title: 'Ship a build',
   description: 'Mark a build shipped (deployed/public/merged). Updates the forgiving streak and clears it as the current build. Celebrate, then suggest /faiz-analyze.',
-  inputSchema: { mission_id: z.number().optional(), ship_url: z.string().optional() },
-}, async ({ mission_id, ship_url }) => {
+  inputSchema: {
+    mission_id: z.number().optional(),
+    ship_url: z.string().optional(),
+    kind: z.enum(['trained_model', 'serving_stack', 'kernel', 'product', 'study']).optional().describe('v2: what kind of system this is. Defaults to study (no metric).'),
+    metric_name: z.string().optional().describe('v2: the real measured metric, e.g. val_loss, tokens_per_sec'),
+    metric_value: z.number().optional(),
+    baseline_value: z.number().optional(),
+    deployed_url: z.string().optional(),
+    track_code: z.string().optional(),
+  },
+}, async ({ mission_id, ship_url, kind, metric_name, metric_value, baseline_value, deployed_url, track_code }) => {
   const cur = activeMission() as any;
   const id = mission_id ?? cur?.id;
   if (!id) return ok({ error: 'No active build to ship. Start one with /faiz-build.' });
@@ -103,6 +132,14 @@ server.registerTool('faizos_ship', {
   const today = todayISO();
   db.prepare("UPDATE missions SET status='shipped', shipped_at=?, ship_url=? WHERE id=?").run(today, ship_url ?? null, id);
   if (String(id) === getMeta(db, 'current_mission_id')) setMeta(db, 'current_mission_id', '');
+
+  // v2: every ship also lands in systems, the unit the capstone is scored from. Study builds
+  // carry no metric, truthfully. Only real measured numbers belong in metric_value.
+  const trackRow = track_code ? (db.prepare('SELECT id FROM tracks WHERE code=?').get(track_code) as { id: number } | undefined) : undefined;
+  db.prepare(
+    `INSERT INTO systems (track_id, title, repo_url, kind, status, metric_name, metric_value, baseline_value, deployed_url, created_at, shipped_at)
+     VALUES (?, ?, ?, ?, 'shipped', ?, ?, ?, ?, ?, ?)`,
+  ).run(trackRow?.id ?? null, m.title, ship_url ?? null, kind ?? 'study', metric_name ?? null, metric_value ?? null, baseline_value ?? null, deployed_url ?? null, now(), today);
 
   const s = advanceStreak({ streak: Number(getMeta(db, 'streak') || 0), best: Number(getMeta(db, 'best_streak') || 0), lastActive: getMeta(db, 'last_active_date') || null }, today);
   setMeta(db, 'streak', String(s.streak)); setMeta(db, 'best_streak', String(s.best)); setMeta(db, 'last_active_date', today);
@@ -257,14 +294,31 @@ server.registerTool('faizos_lesson_start', {
   const weak = db.prepare('SELECT id,name,mastery,must_know FROM skills WHERE on_curriculum=1 ORDER BY mastery ASC, must_know DESC LIMIT 5').all();
   const recentStruggles = (db.prepare('SELECT struggles FROM lessons ORDER BY id DESC LIMIT 3').all() as Array<{ struggles: string }>)
     .flatMap((l) => { try { return JSON.parse(l.struggles); } catch { return []; } });
+
+  // v2, build heavy ordering: the thing he is WRITING comes first, then the error categories
+  // that must weight the rules card, then track and frontier context. Teaching notes come last.
+  const build = activeBuild(db);
+  const track = currentTrack(db);
+  const trackDetail = track ? trackStatus(db, track.code) : null;
+  const dueReviews = db.prepare(
+    'SELECT COUNT(*) c FROM reviews r JOIN skills s ON s.id=r.skill_id WHERE s.must_know=1 AND r.due<=?',
+  ).get(todayISO()) as { c: number };
+
   return ok({
+    active_build: build,
+    open_error_categories: topOpenErrors(db, 3),
+    current_track: trackDetail
+      ? { code: trackDetail.track.code, title: trackDetail.track.title, status: trackDetail.track.status, completion_test: trackDetail.track.completion_test, current_as_of: trackDetail.track.current_as_of, frontier_notes: trackDetail.frontier_notes }
+      : null,
+    due_reviews: dueReviews.c,
+    active_venture: activeVenture(db),
     topic: topic ?? null,
     learning_profile: LEARNING_PROFILE,
     insights_to_apply: insights,
     weak_skills: weak,
     recent_struggles: recentStruggles,
     current_build: activeMission(),
-    note: 'Apply insights_to_apply + recent_struggles proactively. Teach one brick at a time.',
+    note: 'Weight the Python rules card toward open_error_categories. He writes the whole solution file; hints only through /faiz-hint, one rung at a time.',
   });
 });
 
@@ -280,17 +334,32 @@ server.registerTool('faizos_record_lesson', {
     worked: z.array(z.string()).optional(),
     new_insights: z.array(z.string()).optional().describe('1-2 concrete, reusable teaching adjustments for next time'),
     difficulty_felt: z.enum(['too_easy', 'right', 'too_hard']).optional(),
+    mode: z.enum(['course', 'build']).optional(),
+    depth: z.enum(['explain', 'flow', 'ship']).optional(),
+    lesson_id: z.number().optional().describe('update an existing lesson row created by faizos_spec_build instead of inserting a new one'),
+    errors: z.array(z.object({
+      category: z.string().describe('taxonomy category, e.g. expression-vs-statement, inverse-relationship, ordering-pairing'),
+      description: z.string(),
+      code_excerpt: z.string().optional(),
+      rule_broken: z.string().optional(),
+    })).optional().describe('every genuine mistake this lesson, classified into the taxonomy'),
   },
-}, async ({ topic, mission_id, skills, struggles, worked, new_insights, difficulty_felt }) => {
+}, async ({ topic, mission_id, skills, struggles, worked, new_insights, difficulty_felt, mode, depth, lesson_id, errors }) => {
   const ts = now();
-  db.prepare('INSERT INTO lessons (ts,topic,mission_id,skills,struggles,worked,difficulty_felt) VALUES (?,?,?,?,?,?,?)')
-    .run(ts, topic, mission_id ?? null, JSON.stringify(skills ?? []), JSON.stringify(struggles ?? []), JSON.stringify(worked ?? []), difficulty_felt ?? null);
-  const upsert = db.prepare('INSERT INTO insights (ts,note,weight) VALUES (?,?,1) ON CONFLICT(note) DO UPDATE SET weight=weight+1, ts=excluded.ts, active=1');
-  for (const n of new_insights ?? []) if (n.trim()) upsert.run(ts, n.trim());
-  logEvent(db, ts, 'lesson', `${topic} (+${(new_insights ?? []).length} insights)`);
+  if (lesson_id !== undefined) {
+    db.prepare('UPDATE lessons SET topic=?, mission_id=COALESCE(?, mission_id), skills=?, struggles=?, worked=?, difficulty_felt=?, mode=COALESCE(?, mode), depth=COALESCE(?, depth) WHERE id=?')
+      .run(topic, mission_id ?? null, JSON.stringify(skills ?? []), JSON.stringify(struggles ?? []), JSON.stringify(worked ?? []), difficulty_felt ?? null, mode ?? null, depth ?? null, lesson_id);
+  } else {
+    db.prepare('INSERT INTO lessons (ts,topic,mission_id,skills,struggles,worked,difficulty_felt,mode,depth) VALUES (?,?,?,?,?,?,?,?,?)')
+      .run(ts, topic, mission_id ?? null, JSON.stringify(skills ?? []), JSON.stringify(struggles ?? []), JSON.stringify(worked ?? []), difficulty_felt ?? null, mode ?? 'course', depth ?? 'explain');
+  }
+  const errorsRecorded = recordErrors(db, errors ?? []);
+  const upsert = db.prepare('INSERT INTO insights (ts,note,weight,mode) VALUES (?,?,1,?) ON CONFLICT(note) DO UPDATE SET weight=weight+1, ts=excluded.ts, active=1');
+  for (const n of new_insights ?? []) if (n.trim()) upsert.run(ts, n.trim(), mode ?? 'course');
+  logEvent(db, ts, 'lesson', `${topic} (+${(new_insights ?? []).length} insights, ${errorsRecorded} errors classified)`);
   setMeta(db, 'pending_close', ''); // loop closed for this build
   const active = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC LIMIT 8').all();
-  return ok({ recorded: topic, new_insights: new_insights ?? [], active_insights: active, note: 'These load at the next faizos_lesson_start.' });
+  return ok({ recorded: topic, errors_recorded: errorsRecorded, new_insights: new_insights ?? [], active_insights: active, note: 'These load at the next faizos_lesson_start.' });
 });
 
 // ---- faizos_save_revision: store note + regenerate the compiled notebook ----
@@ -365,6 +434,123 @@ server.registerTool('faizos_progress', {
     ...modLines,
   ].join('\n');
   return ok({ coverage_pct: Math.round(coverage * 100), modules_done: done, modules_total: 20, avg_mastery_pct: Math.round(overall * 100), skills_touched: touched, missions_shipped: shipped, rendered });
+});
+
+// ================= v2: the write-from-empty loop =================
+
+// ---- faizos_track_status ----
+server.registerTool('faizos_track_status', {
+  title: 'Track status',
+  description: 'One track (or the current one if no code given): position, status, completion test, its systems with metrics, skill coverage, and recent frontier notes affecting it.',
+  inputSchema: { track_code: z.string().optional().describe('T0..T10; omit for the current track') },
+}, async ({ track_code }) => {
+  const code = track_code ?? currentTrack(db)?.code;
+  if (!code) return ok({ error: 'no tracks seeded' });
+  const status = trackStatus(db, code);
+  if (!status) return ok({ error: `no track ${code}` });
+  return ok(status);
+});
+
+// ---- faizos_spec_build: opens a write-from-empty build ----
+server.registerTool('faizos_spec_build', {
+  title: 'Spec a write-from-empty build',
+  description: 'Creates the lesson row and the build row (state awaiting_student) and returns the solution/test paths plus the top open error categories to weight the Python rules card. After calling this: post the plain-English design brief, post the rules card, WRITE THE FAILING TEST FILE at test_path, and then the student writes solution_path from empty. The guard blocks anyone else writing it.',
+  inputSchema: {
+    topic: z.string(),
+    slug: z.string().optional(),
+    mode: z.enum(['course', 'build']).optional(),
+    depth: z.enum(['explain', 'flow', 'ship']).optional(),
+    track_code: z.string().optional(),
+  },
+}, async (args) => {
+  const result = specBuild(db, args);
+  logEvent(db, now(), 'spec_build', `#${result.build_id} ${args.topic} -> ${result.solution_path}`);
+  return ok({
+    ...result,
+    contract: 'Design brief in plain English (no code). Rules card: 3-6 entries, construct -> meaning -> the one rule that trips people, weighted toward open_error_categories. Failing tests at test_path. Nothing else. He writes solution_path from an empty file.',
+  });
+});
+
+// ---- faizos_hint: one rung, never skips ----
+server.registerTool('faizos_hint', {
+  title: 'Serve one hint rung',
+  description: 'Grants exactly one hint rung for the active build, strictly in order (1..4). Rung 4 is never given unprompted. The tool returns the FRAME for what the hint may contain; you author the hint within that frame and nothing more.',
+  inputSchema: { build_id: z.number().optional(), rung: z.number() },
+}, async ({ build_id, rung }) => {
+  const id = build_id ?? activeBuild(db)?.id;
+  if (id === undefined) return ok({ granted: false, reason: 'no active build' });
+  const result = grantHint(db, id, rung);
+  if (result.granted) logEvent(db, now(), 'hint', `build #${id} rung ${result.rung}`);
+  return ok(result);
+});
+
+// ---- faizos_review_code: the three-pass review, recorded ----
+server.registerTool('faizos_review_code', {
+  title: 'Record a code review',
+  description: 'Call AFTER running the three-pass review of the STUDENT\'S code (1: his code line by line in plain English; 2: diff against reference classified correctness/clarity/taste; 3: error classification). Writes code_reviews and the error taxonomy, and marks the build done.',
+  inputSchema: {
+    build_id: z.number(),
+    student_code: z.string(),
+    reference_code: z.string().optional(),
+    diff_summary: z.string().optional(),
+    correctness_diffs: z.array(z.string()).optional(),
+    taste_diffs: z.array(z.string()).optional(),
+    errors: z.array(z.object({
+      category: z.string(),
+      description: z.string(),
+      code_excerpt: z.string().optional(),
+      rule_broken: z.string().optional(),
+    })).optional(),
+  },
+}, async (args) => {
+  const result = recordReview(db, args);
+  logEvent(db, now(), 'review', `build #${args.build_id}: ${result.errors_recorded} errors classified`);
+  return ok({ ...result, note: 'Most differences are taste. Say so, or he learns to write your code instead of learning to write.' });
+});
+
+// ---- faizos_log_experiment ----
+server.registerTool('faizos_log_experiment', {
+  title: 'Log an experiment run',
+  description: 'Record one run against a system: config, seed, metric, hardware, cost. Returns the seed spread once the system+metric has 3 or more runs. A claim is only real if the gain clears the spread.',
+  inputSchema: {
+    system_id: z.number(),
+    metric_name: z.string(),
+    metric_value: z.number(),
+    config_json: z.string().optional(),
+    seed: z.number().optional(),
+    gpu_type: z.string().optional(),
+    gpu_hours: z.number().optional(),
+    cost_usd: z.number().optional(),
+    notes: z.string().optional(),
+  },
+}, async (args) => {
+  const result = logExperiment(db, args);
+  logEvent(db, now(), 'experiment', `system #${args.system_id} ${args.metric_name}=${args.metric_value}`);
+  return ok(result);
+});
+
+// ---- faizos_error_report ----
+server.registerTool('faizos_error_report', {
+  title: 'Error taxonomy report',
+  description: 'Open error categories ranked by occurrences, with the rule each breaks and when last seen. The top categories weight the next rules card.',
+  inputSchema: {},
+}, async () => {
+  const open = db.prepare('SELECT category, description, rule_broken, occurrences, last_seen FROM errors WHERE resolved=0 ORDER BY occurrences DESC, category').all();
+  const resolved = db.prepare('SELECT category, occurrences, last_seen FROM errors WHERE resolved=1 ORDER BY last_seen DESC').all();
+  return ok({ open, resolved });
+});
+
+// ---- faizos_unlock_build: hand a build to the assistant, recorded honestly ----
+server.registerTool('faizos_unlock_build', {
+  title: 'Unlock the active build',
+  description: 'Explicitly hands the current build to the assistant. Sets the build state to unlocked, marks student_wrote=0 on the lesson, and shows on the dashboard as a skipped build. Honest, not punitive.',
+  inputSchema: { build_id: z.number().optional(), reason: z.string().optional() },
+}, async ({ build_id, reason }) => {
+  const id = build_id ?? activeBuild(db)?.id;
+  if (id === undefined) return ok({ unlocked: false, reason: 'no active build' });
+  const result = unlockBuild(db, id);
+  if (result.unlocked) logEvent(db, now(), 'unlock', `build #${id}${reason ? ': ' + reason : ''}`);
+  return ok(result);
 });
 
 await server.connect(new StdioServerTransport());

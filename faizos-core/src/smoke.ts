@@ -106,5 +106,56 @@ const prog = await call('faizos_progress', {});
 console.assert(typeof prog.rendered === 'string' && prog.rendered.includes('OVERALL'), 'progress bar renders');
 console.log('Progress:', prog.coverage_pct + '% coverage,', prog.modules_done + '/20 modules,', prog.missions_shipped, 'shipped');
 
+// --- v2: the write-from-empty loop over the real MCP surface ---
+// The isolated DB is fresh, so seed the tracks the way Phase 2 did on the live one.
+{
+  const { default: Database } = await import('better-sqlite3');
+  const { seedTracks } = await import('./backfill.js');
+  const seedDb = new Database(join(isolated, 'faiz.db'));
+  seedTracks(seedDb);
+  seedDb.close();
+}
+const spec = await call('faizos_spec_build', { topic: 'smoke rotary build', track_code: 'T3', mode: 'course', depth: 'explain' });
+console.assert(typeof spec.build_id === 'number' && spec.solution_path.endsWith('.py'), 'spec_build returns a build + paths');
+console.assert(Array.isArray(spec.open_error_categories), 'spec_build surfaces error categories for the rules card');
+
+const ls2 = await call('faizos_lesson_start', { topic: 'v2 fields' });
+console.assert(ls2.active_build && ls2.active_build.id === spec.build_id, 'lesson_start leads with the active build');
+console.assert('open_error_categories' in ls2 && 'current_track' in ls2, 'lesson_start carries v2 context');
+
+const h1 = await call('faizos_hint', { build_id: spec.build_id, rung: 1 });
+console.assert(h1.granted === true && h1.rung === 1, 'rung 1 grants');
+const h3 = await call('faizos_hint', { build_id: spec.build_id, rung: 3 });
+console.assert(h3.granted === false, 'rung 3 refused before rung 2 — the ladder never skips');
+
+const rev = await call('faizos_review_code', {
+  build_id: spec.build_id,
+  student_code: 'def rotate(v, a): pass',
+  diff_summary: 'one correctness diff',
+  correctness_diffs: ['pairing error'],
+  errors: [{ category: 'ordering-pairing', description: 'query rotated by the key position', rule_broken: 'the query uses its own position' }],
+});
+console.assert(rev.errors_recorded === 1, 'review classified the error');
+const report = await call('faizos_error_report');
+console.assert(report.open.some((e: any) => e.category === 'ordering-pairing'), 'error_report surfaces the taxonomy');
+
+const b2 = await call('faizos_start_build', { idea: 'smoke v2 trained model' });
+const ship2 = await call('faizos_ship', { mission_id: b2.mission_id, kind: 'trained_model', metric_name: 'val_loss', metric_value: 3.28, baseline_value: 3.31, track_code: 'T2' });
+console.assert(ship2.shipped.mission_id === b2.mission_id, 'v2 ship works');
+let spreadSeen = null;
+for (const [seed, v] of [[1, 3.29], [2, 3.27], [3, 3.31]] as Array<[number, number]>) {
+  const r = await call('faizos_log_experiment', { system_id: 2, metric_name: 'val_loss', metric_value: v, seed });
+  spreadSeen = r.seed_spread;
+}
+console.assert(spreadSeen && spreadSeen.n === 3 && Math.abs(spreadSeen.spread - 0.04) < 1e-9, 'seed spread reported at n=3');
+
+const ts = await call('faizos_track_status', { track_code: 'T2' });
+console.assert(ts.track && ts.track.code === 'T2' && ts.systems.length >= 1, 'track_status sees the shipped system');
+
+const unlockSpec = await call('faizos_spec_build', { topic: 'smoke unlock build' });
+const unlocked = await call('faizos_unlock_build', { build_id: unlockSpec.build_id, reason: 'smoke test' });
+console.assert(unlocked.unlocked === true, 'unlock records the handover');
+console.log('v2 loop: spec -> hint ladder -> review -> errors -> ship(kind+metric) -> experiments -> unlock ✅');
+
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');
