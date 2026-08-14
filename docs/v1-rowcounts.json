@@ -1,0 +1,16 @@
+{
+  "captured_at": "2026-08-14",
+  "captured_on_branch": "faizos-v2",
+  "note": "Row counts of every pre-existing table at Phase 0. The v2 migration and backfill must never change any of these numbers. Tests read this file.",
+  "tables": {
+    "insights": 79,
+    "journey_log": 271,
+    "lessons": 44,
+    "meta": 10,
+    "missions": 44,
+    "radar": 0,
+    "reviews": 0,
+    "revisions": 52,
+    "skills": 66
+  }
+}

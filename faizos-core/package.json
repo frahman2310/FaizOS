@@ -6,7 +6,8 @@
   "description": "FaizOS deterministic brain — MCP server (state, skills, missions, mastery).",
   "scripts": {
     "start": "tsx src/server.ts",
-    "test": "tsx src/mastery.ts && tsx src/streak.ts && tsx src/notebook.ts && tsx src/fsrs.ts"
+    "test": "vitest run && tsx src/mastery.ts && tsx src/streak.ts && tsx src/notebook.ts && tsx src/fsrs.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
@@ -17,6 +18,7 @@
     "@types/better-sqlite3": "^7.6.0",
     "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.10"
   }
 }
