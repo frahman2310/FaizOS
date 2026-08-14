@@ -70,4 +70,20 @@ is never run automatically. All ten venture tests mock the fetcher; zero network
 
 ## Frontier ingest (Phase 7)
 
-Written at Phase 7.
+The frontier table is seeded with the ten spec section 6 subsections, each mapped to the
+track it affects (6.10 is general and maps to none). src/frontier.ts fetches weekly: recent
+arXiv entries for the current track and the next one only, because frontier for tracks far
+ahead is noise. Fetch is deterministic and dedupes on url+title; summarising what an item
+changes for the current build happens in session through faizos_frontier_ingest, which also
+reports every track whose current_as_of has drifted past 60 days. /faiz-frontier renders the
+week grouped by track. The weekly cron line lives in scripts/install-crons.sh next to the
+daily venture line; the script is provided, never run automatically. Three frontier tests,
+all mocked.
+
+## Definition of done
+
+Checked at the end of Phase 7: full test suite and smoke green; every pre-existing row intact
+against docs/v1-rowcounts.json; the guard denies a write to an awaiting_student solution path
+through the real hook script; the database refuses a second active venture; CAPSTONE.md
+regenerates auto scored; the learn and build loops write to skills, insights, revisions and
+errors end to end; docs/v1-audit.md and this changelog exist.

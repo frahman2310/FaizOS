@@ -651,4 +651,19 @@ server.registerTool('faizos_venture_review', {
   return ok(result);
 });
 
+server.registerTool('faizos_frontier_ingest', {
+  title: 'Weekly frontier fetch (deterministic; you classify after)',
+  description: 'Fetch recent arXiv entries for the current and next track into the frontier table, then report drifted tracks (current_as_of older than 60 days). Fetch is deterministic; summarising what each item changes for Faiz happens in session.',
+  inputSchema: {},
+}, async () => {
+  const { fetchFrontier, driftedTracks } = await import('./frontier.js');
+  const realFetch = (url: string, init?: { headers?: Record<string, string> }) => fetch(url, init);
+  const result = await fetchFrontier(db, realFetch);
+  logEvent(db, now(), 'frontier_ingest', `${result.inserted} new rows`);
+  const recent = db.prepare(
+    "SELECT f.title, f.url, f.summary, t.code AS track FROM frontier f LEFT JOIN tracks t ON t.id = f.affects_track_id WHERE f.actioned = 0 ORDER BY f.ingested_at DESC LIMIT 15",
+  ).all();
+  return ok({ ...result, drifted_tracks: driftedTracks(db), unactioned: recent, note: 'Group by track. One line per item on what it changes for the current build. Skip tracks more than two positions away.' });
+});
+
 await server.connect(new StdioServerTransport());
