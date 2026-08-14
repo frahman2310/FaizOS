@@ -4,3 +4,4 @@ faizos-core/data/
 .DS_Store
 __pycache__/
 *.pyc
+notebook/VENTURES.md

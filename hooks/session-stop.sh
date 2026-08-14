@@ -12,9 +12,10 @@ TSX="$ROOT/faizos-core/node_modules/.bin/tsx"
 "$TSX" "$ROOT/faizos-core/src/session-log.ts"      >/dev/null 2>&1 || true
 "$TSX" "$ROOT/faizos-core/src/build-summary.ts"    >/dev/null 2>&1 || true
 "$TSX" "$ROOT/faizos-core/src/revision-compile.ts" >/dev/null 2>&1 || true
-git -C "$ROOT" add notebook/SESSIONS.md notebook/SUMMARY.md notebook/REVISION.md >/dev/null 2>&1 || true
-if ! git -C "$ROOT" diff --cached --quiet -- notebook/SESSIONS.md notebook/SUMMARY.md notebook/REVISION.md 2>/dev/null; then
-  git -C "$ROOT" commit -q -m "auto: session log + build summary + revision guide" >/dev/null 2>&1 || true
+"$TSX" "$ROOT/faizos-core/src/generators.ts" all   >/dev/null 2>&1 || true
+git -C "$ROOT" add notebook/SESSIONS.md notebook/SUMMARY.md notebook/REVISION.md notebook/EXPERIMENTS.md notebook/ERRORS.md notebook/FRONTIER.md CAPSTONE.md >/dev/null 2>&1 || true
+if ! git -C "$ROOT" diff --cached --quiet 2>/dev/null; then
+  git -C "$ROOT" commit -q -m "auto: session log + summaries + v2 artefacts" >/dev/null 2>&1 || true
   git -C "$ROOT" push -q >/dev/null 2>&1 || true
 fi
 

@@ -1,96 +1,43 @@
-# Capstone audit — the 8-rung portfolio
+# Capstone audit, auto scored
 
-An honest assessment of 43 shipped builds against a hire-grade portfolio. The bar for each rung is
-**an artifact someone else can verify**, ideally with a public number.
+Scored from the systems and experiments tables. A rung counts only when database rows back
+it, and every rung prints the rule it was scored by. Regenerated on every session close;
+hand editing is pointless and the generator will not flatter.
 
-Status key: ✅ solid · ⚠️ partial · ❌ missing
+**1 solid, 0 partial, 7 missing.**
 
----
+## Rung 1: From scratch fundamentals [SOLID]
+- Evidence: 44 shipped study systems
+- Scoring rule: 20 or more shipped study systems
 
-## ✅ Rung 1 — From-scratch fundamentals
+## Rung 2: A working system others can run [MISSING]
+- Evidence: no shipped product system row
+- Scoring rule: a shipped systems row of kind 'product' with a repo or deployed URL
 
-**Solid, and unusually deep.** A transformer built from nothing, in plain Python, no frameworks:
-softmax → matmul cost → autograd → neuron → layer → MLP → self-attention → QKV → RoPE → RMSNorm →
-transformer block → BPE tokenizer → KV cache. Then the modern upgrades: SwiGLU, GQA, SSM/Mamba, MLA.
+## Rung 3: A trained model with a reported metric [MISSING]
+- Evidence: no trained_model system with a metric
+- Scoring rule: a trained_model system with a metric and 3 or more seeded experiment runs
 
-Most candidates have used a transformer. Few have written every part of one and can explain why each
-line exists. **This rung is genuinely strong.**
+## Rung 4: A measured performance win [MISSING]
+- Evidence: no kernel system with metric and baseline
+- Scoring rule: a kernel system whose measured metric differs from its reference baseline
 
-## ✅ Rung 2 — A working system others can run
+## Rung 5: A reproduction of a published result [MISSING]
+- Evidence: no system whose seeded mean matches its published baseline within the spread
+- Scoring rule: a system with 3 or more seeds whose mean metric sits within the seed spread of its recorded published baseline
 
-**FaizOS itself** is the strongest single artifact here, and it is easy to undersell:
-a Claude Code plugin with a local MCP server (TypeScript + SQLite), slash commands, session hooks,
-a deterministic notebook compiler, FSRS spaced repetition, and auto-generated progress tracking.
+## Rung 6: A merged open source contribution [MISSING]
+- Evidence: no shipped systems row titled 'PR: <repo>' (ship one when a PR merges)
+- Scoring rule: a shipped systems row titled 'PR: <repo>' with the PR URL as repo_url
 
-It is a real piece of software with real users (one), real persistence, and no model in the loop for
-any of its state. **Lead the portfolio with this.**
+## Rung 7: An eval harness with results [MISSING]
+- Evidence: no system with a measured eval metric (perplexity, pass@k, accuracy, recall, precision, CORE)
+- Scoring rule: a system carrying a real measured eval family metric
 
-## ⚠️ Rung 3 — A trained model with a reported metric
+## Rung 8: A capstone artifact with a number [MISSING]
+- Evidence: no product system
+- Scoring rule: a shipped product system carrying a real metric (users, revenue, installs)
 
-**Partial.** Real training loops were written and run — the XOR MLP converged, and the learnable
-attention weight went from loss 4.0 to 0.002. But these are toy scales. There is no trained model
-with a metric anyone else would recognise.
-
-**To close:** fine-tune a small open model (QLoRA on a 7B) on a real task and report a before/after
-eval number.
-
-## ⚠️ Rung 4 — A measured performance win
-
-**Modeled, not measured.** The kernel and systems work is analytically correct — arithmetic intensity,
-the roofline, FlashAttention's tiling, GQA's cache maths, the checkpoint optimum — but every number
-was computed rather than benchmarked, because there is no NVIDIA GPU on this machine.
-
-**To close:** rent an hour of A100/H100 time, run the Triton fused softmax against the PyTorch
-baseline, and report the measured speedup.
-
-## ❌ Rung 5 — A reproduction of a published result
-
-**Missing.** The method is now understood (seeds, spread, compute-matched baselines, ablations) but
-nothing has been reproduced.
-
-**To close:** pick a small, well-specified result with a public number and match it within noise.
-Report mean ± spread over ≥3 seeds. This is the single most credible artifact on the list, because
-almost nobody does it and it cannot be faked.
-
-## ❌ Rung 6 — A merged open-source contribution
-
-**Missing, and only you can close it.** The bar is a **merged** PR, not an opened one.
-
-**To close:** `vLLM`, `TRL`, `transformers` and `nanoGPT` all label beginner issues
-(`good first issue`, `documentation`). Realistic first PRs: a docstring that is wrong, a missing type
-hint, a failing edge case in a test. Small and merged beats ambitious and ignored.
-
-## ⚠️ Rung 7 — An eval harness with results
-
-**Partial.** Perplexity was implemented correctly from scratch (`exp(mean(-ln p))`) and the
-capability-vs-reliability distinction (pass@1 vs pass@k) is understood — but neither has been run
-against a real model on real held-out data.
-
-**To close:** run the perplexity harness over a public dataset with two model sizes and plot the gap.
-
-## ⚠️ Rung 8 — A capstone artifact
-
-**Partial — and it already exists, it just needs framing.** FaizOS is the capstone. What it lacks is
-a README written for a stranger rather than for you: what problem it solves, a 30-second demo, and
-one number (43 builds, 20 modules, ~7 months of curriculum compressed).
-
----
-
-## The honest summary
-
-**2 solid · 3 partial · 3 missing.**
-
-Depth of *understanding* is well ahead of depth of *evidence*. That is the opposite of the usual
-problem, and it is the easier one to fix — you cannot fake understanding, but you can absolutely go
-and generate evidence.
-
-**The single bottleneck is compute.** Rungs 3, 4, 5 and 7 all need a real GPU. An hour of rented
-A100 time (a few dollars) unlocks four rungs. That is the highest-leverage next action by a wide
-margin.
-
-**Suggested order:**
-1. Frame FaizOS properly (rung 8) — free, today.
-2. Rent a GPU, benchmark the Triton kernel (rung 4) — one afternoon, one real number.
-3. QLoRA fine-tune with a before/after eval (rungs 3 + 7) — one weekend.
-4. Reproduce one small published result (rung 5) — the credibility artifact.
-5. Land one small merged PR (rung 6) — the public signal.
+The fastest path from PARTIAL and MISSING to SOLID is unchanged: one rented GPU hour
+produces the first real metrics (rungs 3, 5, 7), a benchmarked kernel closes 4, a
+merged PR closes 6, and shipping FaizOS v2 as a product with a user count closes 2 and 8.
