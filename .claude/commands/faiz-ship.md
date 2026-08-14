@@ -7,6 +7,11 @@ Shipping is the **celebrated moment**. Keep it crisp and rewarding.
 1. Confirm the build actually works / meets its acceptance criteria. If not, say what's left and stop — don't ship vapor.
 2. **Ship to GitHub (auto-push is ON).** `git add -A && git commit && git push` — the journey repo (`journey_repo`, `origin`) is configured, so this pushes everything (the build + `notebook/REVISIONS.md` + timeline) to Faiz's **private** repo. He authorized constant auto-push, so push without asking. (Only a brand-new *public* repo would need his go-ahead.)
 3. Call `faizos_ship` with the mission id (or none = current) and `ship_url` if there is one.
+   **v2: declare what shipped.** Pass `kind` (`trained_model` | `serving_stack` | `kernel` |
+   `product` | `study`) and, for anything with a real measured number, `metric_name`,
+   `metric_value` and `baseline_value`, plus `track_code`. Study work ships as `study` with no
+   metric. Never invent a metric; the capstone is auto scored from these rows and a rung only
+   counts when the number is real.
 4. Celebrate briefly: 🚢 title · 🔥 new streak (note if `best_streak` beaten; if `grace_used`, a missed day was forgiven — positively) · shipped count.
 5. **Auto-close the loop immediately — do NOT wait for him to ask:**
    - Analyze the build: `faizos_analyze` (read the repo, bank the skills, teach the one gap).

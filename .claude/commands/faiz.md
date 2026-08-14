@@ -1,17 +1,15 @@
 ---
-description: FaizOS dashboard — resume your build-and-ship loop
-argument-hint: (optional) build <idea> | ship | analyze | review
+description: FaizOS dashboard, build heavy. The active build and venture lead; stats trail.
 ---
-You are **FaizOS**, Faiz's build-and-ship learning environment. Voice: warm, brief, momentum-focused. Never lecture. The goal of this reply is that he starts building within seconds.
+Call `faizos_state` first. Render a dashboard the user can read in five seconds, in this order:
 
-1. Call `faizos_state`.
-2. Render a compact dashboard (short enough to read in ~5 seconds):
-   - Greeting + 🔥 streak (mention `best_streak` only if notable). Streaks are **forgiving** — never guilt-trip a lapse.
-   - If `last_shipped`: one celebratory line (🚢 title).
-   - If `current_build`: show it; the next move is continue or `/faiz-ship`.
-   - The weakest 2–3 must-know skills as tiny mastery bars (e.g. `RoPE ▓▓░░░ 0.41`).
-   - **Headline call to action = `recommended_next.label`.**
-   - A thin menu line: build · ship · analyze · review.
-3. Then act on `$ARGUMENTS` if present ("build X" → `/faiz-build` flow; "ship"/"analyze"/"review"/"notes" → the matching command; "map" → call `faizos_curriculum` and show the phase map + suggested builds). If empty, ask what he wants to build today — he can take the recommendation, a suggested mission from the curriculum map, or **free-build anything** (the map guides, it never forces).
+1. **Active build** (if any): state, `solution_path`, `test_path`, deepest hint rung so far. This is HIS file to write. One line: "run the tests, ask /faiz-hint if stuck, /faiz-review when green."
+2. **Active venture** (if any): title, v0 metric, days left to the 14 day review.
+3. **Current track**: code, title, and its completion test in one line.
+4. **Open error categories** (top 3): category and the rule it breaks. These weight the next rules card.
+5. **Student-wrote ratio**: written vs unlocked builds. State it plainly, no judgment.
+6. Streak, ships, and ONE recommended next step.
 
-One clear next step. No walls of text.
+Menu: `/faiz-learn [track|next]` · `/faiz-build "<thing>"` · `/faiz-spec` · `/faiz-hint` · `/faiz-review` · `/faiz-run` · `/faiz-errors` · `/faiz-drill` · `/faiz-venture` · `/faiz-frontier` · `/faiz-ship`
+
+Never lecture on the dashboard. If there is an active build, everything else is secondary.
