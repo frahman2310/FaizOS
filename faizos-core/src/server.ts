@@ -560,8 +560,8 @@ server.registerTool('faizos_venture_ingest', {
   description: 'Fetch fresh evidence from the free tier sources (HN, GitHub, SEC EDGAR, Companies House, YC RFS, MCP registry, Product Hunt, arXiv). Deterministic fetch; classification happens separately in session. Sources without configured keys are skipped and reported.',
   inputSchema: {},
 }, async () => {
-  const { ingest } = await import('./venture.js');
-  const result = await ingest(db, (url, init) => fetch(url, init));
+  const { ingest, realFetch } = await import('./venture.js');
+  const result = await ingest(db, realFetch);
   logEvent(db, now(), 'venture_ingest', `${result.inserted} rows`);
   const pending = (db.prepare('SELECT COUNT(*) c FROM evidence WHERE importance IS NULL').get() as { c: number }).c;
   return ok({ ...result, pending_classification: pending, next: 'Call faizos_venture_pending, classify each item (jtbd, importance 1-5, dissatisfaction 1-5, optional venture_title to group), then faizos_venture_classify_save.' });
@@ -657,7 +657,7 @@ server.registerTool('faizos_frontier_ingest', {
   inputSchema: {},
 }, async () => {
   const { fetchFrontier, driftedTracks } = await import('./frontier.js');
-  const realFetch = (url: string, init?: { headers?: Record<string, string> }) => fetch(url, init);
+  const { realFetch } = await import('./venture.js');
   const result = await fetchFrontier(db, realFetch);
   logEvent(db, now(), 'frontier_ingest', `${result.inserted} new rows`);
   const recent = db.prepare(

@@ -33,6 +33,11 @@ export type FetchLike = (url: string, init?: { headers?: Record<string, string> 
 
 const UA = 'FaizOS-venture-research faiz.rahman.research@proton.me'; // SEC EDGAR requires a real UA
 
+// The one real fetch. The 30s abort matters: a degraded API holding the socket open would
+// otherwise hang a cron run forever, and cron has nobody watching it.
+export const realFetch: FetchLike = (url, init) =>
+  fetch(url, { ...init, signal: AbortSignal.timeout(30000) });
+
 const clip = (t: string, n = 400): string => t.replace(/\s+/g, ' ').trim().slice(0, n);
 
 async function jsonOf(f: FetchLike, url: string, headers?: Record<string, string>): Promise<unknown> {
@@ -147,7 +152,8 @@ export async function fetchProductHunt(f: FetchLike): Promise<RawEvidence[]> {
 
 export async function fetchArxiv(f: FetchLike): Promise<RawEvidence[]> {
   const res = await f(
-    'http://export.arxiv.org/api/query?search_query=cat:cs.SE+AND+abs:%22developer%20pain%22&max_results=5',
+    'https://export.arxiv.org/api/query?search_query=cat:cs.SE+AND+abs:%22developer%20pain%22&max_results=5',
+    { headers: { 'User-Agent': UA } },
   );
   if (!res.ok) throw new Error(`arxiv -> ${res.status}`);
   const xml = await res.text();
@@ -458,7 +464,6 @@ if (invokedDirectly) {
   const db = new Database(dbPath, { fileMustExist: true });
   db.pragma('journal_mode = WAL');
   if (command === 'ingest') {
-    const realFetch: FetchLike = (url, init) => fetch(url, init);
     ingest(db, realFetch)
       .then((r) => {
         console.log(`ingested ${r.inserted} new evidence rows`);

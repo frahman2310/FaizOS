@@ -6,7 +6,7 @@
 import Database from 'better-sqlite3';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { FetchLike } from './venture.js';
+import { realFetch, type FetchLike } from './venture.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_DB = join(HERE, '..', 'data', 'faiz.db');
@@ -103,6 +103,19 @@ export const TRACK_QUERIES: Record<string, string> = {
 const ENTRY_RE = /<entry>[\s\S]*?<id>([^<]+)<\/id>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<summary>([\s\S]*?)<\/summary>[\s\S]*?<\/entry>/g;
 const clip = (t: string, n = 400): string => t.replace(/\s+/g, ' ').trim().slice(0, n);
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
+const UA = { 'User-Agent': 'FaizOS-frontier faiz.rahman.research@proton.me' };
+
+// arXiv throttles hard and intermittently (429/503 even on the first request). One polite
+// retry; a still-failing source is reported, never fatal, and the weekly cron tries again.
+async function fetchArxivXml(fetchImpl: FetchLike, url: string, retryDelayMs: number): Promise<string> {
+  let res = await fetchImpl(url, { headers: UA });
+  if ((res.status === 429 || res.status === 503) && retryDelayMs > 0) {
+    await sleep(retryDelayMs);
+    res = await fetchImpl(url, { headers: UA });
+  }
+  if (!res.ok) throw new Error(`arxiv -> ${res.status}`);
+  return res.text();
+}
 
 export async function fetchFrontier(
   db: Database.Database,
@@ -127,11 +140,11 @@ export async function fetchFrontier(
     const q = TRACK_QUERIES[t.code];
     if (!q) continue;
     try {
-      const res = await fetchImpl(
-        `http://export.arxiv.org/api/query?search_query=${encodeURIComponent(q)}&sortBy=submittedDate&sortOrder=descending&max_results=5`,
+      const xml = await fetchArxivXml(
+        fetchImpl,
+        `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(q)}&sortBy=submittedDate&sortOrder=descending&max_results=5`,
+        delayMs > 0 ? 5000 : 0,
       );
-      if (!res.ok) throw new Error(`arxiv -> ${res.status}`);
-      const xml = await res.text();
       let count = 0;
       for (const m of xml.matchAll(ENTRY_RE)) {
         const url = (m[1] ?? '').trim();
@@ -178,7 +191,6 @@ if (invokedDirectly) {
     console.log(`seeded ${seedFrontier(db)} frontier rows from spec section 6`);
     db.close();
   } else if (command === 'fetch') {
-    const realFetch: FetchLike = (url, init) => fetch(url, init);
     fetchFrontier(db, realFetch)
       .then((r) => {
         console.log(`fetched ${r.inserted} new frontier rows`);
