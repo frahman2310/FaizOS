@@ -75,6 +75,22 @@ describe('PreToolUse write guard', () => {
     expect(runGuard({ tool_name: 'Write', tool_input: { file_path: solutionAbs } })).toBe('');
   });
 
+  it('stands down on a production track, where he is a novice', () => {
+    // Expertise reversal: worked examples beat blank pages for novices and reverse for experts.
+    // Blocking a P-track write would produce failure he cannot learn from, so the guard reads
+    // the policy off the track instead of firing unconditionally.
+    const db = new Database(dbPath);
+    db.prepare("INSERT INTO tracks (code, title, position, prereq_codes, completion_test, kind, guidance_policy) VALUES ('P1x','Async and FastAPI',1,'[]','','production','worked_example_first')").run();
+    const trackId = (db.prepare("SELECT id FROM tracks WHERE code = 'P1x'").get() as { id: number }).id;
+    const lesson = db.prepare("INSERT INTO lessons (ts, topic, skills, struggles, worked, track_id) VALUES ('now','svc','[]','[]','[]',?)").run(trackId);
+    const prodPath = 'projects/service/main.py';
+    db.prepare("INSERT INTO builds (lesson_id, solution_path, state, created_at) VALUES (?, ?, 'awaiting_student', 'now')")
+      .run(Number(lesson.lastInsertRowid), prodPath);
+    db.close();
+    // newest awaiting_student build wins, and its policy is worked_example_first
+    expect(runGuard({ tool_name: 'Write', tool_input: { file_path: join(REPO_ROOT, prodPath) } })).toBe('');
+  });
+
   it('fails open on malformed input', () => {
     const out = execFileSync('bash', [GUARD], {
       input: 'not json at all',

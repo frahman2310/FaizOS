@@ -56,7 +56,7 @@ describe('backfill on a fresh migrated database', () => {
     const db = new Database(dbPath);
     expect(seedTracks(db)).toBe(11);
     expect(seedTracks(db)).toBe(0); // second run adds nothing
-    const c = (db.prepare('SELECT COUNT(*) AS c FROM tracks').get() as { c: number }).c;
+    const c = (db.prepare("SELECT COUNT(*) AS c FROM tracks WHERE code LIKE 'T%'").get() as { c: number }).c;
     db.close();
     expect(c).toBe(11);
   });
@@ -123,8 +123,8 @@ describe('backfill on a fresh migrated database', () => {
 describe('live database backfill state (read only)', () => {
   it('has 11 tracks, 66 mapped skills, 44 study systems, 8 error seeds', () => {
     const db = new Database(LIVE, { readonly: true, fileMustExist: true });
-    const tracks = (db.prepare('SELECT COUNT(*) AS c FROM tracks').get() as { c: number }).c;
-    const skills = (db.prepare('SELECT COUNT(*) AS c FROM skills WHERE track_id IS NOT NULL').get() as { c: number }).c;
+    const tracks = (db.prepare("SELECT COUNT(*) AS c FROM tracks WHERE code LIKE 'T%'").get() as { c: number }).c;
+    const skills = (db.prepare("SELECT COUNT(*) AS c FROM skills WHERE track_id IS NOT NULL AND source = 'syllabus'").get() as { c: number }).c;
     const systems = (db.prepare("SELECT COUNT(*) AS c FROM systems WHERE kind = 'study'").get() as { c: number }).c;
     const errors = (db.prepare('SELECT COUNT(*) AS c FROM errors WHERE lesson_id IS NULL').get() as { c: number }).c;
     const noMetric = (

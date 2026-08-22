@@ -25,7 +25,9 @@ export function activeBuild(db: Database): BuildRow | null {
 }
 
 export function studentWroteRatio(db: Database): { written: number; unlocked: number; ratio: number } {
-  const written = (db.prepare("SELECT COUNT(*) AS c FROM builds WHERE state = 'done'").get() as { c: number }).c;
+  // v3: 'provisional' still means HE wrote it; the rebuild gate measures durability, not
+  // authorship. Only 'unlocked' means it was handed over.
+  const written = (db.prepare("SELECT COUNT(*) AS c FROM builds WHERE state IN ('done', 'provisional')").get() as { c: number }).c;
   const unlocked = (db.prepare("SELECT COUNT(*) AS c FROM builds WHERE state = 'unlocked'").get() as { c: number }).c;
   const total = written + unlocked;
   return { written, unlocked, ratio: total === 0 ? 1 : written / total };
@@ -194,7 +196,10 @@ export interface ReviewArgs {
   errors?: ErrorEntry[];
 }
 
-export function recordReview(db: Database, args: ReviewArgs): { review_id: number; errors_recorded: number } {
+export function recordReview(
+  db: Database,
+  args: ReviewArgs,
+): { review_id: number; errors_recorded: number; state: string; rebuild_due: string; note: string } {
   const build = db.prepare('SELECT id, lesson_id FROM builds WHERE id = ?').get(args.build_id) as
     | { id: number; lesson_id: number | null }
     | undefined;
@@ -214,10 +219,19 @@ export function recordReview(db: Database, args: ReviewArgs): { review_id: numbe
       now(),
     );
   const errorsRecorded = recordErrors(db, args.errors ?? []);
-  db.prepare("UPDATE builds SET state = 'done' WHERE id = ? AND state IN ('awaiting_student', 'in_review')").run(
-    args.build_id,
-  );
-  return { review_id: Number(info.lastInsertRowid), errors_recorded: errorsRecorded };
+  // v3: review no longer completes a build. It lands in 'provisional' with a rebuild date,
+  // because a build that passed on the day it was written is not evidence of durable skill.
+  const due = new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10);
+  db.prepare(
+    "UPDATE builds SET state = 'provisional', rebuild_due = ? WHERE id = ? AND state IN ('awaiting_student', 'in_review')",
+  ).run(due, args.build_id);
+  return {
+    review_id: Number(info.lastInsertRowid),
+    errors_recorded: errorsRecorded,
+    state: 'provisional',
+    rebuild_due: due,
+    note: 'Provisional, not done. It counts as learned only after an unaided rebuild on the due date.',
+  };
 }
 
 // ---- unlock --------------------------------------------------------------------------------
@@ -303,14 +317,20 @@ export interface TrackRow {
   prereq_codes: string;
   completion_test: string;
   current_as_of: string | null;
+  kind?: string;
+  guidance_policy?: string;
 }
 
+// v3: the production spine is the critical path, so it outranks the ML tracks. Deployment is
+// in 78.3% of postings and self-hosting in 2.5%; T0-T10 are evidence conversion, not the path.
+const TRACK_ORDER = "CASE kind WHEN 'production' THEN 0 WHEN 'ship' THEN 1 ELSE 2 END, position";
+
 export function currentTrack(db: Database): TrackRow | null {
-  const active = db.prepare("SELECT * FROM tracks WHERE status = 'active' ORDER BY position LIMIT 1").get() as
+  const active = db.prepare(`SELECT * FROM tracks WHERE status = 'active' ORDER BY ${TRACK_ORDER} LIMIT 1`).get() as
     | TrackRow
     | undefined;
   if (active) return active;
-  const next = db.prepare("SELECT * FROM tracks WHERE status = 'pending' ORDER BY position LIMIT 1").get() as
+  const next = db.prepare(`SELECT * FROM tracks WHERE status = 'pending' ORDER BY ${TRACK_ORDER} LIMIT 1`).get() as
     | TrackRow
     | undefined;
   return next ?? null;

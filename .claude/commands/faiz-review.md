@@ -25,3 +25,13 @@ silent-truncation, ordering-pairing). Correctness diffs are errors; taste diffs 
 summary, the classified lists, and the errors. This marks the build done. Then finish the
 lesson: `faizos_record_lesson` (with the same errors) and a posted revision note via
 `faizos_save_revision`.
+
+**Before any of this, run the reveal step.** Show him the reference implementation and have him
+write one line per difference between it and his own reasoning, then call
+`faizos_reveal_contrast`. `faizos_review_code` refuses until that is recorded. Productive
+failure is generate THEN instruct: the consolidation phase is where load drops and the learning
+sticks, and generation on its own is not what the evidence tested.
+
+**Review no longer completes a build.** It lands in `provisional` with a rebuild date 14 days
+out. In the controlled study, 3 of 9 students who succeeded on the day failed the same task two
+weeks later. Only an unaided rebuild counts as learned, so say "provisional" and mean it.

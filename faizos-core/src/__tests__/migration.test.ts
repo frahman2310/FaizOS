@@ -38,12 +38,15 @@ afterAll(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-describe('migration 001', () => {
+describe('migrations 001 and 002', () => {
   it('applies cleanly and reports status', () => {
     const ran = migrateUp(dbPath);
-    expect(ran).toEqual(['1 v2_schema']);
+    expect(ran).toEqual(['1 v2_schema', '2 v3_curriculum']);
     const status = migrationStatus(dbPath);
-    expect(status).toEqual([{ version: 1, name: 'v2_schema', applied: true }]);
+    expect(status).toEqual([
+      { version: 1, name: 'v2_schema', applied: true },
+      { version: 2, name: 'v3_curriculum', applied: true },
+    ]);
   });
 
   it('creates every v2 table', () => {
@@ -103,7 +106,8 @@ describe('migration 001', () => {
 
   it('down() reverts to the exact v1 surface and up() re-applies', () => {
     const reverted = migrateDown(dbPath);
-    expect(reverted).toBe('1 v2_schema');
+    expect(reverted).toBe('2 v3_curriculum');
+    expect(migrateDown(dbPath)).toBe('1 v2_schema');
     const db = new Database(dbPath, { readonly: true });
     const names = (
       db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as Array<{ name: string }>
@@ -114,6 +118,6 @@ describe('migration 001', () => {
     db.close();
     for (const t of V2_TABLES) expect(names).not.toContain(t);
     expect(lessonCols).toEqual(['id', 'ts', 'topic', 'mission_id', 'skills', 'struggles', 'worked', 'difficulty_felt']);
-    expect(migrateUp(dbPath)).toEqual(['1 v2_schema']);
+    expect(migrateUp(dbPath)).toEqual(['1 v2_schema', '2 v3_curriculum']);
   });
 });

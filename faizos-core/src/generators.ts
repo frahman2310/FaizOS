@@ -219,11 +219,16 @@ interface RungResult {
 export function scoreCapstone(db: Database.Database): RungResult[] {
   const studyCount = (db.prepare("SELECT COUNT(*) AS c FROM systems WHERE kind = 'study' AND status = 'shipped'").get() as { c: number }).c;
   const products = db.prepare("SELECT id, title, repo_url, deployed_url, metric_name, metric_value FROM systems WHERE kind = 'product' AND status = 'shipped'").all() as Row[];
+  // v3: a deployed service is only finished when it carries a latency and a cost number.
+  const instrumented = (db.prepare(
+    'SELECT COUNT(*) AS c FROM systems WHERE p95_ms IS NOT NULL OR cost_per_1k IS NOT NULL',
+  ).get() as { c: number }).c > 0;
+
   const trained = db.prepare("SELECT id, title, metric_name, metric_value, baseline_value FROM systems WHERE kind = 'trained_model' AND metric_value IS NOT NULL").all() as Row[];
   const kernels = db.prepare("SELECT id, title, metric_value, baseline_value FROM systems WHERE kind = 'kernel' AND metric_value IS NOT NULL AND baseline_value IS NOT NULL").all() as Row[];
   const serving = db.prepare("SELECT id, title, metric_name, metric_value FROM systems WHERE kind = 'serving_stack' AND metric_value IS NOT NULL").all() as Row[];
   const evalSystems = db.prepare(
-    "SELECT id, title, metric_name, metric_value FROM systems WHERE metric_value IS NOT NULL AND (metric_name LIKE '%perplexity%' OR metric_name LIKE '%pass@%' OR metric_name LIKE '%accuracy%' OR metric_name LIKE '%recall%' OR metric_name LIKE '%precision%' OR metric_name LIKE '%CORE%')",
+    "SELECT id, title, metric_name, metric_value FROM systems WHERE metric_value IS NOT NULL AND (metric_name LIKE '%perplexity%' OR metric_name LIKE '%pass@%' OR metric_name LIKE '%pass^%' OR metric_name LIKE '%accuracy%' OR metric_name LIKE '%recall%' OR metric_name LIKE '%precision%' OR metric_name LIKE '%CORE%' OR metric_name LIKE '%kappa%' OR metric_name LIKE '%ndcg%' OR metric_name LIKE '%mrr%' OR metric_name LIKE '%faithful%')",
   ).all() as Row[];
   const prRows = db.prepare("SELECT id, title, repo_url FROM systems WHERE status = 'shipped' AND title LIKE 'PR:%'").all() as Row[];
 
@@ -252,8 +257,10 @@ export function scoreCapstone(db: Database.Database): RungResult[] {
   results.push({
     rung: 2, title: 'A working system others can run',
     status: product ? (s(product.deployed_url) || s(product.repo_url) ? 'SOLID' : 'PARTIAL') : 'MISSING',
-    evidence: product ? `${s(product.title)} (${s(product.deployed_url) || s(product.repo_url)})` : 'no shipped product system row',
-    rule: "a shipped systems row of kind 'product' with a repo or deployed URL",
+    evidence: product
+      ? `${s(product.title)} (${s(product.deployed_url) || s(product.repo_url)})${instrumented ? ' — instrumented' : ' — no p95 or cost recorded yet'}`
+      : 'no shipped product system row',
+    rule: "a shipped systems row of kind 'product' with a repo or deployed URL (v3: record p95_ms and cost_per_1k on it)",
   });
 
   const trainedWithSeeds = trained.map((t) => ({ t, sp: spreadFor(t.id, t.metric_name) })).filter((x) => x.sp.nSeeds >= 3);
@@ -327,9 +334,12 @@ export function renderCapstone(db: Database.Database): string {
     lines.push(`- Scoring rule: ${r.rule}`);
     lines.push('');
   }
-  lines.push('The fastest path from PARTIAL and MISSING to SOLID is unchanged: one rented GPU hour');
-  lines.push('produces the first real metrics (rungs 3, 5, 7), a benchmarked kernel closes 4, a');
-  lines.push('merged PR closes 6, and shipping FaizOS v2 as a product with a user count closes 2 and 8.');
+  lines.push('v3 paths, all runnable on the M4 with no rented hardware:');
+  lines.push('- Rungs 3 and 5: a QLoRA fine-tune and a small reproduction through Soup on the MLX backend.');
+  lines.push('- Rung 4: a fused Metal kernel via mx.fast.metal_kernel, benchmarked against the MLX reference.');
+  lines.push('- Rung 7: the P6 eval harness, with judge-vs-human agreement reported.');
+  lines.push('- Rung 6: a merged PR (see /faiz-oss for the measured repo guidance).');
+  lines.push('- Rungs 2 and 8: the P2 service deployed, instrumented with p95 and cost, and one real user.');
   return lines.join('\n') + '\n';
 }
 

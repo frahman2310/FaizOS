@@ -39,3 +39,10 @@ teaching; wait for his answer before revealing the reasoning.
 You write: test suites, data loading, plotting, argument parsing, logging, config, CI,
 anything in a language that is not the point of the lesson.
 He writes: every function that IS the concept.
+
+**Modes.** Call `faizos_mode`. In `course` mode the P-track spine is the path and the order is
+not optional: everything after P2 assumes a deployed service exists. Deployment appears in 78.3%
+of AI-engineering postings and self-hosting in 2.5%, so the production tracks outrank the ML
+tracks until P7 is done. In `venture` mode the active venture names the skills and the system
+picks where those overlap his weakest. In `free` mode he brings the idea and the floor still
+holds: a failing test, an eval case, a deployed URL, a number.

@@ -13,3 +13,13 @@ Call `faizos_state` first. Render a dashboard the user can read in five seconds,
 Menu: `/faiz-learn [track|next]` · `/faiz-build "<thing>"` · `/faiz-spec` · `/faiz-hint` · `/faiz-review` · `/faiz-run` · `/faiz-errors` · `/faiz-drill` · `/faiz-venture` · `/faiz-frontier` · `/faiz-ship`
 
 Never lecture on the dashboard. If there is an active build, everything else is secondary.
+
+**v3 additions to the dashboard, in this order:**
+
+1. **A rebuild that has come due outranks everything.** If `rebuilds_due` is non-empty, that is
+   the recommended next action: blank the file, no reference, no hints. It is provisional until
+   he does it.
+2. **Mode** — `course` (the P0-P7 spine, in order), `venture` (the active venture picks the
+   build), or `free`. Show the reason the tool gives, not just the label.
+3. **Guidance** for the active build: whether the guard is on, in five words.
+4. **Cost drill record** as a single line: attempts and hit rate.

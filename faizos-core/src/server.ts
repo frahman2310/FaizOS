@@ -71,13 +71,23 @@ server.registerTool('faizos_state', {
   const venture = activeVenture(db);
   const track = currentTrack(db);
   const ratio = studentWroteRatio(db);
+  // v3: mode, the guidance policy for the current build, and any rebuild that has come due.
+  const { currentMode, rebuildsDue, guidanceFor, costDrillRecord } = await import('./v3.js');
+  const mode = currentMode(db);
+  const due = rebuildsDue(db);
+  const guidance = build ? guidanceFor(db, build.id) : null;
 
   return ok({
     active_build: build
       ? { ...build, note: 'He writes the solution file. The guard blocks anyone else. /faiz-hint for help, /faiz-unlock to hand it over (recorded).' }
       : null,
     active_venture: venture,
-    current_track: track ? { code: track.code, title: track.title, status: track.status, current_as_of: track.current_as_of } : null,
+    mode,
+    guidance,
+    rebuilds_due: due,
+    current_track: track
+      ? { code: track.code, title: track.title, status: track.status, kind: track.kind, guidance_policy: track.guidance_policy, current_as_of: track.current_as_of }
+      : null,
     open_errors: topOpenErrors(db, 3),
     student_wrote: ratio,
     streak, best_streak: best, last_active_date: getMeta(db, 'last_active_date') || null,
@@ -86,8 +96,11 @@ server.registerTool('faizos_state', {
     last_shipped: lastShipped,
     shipped_count: shippedCount,
     skills: { total: (db.prepare('SELECT COUNT(*) c FROM skills').get() as { c: number }).c, avg_mastery: Number(avg.toFixed(3)), weakest, recently_moved: recentlyMoved },
-    recommended_next: recommended,
-    menu: ['/faiz-learn [track|next]', '/faiz-build <idea>', '/faiz-spec', '/faiz-hint', '/faiz-review', '/faiz-run', '/faiz-errors', '/faiz-ship'],
+    recommended_next: due.length
+      ? { action: 'rebuild', label: `Rebuild "${due[0]?.topic ?? due[0]?.solution_path}" from empty, unaided. It is provisional until you do.`, build_id: due[0]?.id }
+      : recommended,
+    cost_drills: costDrillRecord(db),
+    menu: ['/faiz-learn [track|next]', '/faiz-build <idea>', '/faiz-spec', '/faiz-hint', '/faiz-review', '/faiz-run', '/faiz-errors', '/faiz-cost', '/faiz-oss', '/faiz-ship'],
   });
 });
 
@@ -487,7 +500,7 @@ server.registerTool('faizos_hint', {
 // ---- faizos_review_code: the three-pass review, recorded ----
 server.registerTool('faizos_review_code', {
   title: 'Record a code review',
-  description: 'Call AFTER running the three-pass review of the STUDENT\'S code (1: his code line by line in plain English; 2: diff against reference classified correctness/clarity/taste; 3: error classification). Writes code_reviews and the error taxonomy, and marks the build done.',
+  description: 'Call AFTER running the three-pass review of the STUDENT\'S code (1: his code line by line in plain English; 2: diff against reference classified correctness/clarity/taste; 3: error classification). Writes code_reviews and the error taxonomy, and lands the build in PROVISIONAL with a 14 day rebuild date. Requires faizos_reveal_contrast to have run first.',
   inputSchema: {
     build_id: z.number(),
     student_code: z.string(),
@@ -503,6 +516,13 @@ server.registerTool('faizos_review_code', {
     })).optional(),
   },
 }, async (args) => {
+  const { hasRevealed } = await import('./v3.js');
+  if (!hasRevealed(db, args.build_id)) {
+    return ok({
+      recorded: false,
+      reason: 'Run faizos_reveal_contrast first. Productive failure is generate THEN instruct: he reads the reference, diffs it against his own reasoning, and writes down what differed. Skipping that step is not what the evidence supports.',
+    });
+  }
   const result = recordReview(db, args);
   logEvent(db, now(), 'review', `build #${args.build_id}: ${result.errors_recorded} errors classified`);
   return ok({ ...result, note: 'Most differences are taste. Say so, or he learns to write your code instead of learning to write.' });
@@ -664,6 +684,117 @@ server.registerTool('faizos_frontier_ingest', {
     "SELECT f.title, f.url, f.summary, t.code AS track FROM frontier f LEFT JOIN tracks t ON t.id = f.affects_track_id WHERE f.actioned = 0 ORDER BY f.ingested_at DESC LIMIT 15",
   ).all();
   return ok({ ...result, drifted_tracks: driftedTracks(db), unactioned: recent, note: 'Group by track. One line per item on what it changes for the current build. Skip tracks more than two positions away.' });
+});
+
+
+// ---- v3: guidance policy, reveal-and-contrast, the rebuild gate, mode, OSS, cost drill ----
+
+server.registerTool('faizos_guidance', {
+  title: 'Which guidance policy applies here',
+  description: 'Returns write_from_empty or worked_example_first for a build, based on its track. Call this BEFORE teaching. Expertise reversal: worked examples beat blank pages for novices and reverse for experts, so production tracks show a reference first and ML tracks do not.',
+  inputSchema: { build_id: z.number() },
+}, async ({ build_id }) => {
+  const { guidanceFor } = await import('./v3.js');
+  return ok(guidanceFor(db, build_id));
+});
+
+server.registerTool('faizos_reveal_contrast', {
+  title: 'Record the reveal-and-contrast step (mandatory before review)',
+  description: 'After his attempt, show the reference implementation and have him write one line per difference between it and his reasoning. This consolidation phase is where cognitive load drops and the learning sticks; generation alone is not what the evidence tested.',
+  inputSchema: {
+    build_id: z.number(),
+    notes: z.string().describe('his own words, one line per difference between his reasoning and the reference'),
+  },
+}, async ({ build_id, notes }) => {
+  const { recordReveal } = await import('./v3.js');
+  const r = recordReveal(db, build_id, notes);
+  if (r.recorded) logEvent(db, now(), 'reveal', `build #${build_id}`);
+  return ok(r);
+});
+
+server.registerTool('faizos_rebuilds_due', {
+  title: 'Builds awaiting an unaided rebuild',
+  description: 'Provisional builds whose 14 day delay has elapsed. A build that passed on the day it was written is not evidence of durable skill; only a delayed unaided reproduction is.',
+  inputSchema: {},
+}, async () => {
+  const { rebuildsDue } = await import('./v3.js');
+  const due = rebuildsDue(db);
+  return ok({ due, count: due.length, note: due.length ? 'Blank the file and have him rebuild it with no reference and no hints.' : 'Nothing due.' });
+});
+
+server.registerTool('faizos_complete_rebuild', {
+  title: 'Record the outcome of an unaided rebuild',
+  description: 'unaided=true marks the build done, which is the only state that counts as learned. unaided=false reschedules another 14 days, honestly.',
+  inputSchema: { build_id: z.number(), unaided: z.boolean() },
+}, async ({ build_id, unaided }) => {
+  const { completeRebuild } = await import('./v3.js');
+  const r = completeRebuild(db, build_id, unaided);
+  logEvent(db, now(), 'rebuild', `build #${build_id}: ${r.state}`);
+  return ok(r);
+});
+
+server.registerTool('faizos_mode', {
+  title: 'Get or set the operating mode',
+  description: 'course (the P0-P7 spine, in order), venture (the active venture decides what gets built), or free (he brings the idea). Omit set_to to just read the current mode.',
+  inputSchema: { set_to: z.enum(['course', 'venture', 'free']).optional() },
+}, async ({ set_to }) => {
+  const { currentMode, setMode, ventureNextBuild } = await import('./v3.js');
+  if (set_to) setMode(db, set_to);
+  const mode = currentMode(db);
+  const suggestions = mode.mode === 'venture' ? ventureNextBuild(db, []) : [];
+  return ok({ ...mode, venture_candidates: suggestions });
+});
+
+server.registerTool('faizos_oss', {
+  title: 'The merged-PR track',
+  description: 'action=status lists targets and the measured repo guidance; action=add records a candidate issue; action=update moves its state (candidate|claimed|pr_open|merged|abandoned). A merged PR writes a systems row for capstone rung 6.',
+  inputSchema: {
+    action: z.enum(['status', 'add', 'update']),
+    id: z.number().optional(),
+    repo: z.string().optional(),
+    issue_url: z.string().optional(),
+    issue_title: z.string().optional(),
+    difficulty: z.enum(['first', 'second', 'substantive']).optional(),
+    state: z.enum(['candidate', 'claimed', 'pr_open', 'merged', 'abandoned']).optional(),
+    pr_url: z.string().optional(),
+    review_cycles: z.number().optional(),
+    notes: z.string().optional(),
+  },
+}, async (a) => {
+  const { ossStatus, addOssTarget, updateOssTarget } = await import('./v3.js');
+  if (a.action === 'add') {
+    if (!a.repo || !a.issue_url) return ok({ ok: false, reason: 'repo and issue_url are required' });
+    const id = addOssTarget(db, { repo: a.repo, issue_url: a.issue_url, issue_title: a.issue_title ?? '', difficulty: a.difficulty, notes: a.notes });
+    return ok({ ok: true, id });
+  }
+  if (a.action === 'update') {
+    if (!a.id) return ok({ ok: false, reason: 'id is required' });
+    const r = updateOssTarget(db, a.id, { state: a.state, pr_url: a.pr_url, review_cycles: a.review_cycles, notes: a.notes });
+    if (a.state === 'merged') logEvent(db, now(), 'oss_merged', a.pr_url ?? '');
+    return ok(r);
+  }
+  return ok(ossStatus(db));
+});
+
+server.registerTool('faizos_cost_drill', {
+  title: 'Score a cost estimate',
+  description: 'The drill behind "every design answer ends with a number". Give the scenario, the expected figure and his figure; within 20% counts. Cost awareness is repeatedly named the thing that separates production thinkers from prototype thinkers.',
+  inputSchema: {
+    scenario: z.string(),
+    expected_usd_per_day: z.number().optional(),
+    expected_tokens_per_day: z.number().optional(),
+    answer_usd_per_day: z.number().optional(),
+    answer_tokens_per_day: z.number().optional(),
+  },
+}, async (a) => {
+  const { scoreCostDrill, costDrillRecord } = await import('./v3.js');
+  const r = scoreCostDrill(
+    db,
+    a.scenario,
+    { usd_per_day: a.expected_usd_per_day, tokens_per_day: a.expected_tokens_per_day },
+    { usd_per_day: a.answer_usd_per_day, tokens_per_day: a.answer_tokens_per_day },
+  );
+  return ok({ ...r, record: costDrillRecord(db) });
 });
 
 await server.connect(new StdioServerTransport());

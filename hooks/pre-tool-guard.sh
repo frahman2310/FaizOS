@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# FaizOS v2 write guard. While a build is in state 'awaiting_student', the STUDENT writes the
-# solution file. Any Write/Edit against that path from the assistant is denied here, with a
-# pointer at /faiz-hint and /faiz-unlock. This is what makes "he writes it" mechanical.
+# FaizOS v3 write guard. While a build is 'awaiting_student' AND its track's guidance_policy is
+# 'write_from_empty', the STUDENT writes the solution file and any assistant Write/Edit is denied.
+#
+# v3 change: the policy is per track. Expertise reversal says worked examples beat blank pages for
+# NOVICES and reverse for experts, so on production tracks (where he is a novice) the guard stands
+# down and he reads a reference first. Blocking there would produce unproductive failure.
 #
 # Input: Claude Code PreToolUse JSON on stdin ({tool_name, tool_input:{file_path}}).
 # Output: a deny decision when the guard fires; nothing (exit 0) otherwise.
@@ -24,10 +27,16 @@ process.stdin.on("end", () => {
     const Database = require("better-sqlite3");
     const db = new Database(process.env.GUARD_DB, { readonly: true, fileMustExist: true });
     const build = db
-      .prepare("SELECT id, solution_path FROM builds WHERE state = \x27awaiting_student\x27 ORDER BY id DESC LIMIT 1")
+      .prepare(
+        "SELECT b.id AS id, b.solution_path AS solution_path, " +
+        "COALESCE(t.guidance_policy, \x27write_from_empty\x27) AS policy, t.code AS track " +
+        "FROM builds b LEFT JOIN lessons l ON l.id = b.lesson_id LEFT JOIN tracks t ON t.id = l.track_id " +
+        "WHERE b.state = \x27awaiting_student\x27 ORDER BY b.id DESC LIMIT 1"
+      )
       .get();
     db.close();
     if (!build) return;
+    if (build.policy !== "write_from_empty") return; // novice domain: guard stands down
     const path = require("path");
     const abs = path.resolve(process.env.ROOT, build.solution_path);
     const target = path.resolve(filePath);

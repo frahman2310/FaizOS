@@ -41,7 +41,9 @@ describe('live database invariance vs Phase 0 audit', () => {
   it('the 44 v1 missions and 66 v1 skills all still exist by id', () => {
     const db = new Database(LIVE, { readonly: true, fileMustExist: true });
     const missionCount = (db.prepare('SELECT COUNT(*) AS c FROM missions WHERE id <= 44').get() as { c: number }).c;
-    const skillCount = (db.prepare('SELECT COUNT(*) AS c FROM skills WHERE on_curriculum = 1').get() as { c: number })
+    // v3 adds production skills, so the invariant is that every v1 skill SURVIVES, not that
+    // the total is unchanged. Additive is allowed; modifying or deleting a v1 row is not.
+    const skillCount = (db.prepare("SELECT COUNT(*) AS c FROM skills WHERE source = 'syllabus'").get() as { c: number })
       .c;
     db.close();
     expect(missionCount).toBe(44);

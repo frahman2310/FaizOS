@@ -128,6 +128,22 @@ console.assert(h1.granted === true && h1.rung === 1, 'rung 1 grants');
 const h3 = await call('faizos_hint', { build_id: spec.build_id, rung: 3 });
 console.assert(h3.granted === false, 'rung 3 refused before rung 2 — the ladder never skips');
 
+// v3: review refuses until the reveal-and-contrast step is recorded.
+const blocked = await call('faizos_review_code', {
+  build_id: spec.build_id,
+  student_code: 'def rotate(v, a): pass',
+});
+console.assert(blocked.recorded === false, 'review refuses before the reveal step');
+
+const guide = await call('faizos_guidance', { build_id: spec.build_id });
+console.assert(typeof guide.policy === 'string' && typeof guide.guard_active === 'boolean', 'guidance policy resolves for the build');
+
+const reveal = await call('faizos_reveal_contrast', {
+  build_id: spec.build_id,
+  notes: 'I rotated the query by the key position; the reference uses its own index.',
+});
+console.assert(reveal.recorded === true, 'reveal recorded');
+
 const rev = await call('faizos_review_code', {
   build_id: spec.build_id,
   student_code: 'def rotate(v, a): pass',
@@ -136,6 +152,7 @@ const rev = await call('faizos_review_code', {
   errors: [{ category: 'ordering-pairing', description: 'query rotated by the key position', rule_broken: 'the query uses its own position' }],
 });
 console.assert(rev.errors_recorded === 1, 'review classified the error');
+console.assert(rev.state === 'provisional' && typeof rev.rebuild_due === 'string', 'review lands provisional with a rebuild date');
 const report = await call('faizos_error_report');
 console.assert(report.open.some((e: any) => e.category === 'ordering-pairing'), 'error_report surfaces the taxonomy');
 
@@ -156,6 +173,23 @@ const unlockSpec = await call('faizos_spec_build', { topic: 'smoke unlock build'
 const unlocked = await call('faizos_unlock_build', { build_id: unlockSpec.build_id, reason: 'smoke test' });
 console.assert(unlocked.unlocked === true, 'unlock records the handover');
 console.log('v2 loop: spec -> hint ladder -> review -> errors -> ship(kind+metric) -> experiments -> unlock ✅');
+
+// --- v3 walk: mode, the rebuild gate, the OSS track, the cost drill ---
+const mode = await call('faizos_mode');
+console.assert(['course', 'venture', 'free'].includes(mode.mode), 'mode resolves');
+
+const dueBefore = await call('faizos_rebuilds_due');
+console.assert(Array.isArray(dueBefore.due), 'rebuilds_due returns a list');
+
+const oss = await call('faizos_oss', { action: 'add', repo: 'vllm-project/vllm', issue_url: 'https://example.invalid/1', issue_title: 'smoke' });
+console.assert(oss.ok === true && typeof oss.id === 'number', 'oss target added');
+const merged = await call('faizos_oss', { action: 'update', id: oss.id, state: 'merged', pr_url: 'https://example.invalid/pr/1' });
+console.assert(String(merged.reason).includes('rung 6'), 'merged PR records rung 6 evidence');
+
+const drill = await call('faizos_cost_drill', { scenario: '100k users x 10 x 2k tokens', expected_usd_per_day: 13000, answer_usd_per_day: 12500 });
+console.assert(drill.correct === true, 'cost drill accepts within 20%');
+
+console.log('v3 loop: guidance -> reveal -> provisional -> mode -> oss -> cost drill ✅');
 
 await client.close();
 console.log('\nsmoke.ts: full build -> ship -> analyze -> review loop passed ✅');

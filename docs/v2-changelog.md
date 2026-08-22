@@ -87,3 +87,67 @@ against docs/v1-rowcounts.json; the guard denies a write to an awaiting_student 
 through the real hook script; the database refuses a second active venture; CAPSTONE.md
 regenerates auto scored; the learn and build loops write to skills, insights, revisions and
 errors end to end; docs/v1-audit.md and this changelog exist.
+
+---
+
+# FaizOS v3 — the curriculum
+
+Built 2026-08-22 to `FaizOS-v3-Curriculum-Spec.md`, which is grounded in 4,894 job descriptions
+plus five research streams. The governing number: deployment appears in 78.3% of AI-engineering
+postings and self-hosting models in 2.5%, so the production spine becomes the critical path and
+T0-T10 become the evidence-conversion layer.
+
+## Schema (migration 002)
+
+Additive only, verified against docs/v1-rowcounts.json. `tracks` gained kind and
+guidance_policy; `builds` gained rebuild_due, reveal_notes and revealed_at; `systems` gained
+p95_ms and cost_per_1k. New tables: oss_targets, cost_drills. down() reverts cleanly and the
+up-down-up round trip was rehearsed on a copy before touching the live database.
+
+## The pedagogy corrections
+
+**Guidance is now per domain.** Expertise reversal says worked examples beat blank pages for
+novices and the advantage reverses as expertise grows. The PreToolUse guard reads
+tracks.guidance_policy instead of firing unconditionally: it stays on for the ML tracks, where
+he is past novice, and stands down on the production tracks, where forcing a blank page would
+produce failure he cannot learn from. Tested in both directions.
+
+**Reveal and contrast is mandatory.** faizos_review_code refuses until faizos_reveal_contrast
+has recorded his diff against the reference. Productive failure is generate THEN instruct; the
+consolidation phase is where load drops and generation alone is not what the evidence tested.
+
+**Review no longer completes a build.** It lands in `provisional` with a 14 day rebuild date.
+In the controlled study, 3 of 9 students who succeeded on the day failed the same task two
+weeks later. Only an unaided rebuild moves a build to `done`; needing help reschedules it
+honestly. studentWroteRatio counts provisional as written, because the gate measures durability
+and not authorship.
+
+## The production spine
+
+Eleven P-tracks (P0 engineering floor through P10 ship) and 67 production skills, none of which
+v1 covered. currentTrack now orders production before ship before ml, so the spine outranks the
+ML tracks until P7 is complete.
+
+## Modes
+
+faizos_mode returns course, venture or free. Course holds while any P0-P7 track is unfinished,
+because everything later assumes a deployed service. Venture Mode picks at the intersection of
+what the active venture needs and where he is weakest.
+
+## Tools and commands
+
+New tools: faizos_guidance, faizos_reveal_contrast, faizos_rebuilds_due,
+faizos_complete_rebuild, faizos_mode, faizos_oss, faizos_cost_drill. faizos_state now leads with
+a due rebuild when there is one, and carries mode, guidance and the cost drill record. New
+commands: /faiz-cost (every design answer ends with a number) and /faiz-oss (the merged-PR
+track, with the measured repo guidance: vLLM is the best target at 62% external merges, TRL and
+litellm are traps). /faiz-spec, /faiz-review, /faiz-learn and /faiz were updated for v3.
+
+## Capstone
+
+The eval metric family widened to the production vocabulary (kappa, pass^k, NDCG, MRR,
+faithfulness). Rung 2 now notes whether the deployed system carries p95 and cost. The closing
+guidance no longer assumes rented hardware: every remaining rung runs on the M4, with Soup on
+the MLX backend for rungs 3 and 5 and mx.fast.metal_kernel for rung 4.
+
+**83 tests green, smoke green, every protected v1 row intact.**
