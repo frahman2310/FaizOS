@@ -24,20 +24,23 @@ if echo "$INPUT" | grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; th
   exit 0
 fi
 
-# v2: an open write-from-empty build must be finished (reviewed via /faiz-review), unlocked
-# (/faiz-unlock, recorded), or explicitly parked before the session may close.
+# v3: block only on 'in_review'. That state means work was done and never recorded, which is
+# the case worth protecting. 'awaiting_student' is the DESIGNED handoff state: the build has
+# just been specced and he is going away to write it, possibly over hours. Blocking there
+# prevented the intended workflow and bought nothing, since the build persists in the database
+# and /faiz leads with it next session. Found by hitting it in real use on P0 build #1.
 OPEN_BUILD=$(cd "$ROOT/faizos-core" && node --input-type=commonjs -e '
 try {
   const Database = require("better-sqlite3");
   const db = new Database("data/faiz.db", { readonly: true, fileMustExist: true });
-  const b = db.prepare("SELECT id, solution_path, state FROM builds WHERE state IN (\x27awaiting_student\x27, \x27in_review\x27) ORDER BY id DESC LIMIT 1").get();
+  const b = db.prepare("SELECT id, solution_path, state FROM builds WHERE state = \x27in_review\x27 ORDER BY id DESC LIMIT 1").get();
   db.close();
   if (b) process.stdout.write(b.id + " " + b.state + " " + b.solution_path);
 } catch (e) {}
 ' 2>/dev/null)
 if [ -n "$OPEN_BUILD" ]; then
   cat <<EOF
-{"decision":"block","reason":"FaizOS v2: build $OPEN_BUILD is still open. Before finishing: if the tests pass or he gives up, run the three-pass review (/faiz-review, which records it via faizos_review_code); if he is handing it over, /faiz-unlock records that honestly. A session never closes over an unreviewed, unrecorded build."}
+{"decision":"block","reason":"FaizOS: build $OPEN_BUILD has work that was never recorded. Before finishing: if the tests pass or he gives up, run the three-pass review (/faiz-review, which records it via faizos_review_code); if he is handing it over, /faiz-unlock records that honestly. A session never closes over an unreviewed, unrecorded build."}
 EOF
   exit 0
 fi

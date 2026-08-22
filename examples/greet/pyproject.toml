@@ -1,0 +1,32 @@
+# A complete, working reference project. Read it, run it, then build your own.
+# This is the SHAPE. Your package has different contents.
+
+[project]
+name = "greet"
+version = "0.1.0"
+description = "The smallest complete Python package"
+requires-python = ">=3.12"
+dependencies = []                      # the shopping list. Empty here; yours will not be.
+
+[build-system]
+requires = ["uv_build>=0.8.0,<0.9.0"]  # who builds the wheel
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "src"                    # this is the src layout, declared
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = ["I", "B", "UP", "SIM", "RET"]   # ADDS to the defaults. `select` would REPLACE them.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# Dev tools. NOT installed for people who depend on your package, only for you.
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.4",
+]

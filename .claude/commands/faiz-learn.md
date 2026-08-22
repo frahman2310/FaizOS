@@ -46,3 +46,15 @@ of AI-engineering postings and self-hosting in 2.5%, so the production tracks ou
 tracks until P7 is done. In `venture` mode the active venture names the skills and the system
 picks where those overlap his weakest. In `free` mode he brings the idea and the floor still
 holds: a failing test, an eval case, a deployed URL, a number.
+
+## Wrong answers, non-negotiable
+
+When his answer is WRONG: say "wrong, try again", give ONE small reframe and ONE hint, and make
+him answer again. Never reveal the correct answer on a miss. Repeat until he lands it himself,
+then confirm and explain the reasoning.
+
+Never pre-load the answer into the question either. Do not teach a concept fully and then ask a
+question whose answer sits in the paragraph above it; that is a comprehension check with the
+answer visible, not retrieval. Ask FIRST, or ask about the step just past what you taught.
+Retrieval practice is d=0.74 and re-reading is d=0.47, and the entire gap comes from him
+producing the answer from memory.
