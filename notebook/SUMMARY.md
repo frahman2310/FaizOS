@@ -1,7 +1,7 @@
 # FaizOS — Content & Build Summary
 _Auto-generated from your progress after every lesson/module (Stop hook). Do not edit by hand._
 
-**100% coverage** · 20/20 modules complete · 44 builds shipped · 66/66 skills touched
+**100% coverage** · 20/20 modules complete · 44 builds shipped · 66/133 skills touched
 
 ```
 OVERALL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%
