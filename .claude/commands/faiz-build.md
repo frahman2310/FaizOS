@@ -45,3 +45,20 @@ question whose answer sits in the paragraph above it; that is a comprehension ch
 answer visible, not retrieval. Ask FIRST, or ask about the step just past what you taught.
 Retrieval practice is d=0.74 and re-reading is d=0.47, and the entire gap comes from him
 producing the answer from memory.
+
+## Handoff format, non-negotiable
+
+A build handoff is a set of INSTRUCTIONS, not a description. Vague prose is a failure, and he
+has called it out as one. Every handoff ends with:
+
+1. **Numbered steps, in the order he does them.** No "and also" bullets.
+2. **An exact, copy-runnable command per step.** In its own fenced `bash` block so it gets a Run
+   button. One command per block, no `$` prompt, no interleaved output.
+3. **Clickable markdown links to every file mentioned**, path relative to the working directory.
+   Never name a file without linking it.
+4. **A checkpoint per step**: the one line of output or the one observable fact that means it
+   worked, so he never has to guess whether he is on track.
+5. **A plain statement of which step is the real thinking** and which are mechanical setup.
+
+Before writing any of it, INSPECT the project directory and start from what already exists.
+Handing him steps he has already completed wastes his time and reads as not paying attention.
