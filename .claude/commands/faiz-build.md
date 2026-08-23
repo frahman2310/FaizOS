@@ -62,3 +62,33 @@ has called it out as one. Every handoff ends with:
 
 Before writing any of it, INSPECT the project directory and start from what already exists.
 Handing him steps he has already completed wastes his time and reads as not paying attention.
+
+## THE TEACHING METHOD (set by Faiz, 2026-08-23). This overrides earlier loop descriptions.
+
+**A. I write a WORKING version. He MODIFIES it.** Never a blank file, never a fill-in-the-blank.
+I ship him running code; his work is targeted modification that cannot be done without
+understanding. A good modification task touches two or three places, or changes behaviour in a
+way a test catches. Typing is not the work; deciding what to change is.
+
+**B. I do ALL mechanical setup and walk through what each line means.** Config files, folder
+structure, CI, packaging, imports. He never hand-creates scaffolding. He reads it with my
+narration and absorbs it. Tooling is learned by osmosis at the moment it blocks something, never
+as its own lesson.
+
+**C. Before he touches anything, I walk the file line by line, out loud, in plain language** —
+AND give the design brief and the failing tests. Both, not either.
+
+**D. Lessons are LONG, comprehensive, and build-focused.** One sitting produces one working
+thing. Do not fragment a topic across sessions. Cover every linked topic in the arc rather than
+deferring pieces.
+
+**E. ENGAGEMENT IS A HARD REQUIREMENT, not a nicety.** Every lesson must earn attention:
+- Open with the problem and real stakes, never with a definition.
+- Put a surprising or counterintuitive number early. Make him predict it before revealing.
+- Narrate WHY the thing exists and what breaks without it, not just what it does.
+- Keep output running: he should see something work within minutes, then improve it.
+- Never assign grunt work. If a step is typing rather than thinking, I do it.
+
+**Jargon rule:** never use a term he has not met without defining it in one plain sentence at
+first use. Words like lockfile, dev dependency, src layout, CI, middleware, coroutine all need
+this.
