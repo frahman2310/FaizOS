@@ -26,7 +26,9 @@ class TestCost:
 
     def test_a_realistic_small_call(self):
         # 2k in, 500 out at Sonnet-ish rates. This is the number you would quote in a design review.
-        assert cost(tokens_in=2_000, tokens_out=500, rate_in=3.0, rate_out=15.0) == pytest.approx(0.0135)
+        assert cost(tokens_in=2_000, tokens_out=500, rate_in=3.0, rate_out=15.0) == pytest.approx(
+            0.0135
+        )
 
     def test_nothing_costs_nothing(self):
         assert cost(tokens_in=0, tokens_out=0, rate_in=3.0, rate_out=15.0) == 0.0
@@ -34,7 +36,9 @@ class TestCost:
     def test_rates_are_per_million_not_per_token(self):
         # If this fails with a number a million times too big, you multiplied where you should
         # have divided. Check which way round the scaling goes.
-        assert cost(tokens_in=1, tokens_out=0, rate_in=3.0, rate_out=15.0) == pytest.approx(0.000003)
+        assert cost(tokens_in=1, tokens_out=0, rate_in=3.0, rate_out=15.0) == pytest.approx(
+            0.000003
+        )
 
     @pytest.mark.parametrize(
         ("tokens_in", "tokens_out", "expected"),
@@ -55,18 +59,67 @@ class TestDailyCost:
         # 100k users, 10 calls each, 2k tokens in and 0 out, at $3/M.
         # 100_000 * 10 * 2_000 = 2e9 tokens in. At $3 per million that is $6,000/day.
         assert daily_cost(
-            users=100_000, calls_per_user=10, tokens_in=2_000, tokens_out=0,
-            rate_in=3.0, rate_out=15.0,
+            users=100_000,
+            calls_per_user=10,
+            tokens_in=2_000,
+            tokens_out=0,
+            rate_in=3.0,
+            rate_out=15.0,
         ) == pytest.approx(6_000.0)
 
     def test_output_tokens_dominate_when_they_are_priced_higher(self):
         assert daily_cost(
-            users=1_000, calls_per_user=1, tokens_in=1_000, tokens_out=1_000,
-            rate_in=3.0, rate_out=15.0,
+            users=1_000,
+            calls_per_user=1,
+            tokens_in=1_000,
+            tokens_out=1_000,
+            rate_in=3.0,
+            rate_out=15.0,
         ) == pytest.approx(18.0)
 
     def test_no_users_no_bill(self):
+        assert (
+            daily_cost(
+                users=0,
+                calls_per_user=10,
+                tokens_in=2_000,
+                tokens_out=500,
+                rate_in=3.0,
+                rate_out=15.0,
+            )
+            == 0.0
+        )
+
+
+class TestCaching:
+    """YOUR TASK. These fail right now. Make them pass.
+
+    Providers let you mark part of your prompt as cacheable. If the same prefix comes
+    back within a few minutes they charge you a TENTH of the normal input rate for it,
+    because they skipped the work. This is the single biggest cost lever there is, and
+    it is why `cost` is incomplete without it.
+
+    You are adding a fifth argument, `cached_in`, meaning "input tokens that were served
+    from cache". It must DEFAULT to 0 so the twelve tests above keep passing untouched.
+    """
+
+    def test_cached_tokens_cost_a_tenth_of_the_input_rate(self):
+        # 1M cached input tokens at a $3/M rate: a tenth of $3.
+        assert cost(tokens_in=0, tokens_out=0, rate_in=3.0, rate_out=15.0, cached_in=1_000_000) == pytest.approx(0.30)
+
+    def test_cached_and_fresh_input_add_up(self):
+        # 1M fresh at full price, 1M cached at a tenth: 3.00 + 0.30
+        assert cost(tokens_in=1_000_000, tokens_out=0, rate_in=3.0, rate_out=15.0, cached_in=1_000_000) == pytest.approx(3.30)
+
+    def test_caching_is_optional_and_defaults_to_zero(self):
+        # Called the old way, the answer must not move at all.
+        assert cost(tokens_in=1_000_000, tokens_out=0, rate_in=3.0, rate_out=15.0) == 3.0
+
+    def test_daily_cost_passes_caching_through(self):
+        # 1000 users, 1 call each, 2000 fresh + 8000 cached in, no output.
+        # fresh:  1000 * 2000 * 3 / 1e6      = 6.00
+        # cached: 1000 * 8000 * 3 * 0.1 / 1e6 = 2.40
         assert daily_cost(
-            users=0, calls_per_user=10, tokens_in=2_000, tokens_out=500,
-            rate_in=3.0, rate_out=15.0,
-        ) == 0.0
+            users=1_000, calls_per_user=1, tokens_in=2_000, tokens_out=0,
+            rate_in=3.0, rate_out=15.0, cached_in=8_000,
+        ) == pytest.approx(8.40)

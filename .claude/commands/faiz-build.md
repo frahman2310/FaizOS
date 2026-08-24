@@ -92,3 +92,31 @@ deferring pieces.
 **Jargon rule:** never use a term he has not met without defining it in one plain sentence at
 first use. Words like lockfile, dev dependency, src layout, CI, middleware, coroutine all need
 this.
+
+## LESSON FILE FORMAT (set by Faiz 2026-08-23). This is THE deliverable shape.
+
+Every lesson is **ONE self-contained Python file**. Not a package, not a test directory, not a
+set of files to create. One file he opens, reads, edits in one marked place, and runs with one
+command. Scattered files were explicitly rejected: "I can't be given haphazard files."
+
+The file has six parts, in this order:
+
+1. **Header block** — the lesson title and the exact command to run it.
+2. **THE PROBLEM** — in `#` comments. Real stakes, a concrete scene, why anyone cares. Never
+   open with a definition.
+3. **CONCEPTS** — in `#` comments, numbered, plain language, one idea each, with a worked number.
+   Every concept the task needs must be here. He should never have to look anything up.
+4. **THE CODE I WROTE** — fully working, with a `#` comment on essentially every line explaining
+   what it does and why. This replaces me narrating in chat: the walkthrough lives IN the file.
+5. **YOUR TURN** — a loudly marked zone (`▼▼▼ YOUR TURN ▼▼▼`, arrow lines around the edit spot,
+   a `pass` to delete). It contains:
+   - what he is adding and why it matters,
+   - **THE PYTHON YOU NEED**: numbered rules for the exact language features the task requires,
+     with the common mistake spelled out. This is how he learns Python alongside the topic.
+   - **YOUR RULES FOR THIS FUNCTION**: the behavioural spec, numbered.
+6. **THE CHECKS** — a `check()` helper and a `main()` that prints PASS/FAIL per case, splits
+   "my code, already working" from "your code", and ends with `N of M passing`. The file runs
+   itself; no pytest, no imports, no other files.
+
+Packaging, tests-as-a-suite, CI and any other scaffolding are MY job, done afterwards, silently.
+He sees one file.
