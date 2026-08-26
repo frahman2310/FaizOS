@@ -6,149 +6,198 @@
 #  THE PROBLEM
 #  -----------
 #  You are in an interview. Someone says: "we'd have 100,000 users, each sending
-#  about 10 messages a day." Then they look at you.
+#  about 10 messages a day." Then they look at you, waiting for a dollar figure.
 #
-#  The expected answer is a dollar figure, out loud, in about fifteen seconds.
-#  Engineers who can do this get hired. It is repeatedly named the single thing
-#  that separates people who have shipped from people who have only prototyped.
+#  Engineers who can answer that get hired. This file teaches you to produce it,
+#  and teaches you to write Python while you do it.
 #
-#  This file teaches you to produce that number.
+# =============================================================================
+#  PART 1 · HOW TO WRITE A LINE OF PYTHON
+#  Read this even if it feels too basic. It is the whole grammar you need today.
+# =============================================================================
 #
-#
-#  CONCEPT 1 — Tokens
-#  ------------------
-#  A model does not read letters or words. It reads TOKENS: chunks of text,
-#  roughly 4 characters each. "Hello world" is about 3 tokens. A page of text is
-#  about 500. This whole file is about 1,500.
+#  There are only TWO kinds of line in this entire lesson.
 #
 #
-#  CONCEPT 2 — You pay twice, at different prices
-#  -----------------------------------------------
-#  Every call to a model has two separate bills:
+#  KIND 1 — Give something a name.
 #
-#      INPUT  = the tokens you send it   (your question, your documents)
-#      OUTPUT = the tokens it sends back (its answer)
+#       total = 5 + 3
 #
-#  Output costs about FIVE TIMES more per token than input. The model has to
-#  generate output one token at a time, which is slow and hard; reading input
-#  it can do all at once, which is fast and cheap.
+#  Read it RIGHT TO LEFT: work out `5 + 3`, then hang the label `total` on the
+#  answer. The name goes on the LEFT of the `=`. The work goes on the RIGHT.
+#  From that line onwards, the word `total` means 8.
 #
-#  This is why you got the earlier question right. Reading 2,000 tokens costs
-#  $0.006, but writing only 500 costs $0.0075. A quarter as many tokens, and it
-#  still costs more. Chatty models are expensive models.
+#  You can name as many things as you like, one per line:
+#
+#       price = 10
+#       tax   = 2
+#       final = price + tax          <- now `final` means 12
 #
 #
-#  CONCEPT 3 — Prices are quoted per MILLION tokens
-#  -------------------------------------------------
-#  A real price is $0.000003 per token. Nobody can read that without counting
-#  zeros, so every provider quotes "$3 per million" instead.
+#  KIND 2 — Hand your answer back.
 #
-#  That means your arithmetic always has a division by a million in it. This is
-#  the one place people get it backwards, so say it to yourself once:
+#       return final
 #
-#      PER MILLION MEANS THE MILLION GOES ON THE BOTTOM.
+#  `return` means "this is my answer, give it to whoever asked for it."
+#  A return line NEVER has an `=` in it. `return final = 12` is broken.
 #
-#  Multiply instead and your answer is a million times too big.
+#
+#  THAT IS THE WHOLE GRAMMAR. Names on the left, work on the right, one answer
+#  at the end.
+#
+#
+#  BUILDING A CALCULATION IN STEPS
+#  --------------------------------
+#  You never have to cram everything onto one line. Break it into small pieces,
+#  one per line, then combine them at the end. Here is a shopping bill:
+#
+#       def shopping_bill(apples, loaves, milk):
+#           apple_cost = apples * 0.30        # 4 apples at 30p  -> 1.20
+#           bread_cost = loaves * 1.10        # 2 loaves at 1.10 -> 2.20
+#           milk_cost  = milk   * 0.90        # 1 milk at 90p    -> 0.90
+#           return apple_cost + bread_cost + milk_cost      # -> 4.30
+#
+#  Three things being paid for, so THREE named lines, then ONE return that adds
+#  them together. Each line does one small job.
+#
+#  This shape — name the pieces, then add them — is what almost every function
+#  you write for the rest of your life looks like.
+#
+#
+#  INDENTATION (the thing that trips up everyone on day one)
+#  ---------------------------------------------------------
+#  Every line inside a function must start with exactly 4 spaces. Python uses
+#  those spaces to know which lines belong to the function. Not 2, not 3. Four.
+#  If your lines do not line up underneath each other, Python refuses to run.
+#
+# =============================================================================
+#  PART 2 · THE THREE THINGS YOU ARE PAYING FOR
+# =============================================================================
+#
+#  A model does not read letters. It reads TOKENS: chunks of about 4 characters.
+#  A page of text is roughly 500 tokens.
+#
+#  Every call to a model has a bill with up to THREE lines on it:
+#
+#     1. INPUT  — the tokens you send.        Full price.
+#     2. OUTPUT — the tokens it sends back.   About FIVE TIMES the input price.
+#     3. CACHED — input it has seen recently. ONE TENTH of the input price.
+#
+#  Output being dearer is why you were right earlier: reading 2,000 tokens costs
+#  $0.006, but writing just 500 costs $0.0075. A quarter of the tokens, more money.
+#
+#  Cached input is the biggest cost lever in the field. A support bot that resends
+#  the same 20,000-token manual with every question pays full price for it 10,000
+#  times a day, or a tenth of that. Same product, ten times the bill.
+#
+#
+#  PRICES ARE QUOTED PER MILLION TOKENS
+#  -------------------------------------
+#  A real price is $0.000003 per token. Unreadable. So everyone quotes "$3 per
+#  million" instead, and your arithmetic always divides by a million:
+#
+#       PER MILLION MEANS THE MILLION GOES ON THE BOTTOM.
+#
+#  2,000 tokens * $3 = 6,000, divided by a million = $0.006. Correct.
+#  Forget the division and your answer is a million times too big.
 #
 # =============================================================================
 
 
 # -----------------------------------------------------------------------------
-#  THE CODE  (I wrote this part. Read it, then scroll to YOUR TURN.)
+#  PART 3 · MY CODE  (working already. Read it, it is the shape you will copy.)
 # -----------------------------------------------------------------------------
 
 PER_MILLION = 1_000_000
-# A constant. The underscores are invisible to Python: 1_000_000 IS 1000000.
-# They exist so your eye can count the zeros without squinting.
-# It is named once so you can never typo it as 100_000 somewhere later.
+# A name for a number, so it is written once and cannot be mistyped later.
+# The underscores are invisible to Python: 1_000_000 IS 1000000.
 
 
 def cost(tokens_in, tokens_out, rate_in, rate_out):
-    # This function answers: what did ONE call to the model cost me?
-    #
-    #   tokens_in   how many tokens I sent
-    #   tokens_out  how many tokens came back
-    #   rate_in     dollars per MILLION input tokens   (e.g. 3.0)
-    #   rate_out    dollars per MILLION output tokens  (e.g. 15.0)
+    # TWO things are being paid for here, so TWO named lines, then one return.
+    # This is the shopping bill shape from Part 1.
 
     input_cost = tokens_in * rate_in / PER_MILLION
-    # Read it left to right: take the token count, multiply by the price of a
-    # million, then divide by a million to scale it down to what you actually used.
-    # 2000 tokens * $3 = 6000, / 1,000,000 = $0.006.
+    # Name on the left. Work on the right. Tokens, times the price of a million,
+    # divided by a million to scale it down to what you actually used.
 
     output_cost = tokens_out * rate_out / PER_MILLION
-    # Identical shape, different rate. Input and output are worked out separately
-    # because they are priced separately.
+    # Same shape again, with the output numbers instead.
 
     return input_cost + output_cost
-    # `return` hands the value back to whoever called this function.
-    # Notice there is no `=` sign here. `return` already receives the value;
-    # writing `return total = x + y` is an error.
+    # The two names, added. No `=` on a return line.
 
 
 def daily_cost(users, calls_per_user, tokens_in, tokens_out, rate_in, rate_out):
-    # This function answers: what does the WHOLE PRODUCT cost me per day?
-
     calls_per_day = users * calls_per_user
     # 100,000 users each sending 10 messages = 1,000,000 calls a day.
 
     return calls_per_day * cost(tokens_in, tokens_out, rate_in, rate_out)
-    # Rather than redo the arithmetic, this CALLS the function above and
-    # multiplies its answer. The price of one call is defined in exactly one
-    # place, so if it is ever wrong, it is wrong in only one place.
+    # This CALLS the function above rather than redoing its arithmetic.
+    # Writing `cost(...)` runs it and gives you back its answer.
 
 
 # =============================================================================
-#  ▼▼▼  YOUR TURN  ▼▼▼
+#  ▼▼▼  YOUR TURN — TASK 1 of 2  (the small one) ▼▼▼
 # =============================================================================
 #
-#  WHAT YOU ARE ADDING
-#  -------------------
-#  Providers let you mark part of your prompt as reusable. If you send the same
-#  text again within a few minutes, they charge you ONE TENTH of the normal input
-#  rate for it, because they skipped the work of reading it.
+#  Write the price of cached tokens on their own.
 #
-#  This is the biggest cost lever in the entire field. A support bot that resends
-#  the same 20,000-token manual with every question pays full price for it 10,000
-#  times a day, or a tenth of that. Same product, ten times the bill.
+#  WHAT IT MUST DO: cached tokens are charged at ONE TENTH of the input rate.
 #
-#  Your job: teach `cost_with_cache` to handle those cheap cached tokens.
+#  THE PYTHON YOU NEED:
+#    · One tenth of something is `* 0.1`. Multiply, do not divide.
+#      Dividing by 0.1 makes a number ten times BIGGER, which is the opposite.
+#    · Per million still applies, so `/ PER_MILLION` is still in there.
+#    · One line, starting with `return`, no `=` in it.
 #
+#  SHAPE TO COPY: look at `input_cost` inside `cost` above. Yours is that line
+#  with one extra thing multiplied in.
 #
-#  THE PYTHON YOU NEED  (this is the part you are learning)
-#  --------------------------------------------------------
-#
-#  RULE 1 — A DEFAULT ARGUMENT lets an input be optional.
-#      def f(a, b=0):
-#      means: if the caller does not mention `b`, it is 0.
-#      Defaults must come AFTER all the normal arguments, never before.
-#
-#  RULE 2 — A TENTH is `* 0.1`.
-#      Not `/ 0.1`. Dividing by 0.1 makes a number ten times BIGGER.
-#      If your answer comes out huge, you divided where you should have multiplied.
-#
-#  RULE 3 — `return` takes an EXPRESSION, never an assignment.
-#      RIGHT:  return a + b
-#      WRONG:  return total = a + b
-#
-#  RULE 4 — You can call a function from inside another function.
-#      `cost(...)` already works. You are allowed to use it rather than
-#      rewriting the input and output arithmetic by hand.
-#
-#
-#  YOUR RULES FOR THIS FUNCTION
-#  -----------------------------
-#   1. `cached_in` must DEFAULT to 0, so old callers who never heard of caching
-#      still get the right answer.
-#   2. Cached tokens are charged at rate_in * 0.1, scaled by PER_MILLION like
-#      everything else.
-#   3. Fresh input, cached input and output all ADD together.
+#  A worked number so you can check yourself: 1,000,000 cached tokens at a rate
+#  of 3.0 should come out as 0.30.
 #
 # -----------------------------------------------------------------------------
 
+def cache_cost(cached_in, rate_in):
+    # Delete the word `pass` and write your line here. Start it with 4 spaces.
+    # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+    pass
+
+    # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+# =============================================================================
+#  ▼▼▼  YOUR TURN — TASK 2 of 2  (the real one) ▼▼▼
+# =============================================================================
+#
+#  Now the full bill: fresh input, output, AND cached input, all added together.
+#
+#  THREE things are being paid for. So, following the shopping bill shape:
+#  THREE named lines, then ONE return that adds all three names together.
+#
+#  THE PYTHON YOU NEED:
+#    · `cached_in=0` in the brackets below is a DEFAULT. It means someone can
+#      call this function without mentioning caching at all, and `cached_in`
+#      will quietly be 0. You do not have to do anything to make that work —
+#      it already does. But it is why one of the checks calls this with only
+#      four numbers instead of five.
+#    · You already wrote the cached line in Task 1. You may call `cache_cost(...)`
+#      here instead of writing that arithmetic out again, exactly like
+#      `daily_cost` calls `cost`.
+#    · Four spaces at the start of every line.
+#
+#  WORKED NUMBERS to check yourself against:
+#    1,000,000 fresh input at rate 3.0                     -> 3.00
+#    1,000,000 output at rate 15.0                         -> 15.00
+#    1,000,000 cached at rate 3.0                          -> 0.30
+#    all three together                                    -> 18.30
+#
+# -----------------------------------------------------------------------------
 
 def cost_with_cache(tokens_in, tokens_out, rate_in, rate_out, cached_in=0):
-    # WRITE YOUR CODE BETWEEN THE ARROWS. Delete the `pass` line.
+    # Delete `pass`. Write your three named lines, then your return.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
     pass
@@ -162,41 +211,48 @@ def cost_with_cache(tokens_in, tokens_out, rate_in, rate_out, cached_in=0):
 
 
 # -----------------------------------------------------------------------------
-#  THE CHECKS  (I wrote these. They tell you when you are done.)
+#  THE CHECKS  (mine. They tell you when you are done.)
 # -----------------------------------------------------------------------------
 
 def check(label, got, want):
-    close_enough = abs(got - want) < 0.0000001 if got is not None else False
-    print(f"  {'PASS' if close_enough else 'FAIL'}  {label}")
-    if not close_enough:
-        print(f"        expected {want}, got {got}")
-    return close_enough
+    ok = got is not None and abs(got - want) < 0.0000001
+    print(f"  {'PASS' if ok else 'FAIL'}  {label}")
+    if not ok:
+        print(f"        wanted {want}, got {got}")
+    return ok
 
 
 def main():
-    print("\nMy code, already working:")
-    results = [
-        check("one million input tokens at $3",       cost(1_000_000, 0, 3.0, 15.0), 3.0),
-        check("one million output tokens at $15",     cost(0, 1_000_000, 3.0, 15.0), 15.0),
-        check("reading 2000 tokens",                  cost(2_000, 0, 3.0, 15.0), 0.006),
-        check("writing 500 tokens costs MORE",        cost(0, 500, 3.0, 15.0), 0.0075),
-        check("100k users x 10 calls x 2k tokens",    daily_cost(100_000, 10, 2_000, 0, 3.0, 15.0), 6_000.0),
+    print("\nMy code (already working):")
+    mine = [
+        check("reading 2,000 tokens",           cost(2_000, 0, 3.0, 15.0), 0.006),
+        check("writing 500 tokens costs MORE",  cost(0, 500, 3.0, 15.0), 0.0075),
+        check("100k users x 10 calls a day",    daily_cost(100_000, 10, 2_000, 0, 3.0, 15.0), 6_000.0),
     ]
 
-    print("\nYour code:")
-    results += [
-        check("cached tokens cost a tenth",           cost_with_cache(0, 0, 3.0, 15.0, cached_in=1_000_000), 0.30),
-        check("fresh + cached add up",                cost_with_cache(1_000_000, 0, 3.0, 15.0, cached_in=1_000_000), 3.30),
-        check("still works with no caching at all",   cost_with_cache(1_000_000, 0, 3.0, 15.0), 3.0),
-        check("output still counted",                 cost_with_cache(0, 1_000_000, 3.0, 15.0, cached_in=1_000_000), 15.30),
+    print("\nTask 1 — cache_cost:")
+    t1 = [
+        check("1M cached tokens at rate 3",     cache_cost(1_000_000, 3.0), 0.30),
+        check("nothing cached costs nothing",   cache_cost(0, 3.0), 0.0),
     ]
 
-    passed = sum(1 for r in results if r)
-    print(f"\n{passed} of {len(results)} passing.")
-    if passed == len(results):
-        print("Done. Tell me and I'll review it.\n")
+    print("\nTask 2 — cost_with_cache:")
+    t2 = [
+        check("fresh input only",               cost_with_cache(1_000_000, 0, 3.0, 15.0), 3.0),
+        check("cached only",                    cost_with_cache(0, 0, 3.0, 15.0, cached_in=1_000_000), 0.30),
+        check("fresh + cached",                 cost_with_cache(1_000_000, 0, 3.0, 15.0, cached_in=1_000_000), 3.30),
+        check("all three together",             cost_with_cache(1_000_000, 1_000_000, 3.0, 15.0, cached_in=1_000_000), 18.30),
+    ]
+
+    done = sum(1 for r in mine + t1 + t2 if r)
+    total = len(mine) + len(t1) + len(t2)
+    print(f"\n{done} of {total} passing.")
+    if all(t1) and not all(t2):
+        print("Task 1 done. Now Task 2.\n")
+    elif done == total:
+        print("Both done. Tell me and I'll review it.\n")
     else:
-        print("Not yet. Stuck? Run /faiz-hint for one hint at a time.\n")
+        print("Start with Task 1, it is one line. /faiz-hint for a nudge.\n")
 
 
 main()

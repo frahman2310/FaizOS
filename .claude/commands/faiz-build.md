@@ -120,3 +120,16 @@ The file has six parts, in this order:
 
 Packaging, tests-as-a-suite, CI and any other scaffolding are MY job, done afterwards, silently.
 He sees one file.
+
+## He has ZERO Python experience (stated 2026-08-23)
+
+Teach the language grammar in every lesson file, alongside the topic:
+- a line is either `name = work` (label left, work right) or `return x` (never with an `=`);
+- a calculation is several named lines, combined at the end, never one long line;
+- indentation is 4 spaces and must line up.
+
+Unblock by showing the identical SHAPE in a different domain, then saying "yours is that shape
+with N things". Never hand him the answer, but never withhold the grammar either.
+
+Split every task so there is a one-line win before the real one, and give worked numbers he can
+check himself against.
