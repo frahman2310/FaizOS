@@ -35,3 +35,16 @@ sticks, and generation on its own is not what the evidence tested.
 **Review no longer completes a build.** It lands in `provisional` with a rebuild date 14 days
 out. In the controlled study, 3 of 9 students who succeeded on the day failed the same task two
 weeks later. Only an unaided rebuild counts as learned, so say "provisional" and mean it.
+
+## Never diagnose from a stale read (hard rule, broken twice)
+
+Reading his file must be the **last tool call before you write the diagnosis**. Not earlier in
+the turn, not before another tool call, not from memory of a previous message. He edits while
+you are composing, so any gap means you describe code he never wrote. He has called this out
+twice; there is no third time.
+
+- Dump the function **raw, with line numbers**. Never pipe it through `grep -v` to strip
+  comments; you will hide the very line you are about to comment on.
+- Locate the file by grepping the repo for the function name. Do not assume the path you told
+  him to use is the path he actually edited.
+- If anything at all happens between the read and the reply, read it again.

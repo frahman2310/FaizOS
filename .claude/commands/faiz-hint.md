@@ -30,3 +30,16 @@ with N things". Never hand him the answer, but never withhold the grammar either
 
 Split every task so there is a one-line win before the real one, and give worked numbers he can
 check himself against.
+
+## Never diagnose from a stale read (hard rule, broken twice)
+
+Reading his file must be the **last tool call before you write the diagnosis**. Not earlier in
+the turn, not before another tool call, not from memory of a previous message. He edits while
+you are composing, so any gap means you describe code he never wrote. He has called this out
+twice; there is no third time.
+
+- Dump the function **raw, with line numbers**. Never pipe it through `grep -v` to strip
+  comments; you will hide the very line you are about to comment on.
+- Locate the file by grepping the repo for the function name. Do not assume the path you told
+  him to use is the path he actually edited.
+- If anything at all happens between the read and the reply, read it again.
