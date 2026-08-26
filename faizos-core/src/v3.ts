@@ -409,6 +409,39 @@ export function costDrillRecord(db: Database.Database): { attempts: number; corr
   return { attempts, correct, last };
 }
 
+// ---- the teaching feedback loop -------------------------------------------------------
+
+/**
+ * Record what this session taught ME about teaching him. These surface at every
+ * faizos_lesson_start, which is the mechanism that stops him having to give the same
+ * correction twice. Deduped on the note text; a repeat raises the weight.
+ */
+export function recordInsight(db: Database.Database, note: string, weight = 1, mode = 'course'): { recorded: boolean; reason: string } {
+  const trimmed = note.trim();
+  if (trimmed.length < 20) return { recorded: false, reason: 'an insight that short teaches nothing next session' };
+  db.prepare(
+    `INSERT INTO insights (ts, note, weight, mode) VALUES (?, ?, ?, ?)
+     ON CONFLICT(note) DO UPDATE SET weight = weight + 1, active = 1, ts = excluded.ts`,
+  ).run(now(), trimmed, weight, mode);
+  return { recorded: true, reason: 'recorded. It loads at the start of every future lesson.' };
+}
+
+/**
+ * Did today's teaching get captured? A session that ran a lesson and recorded nothing has
+ * dropped whatever it learned. The Stop hook uses this to refuse to close.
+ */
+export function insightGap(db: Database.Database): { last_lesson: string | null; last_insight: string | null; gap: boolean } {
+  // Session independent, and it must stay identical to the copy inlined in hooks/session-stop.sh.
+  // Calendar days are wrong here because one lesson often spans several of them.
+  const lastLesson = (db.prepare('SELECT MAX(ts) t FROM lessons').get() as { t: string | null }).t;
+  const lastInsight = (db.prepare('SELECT MAX(ts) t FROM insights').get() as { t: string | null }).t;
+  return {
+    last_lesson: lastLesson,
+    last_insight: lastInsight,
+    gap: Boolean(lastLesson) && (!lastInsight || lastLesson! > lastInsight),
+  };
+}
+
 // ---- CLI: tsx src/v3.ts seed [--db <path>] ----------------------------------------------
 
 const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;

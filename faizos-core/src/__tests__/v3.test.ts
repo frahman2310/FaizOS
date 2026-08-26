@@ -246,3 +246,25 @@ describe('the cost drill', () => {
     expect(rec.correct).toBe(1);
   });
 });
+
+describe('the teaching feedback loop', () => {
+  it('refuses an insight too short to teach anything next session', async () => {
+    const { recordInsight } = await import('../v3.js');
+    expect(recordInsight(db, 'too short').recorded).toBe(false);
+  });
+
+  it('records an insight and reinforces it on a repeat', async () => {
+    const { recordInsight } = await import('../v3.js');
+    const note = 'He has zero Python experience, so teach the grammar of a line alongside the topic.';
+    expect(recordInsight(db, note, 3).recorded).toBe(true);
+    recordInsight(db, note, 3);
+    const row = db.prepare('SELECT weight FROM insights WHERE note = ?').get(note) as { weight: number };
+    expect(row.weight).toBe(4); // deduped on the text, weight raised
+  });
+
+  it('reports a gap when the newest lesson is newer than the newest insight', async () => {
+    const { insightGap } = await import('../v3.js');
+    db.prepare("INSERT INTO lessons (ts, topic, skills, struggles, worked) VALUES ('2099-01-01T00:00:00Z','future','[]','[]','[]')").run();
+    expect(insightGap(db).gap).toBe(true);   // a lesson ran and nothing was learned about teaching it
+  });
+});

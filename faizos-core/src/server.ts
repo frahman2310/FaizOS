@@ -797,4 +797,19 @@ server.registerTool('faizos_cost_drill', {
   return ok({ ...r, record: costDrillRecord(db) });
 });
 
+
+server.registerTool('faizos_record_insight', {
+  title: 'Record what this session taught you about teaching him',
+  description: 'Write down a teaching lesson so it loads at the start of every future lesson. This is the mechanism that stops him giving the same correction twice. Call it at the end of EVERY session that taught anything; the Stop hook refuses to close a teaching session that recorded nothing.',
+  inputSchema: {
+    note: z.string().describe('what you learned about how to teach him, specific enough to act on next time'),
+    weight: z.number().optional().describe('3 for a hard rule he stated directly, 1 for an observation'),
+  },
+}, async ({ note, weight }) => {
+  const { recordInsight } = await import('./v3.js');
+  const r = recordInsight(db, note, weight ?? 1);
+  if (r.recorded) logEvent(db, now(), 'insight', note.slice(0, 80));
+  return ok(r);
+});
+
 await server.connect(new StdioServerTransport());

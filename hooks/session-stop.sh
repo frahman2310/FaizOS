@@ -45,6 +45,29 @@ EOF
   exit 0
 fi
 
+# The teaching feedback loop, enforced. A session that taught a lesson and recorded nothing
+# about HOW to teach him has dropped what it learned, and he ends up giving the same correction
+# twice. Insights load at every faizos_lesson_start, so this is the mechanism that stops that.
+INSIGHT_GAP=$(cd "$ROOT/faizos-core" && node --input-type=commonjs -e '
+try {
+  const Database = require("better-sqlite3");
+  const db = new Database("data/faiz.db", { readonly: true, fileMustExist: true });
+  // Session independent: if the newest lesson is newer than the newest insight, something was
+  // taught and nothing was learned about teaching it. Calendar days are wrong here because a
+  // lesson often spans several.
+  const lastLesson = db.prepare("SELECT MAX(ts) t FROM lessons").get().t;
+  const lastInsight = db.prepare("SELECT MAX(ts) t FROM insights").get().t;
+  db.close();
+  if (lastLesson && (!lastInsight || lastLesson > lastInsight)) process.stdout.write(lastLesson.slice(0, 10));
+} catch (e) {}
+' 2>/dev/null)
+if [ -n "$INSIGHT_GAP" ]; then
+  cat <<EOF
+{"decision":"block","reason":"FaizOS: a lesson ran on $INSIGHT_GAP and no teaching insight has been recorded since. Call faizos_record_insight with what this session taught you about how to teach him: what landed, what confused him, what you assumed he knew and he did not, what format worked. Insights load at every faizos_lesson_start, so this is what stops him giving you the same correction twice. Weight 3 for a rule he stated directly, 1 for an observation."}
+EOF
+  exit 0
+fi
+
 STATE=$("$TSX" "$ROOT/faizos-core/src/faiz.ts" faizos_state 2>/dev/null)
 PENDING=$(printf '%s' "$STATE" | python3 -c "import json,sys
 try: print(json.load(sys.stdin).get('pending_close') or '')

@@ -163,7 +163,8 @@ def cache_cost(cached_in, rate_in):
     # Delete the word `pass` and write your line here. Start it with 4 spaces.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    pass
+    cache_cost = cached_in * rate_in * 0.1 / PER_MILLION 
+    return cache_cost
 
     # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -200,7 +201,15 @@ def cost_with_cache(tokens_in, tokens_out, rate_in, rate_out, cached_in=0):
     # Delete `pass`. Write your three named lines, then your return.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    pass
+    input_cost = tokens_in * rate_in / PER_MILLION
+    
+    output_cost = tokens_out * rate_out / PER_MILLION
+
+    cache_cost = cached_in * rate_in * 0.1 / PER_MILLION 
+
+    return input_cost + output_cost + cache_cost
+
+    
 
     # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -1,6 +1,98 @@
 # FaizOS — Revision Notebook
 
-> Auto-compiled from every lesson. 52 entries, newest first.
+> Auto-compiled from every lesson. 53 entries, newest first.
+
+---
+
+## P0 · What an AI feature costs (and how to write a line of Python)
+_2026-08-26_
+
+## P0 · What an AI feature costs
+
+**Why it matters:** in an interview someone says "100,000 users, 10 messages a day each" and waits for a dollar figure. Producing that number out loud is repeatedly named the thing that separates people who have shipped from people who have only prototyped.
+
+**What you built:** `projects/tokencost/lesson.py` — two functions, 9 of 9 checks passing. Your first Python.
+
+### The Python grammar (the real lesson)
+
+Two kinds of line, and that is all:
+
+```python
+total = 5 + 3     # name on the LEFT, work on the RIGHT. Read it right to left.
+return total      # hands the answer back. NEVER contains an `=`.
+```
+
+A calculation is not one long line. It is several named lines, combined at the end:
+
+```python
+apple_cost = apples * 0.30
+bread_cost = loaves * 1.10
+milk_cost  = milk   * 0.90
+return apple_cost + bread_cost + milk_cost
+```
+
+Three things bought, three names, one return. **This shape is most functions you will ever write.** Indentation is four spaces and must line up, or Python refuses to run.
+
+### The three lines on an AI bill
+
+| Line | Price |
+|---|---|
+| **Input** — tokens you send | full rate |
+| **Output** — tokens it returns | about **5x** the input rate |
+| **Cached input** — text it saw recently | **one tenth** of the input rate |
+
+**The counter-intuitive one:** reading 2,000 tokens costs $0.006, writing only 500 costs $0.0075. A quarter of the tokens, more money. Chatty models are expensive models.
+
+**Caching is the biggest cost lever in the field.** A support bot resending the same 20,000-token manual with every question pays full price for it 10,000 times a day, or a tenth of that. Same product, ten times the bill.
+
+### Per million means the million goes on the bottom
+
+A real price is $0.000003 per token, which is unreadable, so everyone quotes "$3 per million". Your arithmetic therefore always divides:
+
+```
+2_000 tokens * 3.0 / 1_000_000 = $0.006
+```
+
+Forget the division and the answer is a million times too big.
+
+### Your code
+
+```python
+def cache_cost(cached_in, rate_in):
+    cache_cost = cached_in * rate_in * 0.1 / PER_MILLION
+    return cache_cost
+
+def cost_with_cache(tokens_in, tokens_out, rate_in, rate_out, cached_in=0):
+    input_cost  = tokens_in  * rate_in  / PER_MILLION
+    output_cost = tokens_out * rate_out / PER_MILLION
+    cache_cost  = cached_in  * rate_in  * 0.1 / PER_MILLION
+    return input_cost + output_cost + cache_cost
+```
+
+Correct on all 9 checks. The structure in Task 2 is exactly the shopping-bill shape, produced unaided.
+
+### The one error, and it is your fourth of this kind
+
+You wrote `tokens_in` inside a function whose parameters were `(cached_in, rate_in)`. Python said:
+
+```
+NameError: name 'tokens_in' is not defined
+```
+
+**The names available inside a function are exactly the ones in its brackets.** The name came from the topic being discussed rather than from the `def` line. This is your `api-misuse` category, now four occurrences. Read the `def` line before using a name.
+
+### Two taste points
+
+1. Task 2 repeats the cached arithmetic instead of calling `cache_cost()`, which you had already written and tested. Same answer, but `0.1` now lives in two places and would need changing in both.
+2. You named a variable `cache_cost`, identical to the function. That hides the function inside that scope. Harmless here, but it is how a confusing bug starts.
+
+### Remember
+
+- A line is `name = work`, or `return x` with no `=`.
+- Several named lines, then one return that combines them.
+- Output costs ~5x input. Cached input costs a tenth.
+- Per million means the million divides.
+- The names in the brackets are the only names you have.
 
 ---
 
