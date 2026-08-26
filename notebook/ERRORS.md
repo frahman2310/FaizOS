@@ -6,7 +6,7 @@ Open categories weight the next rules card. Generated from the database; do not 
 
 | category | occurrences | last seen | the rule it breaks |
 |---|---|---|---|
-| api-misuse | 3 | 2026-08-14 | Square brackets look up, round brackets call. Variable names come from the code, never from the sentence describing it. |
+| api-misuse | 5 | 2026-08-26 | Square brackets look up, round brackets call. Variable names come from the code, never from the sentence describing it. |
 | expression-vs-statement | 3 | 2026-08-14 | return and append already receive the value. Write only the expression, no equals sign, no units. |
 | inverse-relationship | 3 | 2026-08-14 | A rate is one over a duration. If an improvement should make the number bigger, the time goes on the bottom. exp undoes ln. |
 | off-by-one | 3 | 2026-08-14 | Ask which half of a paired operation consumes rather than adds before counting. Verify powers of two by doubling. |
@@ -17,7 +17,7 @@ Open categories weight the next rules card. Generated from the database; do not 
 
 ### Detail
 
-**api-misuse** (3): Prose leaked into code as names or the wrong bracket kind was used. Cases: min written instead of lo; "original time" as a variable name; tools(arg, name) with round brackets on a dictionary.
+**api-misuse** (5): tokens_in used inside cache_cost(cached_in, rate_in). NameError. Name taken from the topic being discussed rather than the parameter list.
 
 **expression-vs-statement** (3): An assignment or English written where a bare expression belongs. Cases: residual = seq[i] + attn[i] inside a comprehension; return 2 trips; rm_score = drift * -beta inside a return.
 
