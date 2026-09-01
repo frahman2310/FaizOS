@@ -184,7 +184,7 @@ def how_much_dearer(pricey_model, cheap_model, tokens_in, tokens_out):
     # Delete `pass`. Write your one line. Four spaces at the start.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    return opus / haiku
+    return how_much_dearer ("opus" / "haiku")
 
     # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
