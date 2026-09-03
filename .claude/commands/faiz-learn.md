@@ -203,3 +203,21 @@ full first, and only then asks. Six parts, in this order:
 Only then: YOUR TURN, with numbered rules, the shape to copy named by line, and a number he can
 check himself against. Then the checks, then the number measured against the question's
 constraint, then the progress bar.
+
+## Measured limits (2026-09-03, from docs/teaching-analysis.md)
+
+**TWO new things per CODE TASK.** Four is the cap for concepts taught; for code he must produce
+from nothing it is two. Lesson 1's task had one new thing and gave 9/9 first try; lesson 2's had
+nine and gave four failures. Split anything bigger:
+loop -> (a) visit and print, (b) add a running total, (c) keep-the-best.
+
+**Never ask a why-is-it-designed-this-way question cold.** Measured 0 of 4. Show the concrete
+failure first (the duplicated line that silently diverges, the tracker at zero that rejects
+everything), then ask him to apply it.
+
+**Use the three formats that measurably work:** trace tables with real numbers walked pass by
+pass; one concrete analogy per abstraction; and a worked example in another domain using the SAME
+operation and SAME direction as the task, with no built-ins he has not met.
+
+**Never give navigation instead of teaching.** "Scroll up and read the def line" made him break a
+correct line. Teach the mechanism with a complete worked example instead.
