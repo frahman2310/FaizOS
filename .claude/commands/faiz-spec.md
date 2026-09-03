@@ -147,3 +147,23 @@ From lesson 3 onward, four parts, in this order:
 3. **The build** — the single self-contained file, unchanged.
 4. **The number** — measured against the constraint from part 1. Did it meet the bar?
    Neither ScaleDojo nor Hugging Face closes this loop; it is the whole point.
+
+## TEACH BEFORE YOU TEST (set by Faiz 2026-09-01)
+
+Nothing above the YOUR TURN marker may be a test. The file teaches the concept AND the code in
+full first, and only then asks. Six parts, in this order:
+
+1. **THE QUESTION** — a real onsite question with a number in it, and what the number rules out.
+2. **THE ANSWER IN STEPS** — each step a decision, marked either "YOU BUILD THIS TODAY" or with
+   the lesson it lands in. He should be able to say this out loud before writing any code.
+3. **THE CONCEPT** — plain language, with a worked number and the counter-intuitive consequence.
+4. **THE PYTHON YOU NEED** — the grammar, from zero, with micro-examples. Assume nothing.
+5. **MY CODE, LINE BY LINE** — a comment on essentially every line, explaining what it does and
+   why, naming which step of the answer it implements.
+6. **A WORKED EXAMPLE OF EXACTLY WHAT HE IS ABOUT TO WRITE** — the same SHAPE, fully written
+   out, in a different domain, with a numbered list of what to notice and an explicit "now map
+   it across". This is the part that was missing and the reason he got stuck twice.
+
+Only then: YOUR TURN, with numbered rules, the shape to copy named by line, and a number he can
+check himself against. Then the checks, then the number measured against the question's
+constraint, then the progress bar.
