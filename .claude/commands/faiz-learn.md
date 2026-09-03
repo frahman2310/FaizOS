@@ -159,3 +159,27 @@ twice; there is no third time.
 - Locate the file by grepping the repo for the function name. Do not assume the path you told
   him to use is the path he actually edited.
 - If anything at all happens between the read and the reply, read it again.
+
+## End every lesson with the real progress bar
+
+Call `faizos_lesson_progress` and print it, or point him at the bar the lesson file prints
+itself. Every number in it is counted from rows: a lesson counts when its build leaves
+`awaiting_student`, a skill when its mastery is above zero, a rung when the capstone scorer says
+SOLID. Never estimate a number and never round one up.
+
+Production and ML are shown SEPARATELY on purpose. Lumping them reads as "50% done" while every
+production skill sits at zero, which overstates readiness. The split is the honest picture:
+the ML half is banked but unevidenced, the production half is the critical path.
+
+## Frame every lesson as a real interview question
+
+From lesson 3 onward, four parts, in this order:
+1. **The question** — a named company and level, a real constraint, and a NUMBER. 76% of
+   ScaleDojo's 146 posts carry an explicit scale figure, and the number is what makes the
+   question answerable, because it eliminates most designs.
+2. **The steps** — each one a DECISION with what it rules out, not a topic. "Deploy weights
+   on-premises, not via API", never "Deployment". Mark which steps he builds today and which
+   land in later lessons.
+3. **The build** — the single self-contained file, unchanged.
+4. **The number** — measured against the constraint from part 1. Did it meet the bar?
+   Neither ScaleDojo nor Hugging Face closes this loop; it is the whole point.

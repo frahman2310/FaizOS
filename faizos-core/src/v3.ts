@@ -442,6 +442,88 @@ export function insightGap(db: Database.Database): { last_lesson: string | null;
   };
 }
 
+// ---- the 20 lesson plan, and a progress bar computed from real rows ----------------------
+
+export const LESSONS: Array<{ n: number; slug: string; name: string; track: string }> = [
+  { n: 1,  slug: 'tokencost', name: 'what an AI feature costs',            track: 'P7' },
+  { n: 2,  slug: 'ratecard',  name: 'rate cards: dicts, lists and loops',  track: 'P7' },
+  { n: 3,  slug: 'meter',     name: 'an instrumented LLM client',          track: 'P0' },
+  { n: 4,  slug: 'contract',  name: 'structured output that never breaks', track: 'P5' },
+  { n: 5,  slug: 'synth',     name: 'build the eval set',                  track: 'P6' },
+  { n: 6,  slug: 'harness',   name: 'the assertion runner and CI gate',    track: 'P6' },
+  { n: 7,  slug: 'triage',    name: 'error analysis on 100+ traces',       track: 'P6' },
+  { n: 8,  slug: 'judge',     name: 'an LLM judge you can trust',          track: 'P6' },
+  { n: 9,  slug: 'bm25',      name: 'lexical retrieval from scratch',      track: 'P8' },
+  { n: 10, slug: 'embed',     name: 'vector index and chunking sweep',     track: 'P8' },
+  { n: 11, slug: 'hybrid',    name: 'RRF fusion and reranking',            track: 'P8' },
+  { n: 12, slug: 'grounded',  name: 'citations, abstention, injection',    track: 'P8' },
+  { n: 13, slug: 'loop',      name: 'an agent in 150 lines, no framework', track: 'P9' },
+  { n: 14, slug: 'control',   name: 'budgets, resume, human approval',     track: 'P9' },
+  { n: 15, slug: 'mcp',       name: 'a server on the 2026-07-28 spec',     track: 'P9' },
+  { n: 16, slug: 'service',   name: 'async FastAPI that does not block',   track: 'P1' },
+  { n: 17, slug: 'store',     name: 'Postgres, pgvector, real SQL',        track: 'P4' },
+  { n: 18, slug: 'ship-it',   name: 'Docker, deploy, CI with OIDC',        track: 'P2' },
+  { n: 19, slug: 'prove',     name: 'the ML evidence sprint',              track: 'T6' },
+  { n: 20, slug: 'capstone',  name: 'shipped, with a results table',       track: 'P10' },
+];
+
+function bar(done: number, total: number, width = 20): string {
+  const filled = total === 0 ? 0 : Math.round((done / total) * width);
+  return '#'.repeat(filled) + '.'.repeat(width - filled);
+}
+
+export interface LessonProgress {
+  lessons: { done: number; total: number; pct: number; bar: string };
+  skills: { touched: number; total: number; pct: number; bar: string };
+  ml: { touched: number; total: number; pct: number; bar: string };
+  capstone: { solid: number; total: number; pct: number; bar: string };
+  next: { n: number; slug: string; name: string; track: string } | null;
+  rendered: string;
+}
+
+/**
+ * Everything here is counted from real rows. A lesson counts once its build leaves
+ * 'awaiting_student'; a skill counts once its mastery is above zero; a rung counts only when
+ * the capstone scorer says SOLID. Nothing is estimated and nothing flatters.
+ */
+export function lessonProgress(db: Database.Database, capstoneSolid?: number): LessonProgress {
+  const doneBuilds = (db.prepare(
+    "SELECT COUNT(*) c FROM builds WHERE state IN ('done','provisional','unlocked')",
+  ).get() as { c: number }).c;
+  const lessonsDone = Math.min(doneBuilds, LESSONS.length);
+
+  // Split by kind. Lumping them together reads as 50% done when every production skill is at
+  // zero, which overstates readiness. Production is the critical path; ML is already banked.
+  const q = (where: string): number =>
+    (db.prepare(`SELECT COUNT(*) c FROM skills s LEFT JOIN tracks t ON t.id = s.track_id WHERE ${where}`).get() as { c: number }).c;
+  const prodTouched = q("t.kind IN ('production','ship') AND s.mastery > 0");
+  const prodTotal = q("t.kind IN ('production','ship')");
+  const mlTouched = q("(t.kind = 'ml' OR t.kind IS NULL) AND s.mastery > 0");
+  const mlTotal = q("(t.kind = 'ml' OR t.kind IS NULL)");
+  const touched = prodTouched;
+  const totalSkills = prodTotal;
+
+  const solid = capstoneSolid ?? 0;
+  const next = LESSONS[lessonsDone] ?? null;
+
+  const pct = (a: number, b: number): number => (b === 0 ? 0 : Math.round((a / b) * 100));
+  const L = { done: lessonsDone, total: LESSONS.length, pct: pct(lessonsDone, LESSONS.length), bar: bar(lessonsDone, LESSONS.length) };
+  const S = { touched, total: totalSkills, pct: pct(touched, totalSkills), bar: bar(touched, totalSkills) };
+  const C = { solid, total: 8, pct: pct(solid, 8), bar: bar(solid, 8) };
+
+  const pad = (s: string, n: number): string => s + ' '.repeat(Math.max(0, n - s.length));
+  const M = { touched: mlTouched, total: mlTotal, pct: pct(mlTouched, mlTotal), bar: bar(mlTouched, mlTotal) };
+  const rendered = [
+    `Lessons     ${L.bar}  ${pad(`${L.done}/${L.total}`, 8)}${L.pct}%`,
+    `Production  ${S.bar}  ${pad(`${S.touched}/${S.total}`, 8)}${S.pct}%   <- the critical path`,
+    `ML (banked) ${M.bar}  ${pad(`${M.touched}/${M.total}`, 8)}${M.pct}%   understood, not yet evidenced`,
+    `Capstone    ${C.bar}  ${pad(`${C.solid}/${C.total}`, 8)}${C.pct}%   rungs with a real metric row`,
+    next ? `\nNext        L${next.n} ${next.slug} - ${next.name}  (${next.track})` : '\nAll 20 lessons complete.',
+  ].join('\n');
+
+  return { lessons: L, skills: S, ml: M, capstone: C, next, rendered };
+}
+
 // ---- CLI: tsx src/v3.ts seed [--db <path>] ----------------------------------------------
 
 const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -451,7 +533,12 @@ if (invokedDirectly) {
   const { default: DB } = await import('better-sqlite3');
   const db = new DB(dbPath, { fileMustExist: true });
   db.pragma('journal_mode = WAL');
-  if ((process.argv[2] ?? 'seed') === 'seed') {
+  const cmd = process.argv[2] ?? 'seed';
+  if (cmd === 'progress') {
+    const { scoreCapstone } = await import('./generators.js');
+    const solid = scoreCapstone(db).filter((r) => r.status === 'SOLID').length;
+    console.log('\n' + lessonProgress(db, solid).rendered + '\n');
+  } else if (cmd === 'seed') {
     console.log(`P-tracks seeded:   ${seedPTracks(db)}`);
     console.log(`T-tracks marked:   ${markMlTracks(db)}`);
     console.log(`P-skills seeded:   ${seedPSkills(db)}`);

@@ -812,4 +812,16 @@ server.registerTool('faizos_record_insight', {
   return ok(r);
 });
 
+
+server.registerTool('faizos_lesson_progress', {
+  title: 'The real progress bar',
+  description: 'Counted from rows, never estimated: lessons whose build has left awaiting_student, production vs ML skills with mastery above zero, and capstone rungs the scorer calls SOLID. Print this at the END of every lesson.',
+  inputSchema: {},
+}, async () => {
+  const { lessonProgress } = await import('./v3.js');
+  const { scoreCapstone } = await import('./generators.js');
+  const solid = scoreCapstone(db).filter((r) => r.status === 'SOLID').length;
+  return ok(lessonProgress(db, solid));
+});
+
 await server.connect(new StdioServerTransport());

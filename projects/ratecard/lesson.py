@@ -1,31 +1,59 @@
 # =============================================================================
-#  FAIZOS LESSON 2  ·  Rate cards: picking the cheapest model
-#  Run me:   uv run python lesson.py
+#  FAIZOS LESSON 2  ·  The AI Gateway
+#  Run me:   uv run --no-project python lesson.py
 # =============================================================================
 #
-#  THE PROBLEM
-#  -----------
-#  You have three models to choose from. The expensive one is five times the price
-#  of the cheap one. Obvious answer: use the cheap one.
+#  THE QUESTION
+#  ------------
+#  Asked at: Anthropic / Google (Applied AI onsite)
 #
-#  Except the cheap one is worse, so you only want it where it can cope. Which
-#  means you need to know, for YOUR traffic, what each one would actually cost.
-#  Not the sticker price. The bill.
+#      "You are spending $47,000 a month on a single frontier model.
+#       Design an AI Gateway that routes between three providers with
+#       auto-fallback, and cut that bill by 40% without users noticing."
 #
-#  Teams that get this right cut their model spend by 30 to 55 percent. That is
-#  the single most quotable number you can put in an interview, and by the end of
-#  this file you will have written the code that produces it.
+#  Notice what makes it answerable: the NUMBER. $47,000 and 40%. Without those
+#  it is "design a gateway" and any answer is as good as any other. With them,
+#  most designs are eliminated immediately, and the ones left can be argued for.
+#
+#  That is the whole shape of a systems interview. A constraint with a number,
+#  and a sequence of decisions that the constraint forces.
 #
 #
-#  WHAT YOU ALREADY KNOW (from lesson 1)
-#  --------------------------------------
-#      cost = tokens * rate / PER_MILLION
+#  THE STEPS  (this is the answer you should be able to say out loud)
+#  ------------------------------------------------------------------
 #
-#      Input is charged at one rate. Output is charged at about FIVE TIMES that.
-#      Prices are quoted per million, so the million always divides.
+#  Step 1: Know the price of every model before you route anything.
+#      You cannot choose the cheaper option if you cannot price the options.
+#      This rules out any design that hardcodes one provider. You need a
+#      lookup table of prices, held in one place, that the router reads.
+#      >> You build this today.
 #
-#  That is all carried forward. This lesson adds the ability to hold MANY prices
-#  at once and compare them.
+#  Step 2: Price the actual workload, not the sticker price.
+#      Model A can be cheaper per input token and dearer per output token.
+#      Which one wins depends entirely on YOUR traffic shape. This rules out
+#      choosing by reading the price list.
+#      >> You build this today.
+#
+#  Step 3: Route each request to the cheapest model that can handle it.
+#      Run the cheap one first, escalate only on a signal (a failed schema
+#      check, a low judge score, a tool error). Because the cheap model is
+#      often 5 to 10 times cheaper, you can afford to throw its answer away
+#      40% of the time and still win.
+#      >> Lesson 8 gives you the escalation signal. Today you build the
+#         "which is cheapest" half.
+#
+#  Step 4: Fall back when a provider fails, without falling over.
+#      Circuit breaker per provider and model. Trip on 5xx and overload,
+#      never on a rate limit, which means slow down rather than fail over.
+#      >> Lesson 4.
+#
+#  Step 5: Cache the repeated prefix.
+#      Providers charge a tenth for input they have seen recently. On a
+#      support bot resending the same manual, that alone is most of the 40%.
+#      >> You already built this in Lesson 1.
+#
+#  Real routing systems report 30 to 55% savings, not the 85% the papers
+#  claim. Your target of 40% is deliberately at the honest end.
 #
 # =============================================================================
 #  PART 1 · THE PYTHON: THREE NEW THINGS
@@ -48,7 +76,7 @@
 #  ****  THIS IS THE RULE YOU HAVE BROKEN FIVE TIMES  ****
 #
 #       SQUARE brackets [ ]  LOOK SOMETHING UP.       prices["bread"]
-#       ROUND brackets  ( )  RUN A FUNCTION.          cost(2000, 0, 3.0, 15.0)
+#       ROUND brackets  ( )  RUN A FUNCTION.          cost_for("haiku", 2000, 0)
 #
 #  Finding someone in your contacts is not the same as phoning them. Looking a
 #  price up is not the same as running a calculation. Different brackets.
@@ -97,28 +125,15 @@
 #      after one pass.
 #
 # =============================================================================
-#  PART 2 · A QUESTION BEFORE YOU READ MY CODE
-# =============================================================================
-#
-#  Two apps, same model, both charged more for output than input:
-#
-#      A RAG app   sends 20,000 tokens (a pile of documents), gets back 200.
-#      A chatbot   sends    500 tokens (one question),        gets back 1,000.
-#
-#  In WHICH of those two does the OUTPUT dominate the bill?
-#
-#  Have an answer in your head before you scroll. The checks at the bottom
-#  print both numbers, so the file will tell you if you were right.
-#
-# =============================================================================
 
 
 # -----------------------------------------------------------------------------
-#  PART 3 · MY CODE  (working. Read it, it is the shape you will copy.)
+#  PART 2 · MY CODE  (working. Read it, it is the shape you will copy.)
 # -----------------------------------------------------------------------------
 
 PER_MILLION = 1_000_000
 
+# Step 1 from the answer above, in code: every price in ONE place.
 # A dict of dicts. The outer keys are model names. Each value is ITSELF a dict
 # holding that model's two prices, in dollars per million tokens.
 RATES = {
@@ -142,8 +157,8 @@ def price_of(model, side):
 
 
 def cost_for(model, tokens_in, tokens_out):
-    # What one call to this model costs. Lesson 1's arithmetic, with the rates
-    # fetched from the dict instead of handed in as numbers.
+    # Step 2 from the answer: price the ACTUAL workload on a given model.
+    # Lesson 1's arithmetic, with the rates fetched from the dict.
 
     rate_in = price_of(model, "in")
     # ROUND brackets here, because price_of is a function and we are RUNNING it.
@@ -160,7 +175,8 @@ def cost_for(model, tokens_in, tokens_out):
 # =============================================================================
 #
 #  Write a function that says how much MORE the expensive model costs than the
-#  cheap one, for the same piece of work.
+#  cheap one, for the same piece of work. This is the number that tells you
+#  whether routing is even worth building.
 #
 #  WHAT IT MUST DO: return the cost on `pricey_model` divided by the cost on
 #  `cheap_model`. If one is twice the price of the other, this returns 2.0.
@@ -168,6 +184,9 @@ def cost_for(model, tokens_in, tokens_out):
 #  THE PYTHON YOU NEED:
 #    · `cost_for(...)` is a FUNCTION. ROUND brackets. You are running it twice,
 #      once for each model.
+#    · The two model names arrive in the brackets as `pricey_model` and
+#      `cheap_model`. They are labels for "whichever two were asked about this
+#      time". Typing "opus" directly breaks the check that asks about sonnet.
 #    · Division is `/`. The thing on top goes first: `a / b` is a divided by b.
 #    · One line, starting with `return`, no `=` in it.
 #
@@ -183,6 +202,8 @@ def cost_for(model, tokens_in, tokens_out):
 def how_much_dearer(pricey_model, cheap_model, tokens_in, tokens_out):
     # Delete `pass`. Write your one line. Four spaces at the start.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    # Delete `pass`. Write your one line. Four spaces at the start.
+    # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
     return how_much_dearer ("opus" / "haiku")
 
@@ -193,11 +214,12 @@ def how_much_dearer(pricey_model, cheap_model, tokens_in, tokens_out):
 #  ▼▼▼  YOUR TURN — TASK 2 of 2  (the loop) ▼▼▼
 # =============================================================================
 #
-#  Find the CHEAPEST model for a given piece of work, and return its name.
+#  Step 3 from the answer, in code: find the CHEAPEST model for a given piece
+#  of work, and return its name.
 #
 #  Some models are cheaper on input and dearer on output, so you cannot answer
 #  this by reading the price list. You have to price the actual workload on each
-#  one and compare. That is model routing, and it is worth 30 to 55 percent.
+#  one and compare. That is the routing decision, and it is worth 30 to 55%.
 #
 #  THE SHAPE, in the same form as the shopping-list pattern in Part 1:
 #
@@ -209,6 +231,17 @@ def how_much_dearer(pricey_model, cheap_model, tokens_in, tokens_out):
 #               best_name = model        <- if so, remember it
 #               best_cost = this_cost
 #       return best_name                 <- OUTSIDE the loop
+#
+#  A TRACE, so you can see what the loop actually does. cheapest_model(1_000_000, 0):
+#
+#    before      best_name = None   best_cost = None
+#    pass 1      model is "haiku"   costs 1.00   best_cost empty  -> TAKE IT
+#    pass 2      model is "sonnet"  costs 2.00   2.00 < 1.00? no  -> skip
+#    pass 3      model is "opus"    costs 5.00   5.00 < 1.00? no  -> skip
+#    after       return "haiku"
+#
+#  The middle column IS your two blank lines. "costs" is line 1. "empty, or
+#  cheaper?" is line 2.
 #
 #  THE PYTHON YOU NEED:
 #    · `None` means "nothing here yet". It is not zero. Zero is a price; None is
@@ -234,6 +267,8 @@ def how_much_dearer(pricey_model, cheap_model, tokens_in, tokens_out):
 def cheapest_model(tokens_in, tokens_out):
     # Delete `pass`. Write the loop. Follow the shape above.
     # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    # Delete `pass`. Write the loop. Follow the shape above.
+    # vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
     best_name = None
     best_cost = None
@@ -253,7 +288,7 @@ def cheapest_model(tokens_in, tokens_out):
 
 
 # -----------------------------------------------------------------------------
-#  THE CHECKS  (mine)
+#  THE CHECKS, AND THE NUMBER  (mine)
 # -----------------------------------------------------------------------------
 
 def check(label, got, want):
@@ -264,16 +299,62 @@ def check(label, got, want):
     return ok
 
 
+def progress_bar():
+    """Read the real FaizOS database and print where you actually are.
+
+    Nothing here is estimated. A lesson counts when its build leaves
+    'awaiting_student'; a skill counts when its mastery is above zero.
+    Uses sqlite3 from the Python standard library, so there is nothing to install.
+    """
+    import os
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "..", "faizos-core", "data", "faiz.db")
+    try:
+        con = sqlite3.connect(f"file:{os.path.abspath(db_path)}?mode=ro", uri=True)
+    except Exception:
+        return  # never let the progress bar break the lesson
+    try:
+        one = lambda q: con.execute(q).fetchone()[0]
+        lessons = min(one("SELECT COUNT(*) FROM builds WHERE state IN ('done','provisional','unlocked')"), 20)
+        prod_done = one("SELECT COUNT(*) FROM skills s LEFT JOIN tracks t ON t.id=s.track_id "
+                        "WHERE t.kind IN ('production','ship') AND s.mastery > 0")
+        prod_all = one("SELECT COUNT(*) FROM skills s LEFT JOIN tracks t ON t.id=s.track_id "
+                       "WHERE t.kind IN ('production','ship')")
+        ml_done = one("SELECT COUNT(*) FROM skills s LEFT JOIN tracks t ON t.id=s.track_id "
+                      "WHERE (t.kind='ml' OR t.kind IS NULL) AND s.mastery > 0")
+        ml_all = one("SELECT COUNT(*) FROM skills s LEFT JOIN tracks t ON t.id=s.track_id "
+                     "WHERE (t.kind='ml' OR t.kind IS NULL)")
+    except Exception:
+        con.close()
+        return
+    con.close()
+
+    def bar(done, total, width=20):
+        filled = 0 if total == 0 else round(done / total * width)
+        return "#" * filled + "." * (width - filled)
+
+    def pct(a, b):
+        return 0 if b == 0 else round(a / b * 100)
+
+    print("\n" + "=" * 68)
+    print("  WHERE YOU ACTUALLY ARE")
+    print("=" * 68)
+    print(f"  Lessons     {bar(lessons,20)}  {lessons}/20     {pct(lessons,20)}%")
+    print(f"  Production  {bar(prod_done,prod_all)}  {prod_done}/{prod_all}    {pct(prod_done,prod_all)}%   <- the critical path")
+    print(f"  ML (banked) {bar(ml_done,ml_all)}  {ml_done}/{ml_all}    {pct(ml_done,ml_all)}%   understood, not yet evidenced")
+    print("=" * 68)
+
+
 def main():
-    print("\nThe question from Part 2 — same model, two workloads:")
+    print("\nThe question from the top — same model, two workloads:")
     rag_in = 20_000 * price_of("sonnet", "in") / PER_MILLION
     rag_out = 200 * price_of("sonnet", "out") / PER_MILLION
     chat_in = 500 * price_of("sonnet", "in") / PER_MILLION
     chat_out = 1_000 * price_of("sonnet", "out") / PER_MILLION
-    print(f"  RAG app  : input ${rag_in:.4f}  output ${rag_out:.4f}   -> output is {rag_out / (rag_in + rag_out):.0%} of the bill")
-    print(f"  Chatbot  : input ${chat_in:.4f}  output ${chat_out:.4f}   -> output is {chat_out / (chat_in + chat_out):.0%} of the bill")
-    print("  Same model, and which side dominates completely flips. That is why")
-    print("  you optimise different things for a RAG app than for a chatbot.")
+    print(f"  RAG app  : input ${rag_in:.4f}  output ${rag_out:.4f}   -> output is {rag_out/(rag_in+rag_out):.0%} of the bill")
+    print(f"  Chatbot  : input ${chat_in:.4f}  output ${chat_out:.4f}   -> output is {chat_out/(chat_in+chat_out):.0%} of the bill")
+    print("  Same model. Which side dominates completely flips, which is why you")
+    print("  optimise different things for a RAG app than for a chatbot.")
 
     print("\nMy code (already working):")
     mine = [
@@ -290,18 +371,28 @@ def main():
 
     print("\nTask 2 — cheapest_model:")
     t2 = [
-        check("cheapest for reading",      cheapest_model(20_000, 200), "haiku"),
-        check("cheapest for writing",      cheapest_model(500, 1_000), "haiku"),
-        check("cheapest for nothing",      cheapest_model(0, 0), "haiku"),
+        check("cheapest for reading", cheapest_model(20_000, 200), "haiku"),
+        check("cheapest for writing", cheapest_model(500, 1_000), "haiku"),
+        check("cheapest for nothing", cheapest_model(0, 0), "haiku"),
     ]
 
     done = sum(1 for r in mine + t1 + t2 if r)
     total = len(mine) + len(t1) + len(t2)
     print(f"\n{done} of {total} passing.")
-    if all(t1) and not all(t2):
+
+    if done == total:
+        # THE NUMBER, measured against the constraint from the top of the file.
+        spend = 47_000
+        dear = how_much_dearer("opus", "haiku", 20_000, 200)
+        saved = (1 - 1 / dear) * 0.60   # route 60% of traffic down to the cheap model
+        print("\n--- THE NUMBER, against the $47,000 question ---")
+        print(f"  opus costs {dear:.1f}x haiku on a RAG-shaped request.")
+        print(f"  Routing 60% of that traffic to haiku saves {saved:.0%}, or ${spend*saved:,.0f}/month.")
+        print(f"  Target was 40%. {'MET.' if saved >= 0.40 else 'NOT met on routing alone: add prefix caching from Lesson 1.'}")
+        progress_bar()
+        print("\nBoth tasks done. Tell me and I'll review it.\n")
+    elif all(t1):
         print("Task 1 done. Now the loop.\n")
-    elif done == total:
-        print("Both done. Tell me and I'll review it.\n")
     else:
         print("Start with Task 1, it is one line. /faiz-hint for a nudge.\n")
 
