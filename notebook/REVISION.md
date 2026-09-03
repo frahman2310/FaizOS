@@ -2229,3 +2229,82 @@ NameError: name 'tokens_in' is not defined
 - The names in the brackets are the only names you have.
 
 ---
+
+## Lesson 1 · What an AI feature costs
+
+## Lesson 1 · What an AI feature costs
+
+**The question**, asked at Google (L5 AI Engineer, onsite): *"Design a prompt caching system for 1B daily LLM API calls. Optimise for cost and latency."*
+
+**What you produced:** $4,860,000 saved per day, a 54% cut. You can now derive that from first principles.
+
+### The three lines on an AI bill
+
+| Line | Rate | Why |
+|---|---|---|
+| **Input** — what you send | full price | read all at once, in parallel |
+| **Output** — what comes back | **~5× input** | generated one token at a time, serially |
+| **Cached input** — text seen recently | **~1/10 input** | the provider skipped the work |
+
+You're paying for the part that can't be parallelised.
+
+**The counter-intuitive one:** reading 2,000 tokens costs $0.006; writing 500 costs $0.0075. A quarter as many tokens, more money. Chatty models are expensive models, which is why a RAG app and a chatbot need different optimisations on the same model.
+
+### Per million means the million goes on the bottom
+
+```
+tokens × rate ÷ 1,000,000 = dollars
+```
+
+The true price of a token is $0.000003 — unreadable, so everyone quotes "$3 per million". Get the division backwards and your answer is a million times too big.
+
+### The Python
+
+**Two kinds of line.** `total = 5 + 3` puts a label on the left and the work on the right. `return total` hands the answer back and never contains an `=`.
+
+**A calculation is several named lines, then one return.** Three things paid for → three named lines → one return adding all three.
+
+**A default argument makes an input optional.** `cached_in=0` means callers who never heard of caching still get the right answer.
+
+### Your two questions, answered
+
+**What goes before the `=`?** The name is yours — Python doesn't read it or check it. Letters, digits, underscores; no spaces; can't start with a digit. Name it what the value **is**, because the audience is you in three weeks. **Caveat:** don't give a variable the same name as a function. From that line on, the name means the number, and the function is hidden.
+
+**What can follow `return`?** Anything that produces a value. The test: *could this sit on the right of an `=`?* A name, arithmetic, a function call, or a mix. The one thing that can't is an assignment.
+
+### One fact, one place
+
+Both of the things you didn't know were the same rule.
+
+`daily_cost` calls `cost(...)` rather than repeating the arithmetic, so the price of a call is defined **once**. Duplicate it, fix a bug in one copy, and the other stays silently wrong — no crash, just an untrue number.
+
+Same reason `wrap_cost` uses `item_price * 0.5` rather than `2.5`. Typing `2.5` is correct only by coincidence, and stops being correct the moment the price changes. **Write the relationship, not the answer.**
+
+This is the biggest source of bugs that don't announce themselves.
+
+### Your code, and the one thing to change next time
+
+```python
+def cache_cost(cached_in, rate_in):
+    cache_cost = cached_in * rate_in * 0.1 / PER_MILLION   # shadows the function
+    return cache_cost
+
+def cost_with_cache(tokens_in, tokens_out, rate_in, rate_out, cached_in=0):
+    input_cost  = tokens_in  * rate_in  / PER_MILLION
+    output_cost = tokens_out * rate_out / PER_MILLION
+    cache_cost  = cached_in  * rate_in * 0.1 / PER_MILLION   # <- could have called cache_cost()
+    return input_cost + output_cost + cache_cost
+```
+
+9 of 9, zero correctness defects. Two taste points, and the second one is Block 4's own rule: you rewrote the cached arithmetic instead of calling the function you'd just written and tested. The `0.1` now lives in two places. It works today; it breaks quietly the day one copy changes.
+
+### Remember
+
+- Output ≈ 5× input. Cached ≈ 1/10 input.
+- Per million means the million divides.
+- A line is `name = work`, or `return <something that produces a value>`.
+- Several named lines, then one return.
+- Write the relationship, not the answer.
+- Don't name a variable after a function.
+
+---
