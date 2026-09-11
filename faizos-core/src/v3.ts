@@ -445,26 +445,18 @@ export function insightGap(db: Database.Database): { last_lesson: string | null;
 // ---- the 20 lesson plan, and a progress bar computed from real rows ----------------------
 
 export const LESSONS: Array<{ n: number; slug: string; name: string; track: string }> = [
-  { n: 1,  slug: 'tokencost', name: 'what an AI feature costs',            track: 'P7' },
-  { n: 2,  slug: 'ratecard',  name: 'rate cards: dicts, lists and loops',  track: 'P7' },
-  { n: 3,  slug: 'meter',     name: 'an instrumented LLM client',          track: 'P0' },
-  { n: 4,  slug: 'contract',  name: 'structured output that never breaks', track: 'P5' },
-  { n: 5,  slug: 'synth',     name: 'build the eval set',                  track: 'P6' },
-  { n: 6,  slug: 'harness',   name: 'the assertion runner and CI gate',    track: 'P6' },
-  { n: 7,  slug: 'triage',    name: 'error analysis on 100+ traces',       track: 'P6' },
-  { n: 8,  slug: 'judge',     name: 'an LLM judge you can trust',          track: 'P6' },
-  { n: 9,  slug: 'bm25',      name: 'lexical retrieval from scratch',      track: 'P8' },
-  { n: 10, slug: 'embed',     name: 'vector index and chunking sweep',     track: 'P8' },
-  { n: 11, slug: 'hybrid',    name: 'RRF fusion and reranking',            track: 'P8' },
-  { n: 12, slug: 'grounded',  name: 'citations, abstention, injection',    track: 'P8' },
-  { n: 13, slug: 'loop',      name: 'an agent in 150 lines, no framework', track: 'P9' },
-  { n: 14, slug: 'control',   name: 'budgets, resume, human approval',     track: 'P9' },
-  { n: 15, slug: 'mcp',       name: 'a server on the 2026-07-28 spec',     track: 'P9' },
-  { n: 16, slug: 'service',   name: 'async FastAPI that does not block',   track: 'P1' },
-  { n: 17, slug: 'store',     name: 'Postgres, pgvector, real SQL',        track: 'P4' },
-  { n: 18, slug: 'ship-it',   name: 'Docker, deploy, CI with OIDC',        track: 'P2' },
-  { n: 19, slug: 'prove',     name: 'the ML evidence sprint',              track: 'T6' },
-  { n: 20, slug: 'capstone',  name: 'shipped, with a results table',       track: 'P10' },
+  // 20 lessons compressed to 11 on 2026-09-11; see docs/lesson-plan.md.
+  { n: 1,  slug: 'tokencost', name: 'what an AI feature costs',                 track: 'P7' },
+  { n: 2,  slug: 'ratecard',  name: 'rate cards: dicts, lists and loops',       track: 'P7' },
+  { n: 3,  slug: 'meter',     name: 'a measured, reliable LLM call',            track: 'P0' },
+  { n: 4,  slug: 'live',      name: 'your first live URL',                      track: 'P2' },
+  { n: 5,  slug: 'evals',     name: 'the eval set and the merge gate',          track: 'P6' },
+  { n: 6,  slug: 'judge',     name: 'error analysis in SQL, a trusted judge',   track: 'P6' },
+  { n: 7,  slug: 'search',    name: 'retrieval from scratch, then vectors',     track: 'P8' },
+  { n: 8,  slug: 'grounded',  name: 'hybrid search, citations, streaming',      track: 'P8' },
+  { n: 9,  slug: 'agent',     name: 'an agent loop, reliability, MCP',          track: 'P9' },
+  { n: 10, slug: 'scale',     name: 'async, Postgres, caching under load',      track: 'P1' },
+  { n: 11, slug: 'capstone',  name: 'ML evidence sprint and the product',       track: 'P10' },
 ];
 
 function bar(done: number, total: number, width = 20): string {
@@ -518,7 +510,7 @@ export function lessonProgress(db: Database.Database, capstoneSolid?: number): L
     `Production  ${S.bar}  ${pad(`${S.touched}/${S.total}`, 8)}${S.pct}%   <- the critical path`,
     `ML (banked) ${M.bar}  ${pad(`${M.touched}/${M.total}`, 8)}${M.pct}%   understood, not yet evidenced`,
     `Capstone    ${C.bar}  ${pad(`${C.solid}/${C.total}`, 8)}${C.pct}%   rungs with a real metric row`,
-    next ? `\nNext        L${next.n} ${next.slug} - ${next.name}  (${next.track})` : '\nAll 20 lessons complete.',
+    next ? `\nNext        L${next.n} ${next.slug} - ${next.name}  (${next.track})` : `\nAll ${LESSONS.length} lessons complete.`,
   ].join('\n');
 
   return { lessons: L, skills: S, ml: M, capstone: C, next, rendered };
