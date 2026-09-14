@@ -6,7 +6,7 @@ BEFORE SENDING ANY TEACHING PART, CHECK EVERY LINE. If one fails, rewrite before
    More than one new thing -> split it into another part.
 2. Every rule a question relies on is stated in this part or was taught before. Say what a
    domain word means the first time it appears.
-3. Start from a tiny example (5 lines or fewer) about the idea alone. Show real lesson-file
+3. Start from a tiny example (8 lines or fewer) about the idea alone. Show real lesson-file
    lines only after the idea has landed.
 4. Plain words: sticker, machine, slot, stuff, the inside, push right. No academic jargon.
 5. One concrete picture per idea (tightrope net, basket vs item in hand, house hallway).

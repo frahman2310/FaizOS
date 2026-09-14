@@ -19,6 +19,11 @@ edit THIS file in the same turn and commit, so he never has to say it twice.
   from a blank file. His only writing: a 1-5 line fix he diagnosed, one assert, or a
   3-line reproduction.
 
+## Already covered in Lesson 3 (do not re-teach)
+average vs p50/p95, the stopwatch, one record per call, sorted/len/int for p95, the bill,
+try/except basics (the safety net), retries with growing waits, timeouts, the trip switch
+count. Remaining: reading the real meter.py and judging it.
+
 ## Lesson shape
 1. Hook: a real production problem with one number he can work out.
 2. Two rounds. Each round is several parts. **Send ONE part per message**, then wait.
@@ -27,7 +32,7 @@ edit THIS file in the same turn and commit, so he never has to say it twice.
 ## How to build a part (the template that worked: Lesson 3, reframed Part B)
 1. **The problem**, 2-3 sentences: what goes wrong in a real app without this.
 2. **The fix**, one sentence, plain words.
-3. **A tiny example**, 5 lines or fewer, about the idea alone. Generic names (`ask_ai`).
+3. **A tiny example**, 8 lines or fewer, about the idea alone. Generic names (`ask_ai`).
    No machines from the lesson file yet.
 4. **One picture** (tightrope and net, basket vs item in hand, house hallway vs room).
 5. **Every path spelled out** as bullets: if it works, this runs; if it fails, this runs,
