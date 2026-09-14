@@ -88,16 +88,15 @@ so twice. Never reveal it unasked.
 
 ## The lesson format from L3 on
 
-Every lesson is a run of bootcamp-style rounds, then one small build.
+Every lesson is 2 rounds, sent one part per message. The enforced checklist is docs/teaching-rules.md, injected on every message by hooks/teaching-rules.sh.
 
 1. **Hook:** one money number he can work out in his head.
-2. **Rounds, in chat.** Each round is one idea: plain words, one picture, then 5-10 quick
+2. **Exactly 2 rounds, in chat** (his rule, 2026-09-11). Each round has several parts, **sent one per message** (his rule, 2026-09-14). Within a part, one idea: plain words, one picture, then 5-10 quick
    questions. Mostly classify and compute, one or two "someone broke it" with a step table,
    ending with one "write it yourself" line.
 3. **New libraries are taught as machines someone else built:** its name, its slots, what comes
    out. Same vocabulary as the bootcamp. At most one new piece of Python grammar per lesson.
-4. **The build:** a small file holding only the task and a PASS/FAIL checker. No teaching inside
-   the file. Each task asks for one or two new things at most.
+4. **Read and judge (2026-09-14):** the lesson file is complete and working, written by the teacher. He reads it, predicts, and finds planted bugs. His writing is only a 1-5 line fix, one assert, or a 3-line reproduction.
 5. **Close:** the lesson's number, the real progress bar, and one insight recorded.
 
 Wrong answers: "wrong", one short reframe, one hint. If still stuck: a picture, then his own
