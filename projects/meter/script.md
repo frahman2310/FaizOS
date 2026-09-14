@@ -3,7 +3,7 @@ Taught so far: see the Session ledger in docs/learning-evidence.md. Round 2 Part
 
 ## R2-B · Changing what's under a label
 New: putting a dict label on the left of `=`
-Status: rebuilt 2026-09-14 (old version used a table for broken code)
+Status: done 2026-09-14
 
 # Round 2 · Part B · Changing what's under a label
 
@@ -50,7 +50,7 @@ def breaker_record(ok, now):              told after each call; ok is True if it
 
 ## R2-C · The switch trips
 New: `>=` (at least)
-Status: pending
+Status: done 2026-09-14
 
 # Round 2 · Part C · The switch trips
 
@@ -98,7 +98,7 @@ if breaker["dead_in_a_row"] >= TRIP_AT:
 
 ## R2-D · Reading the report
 New: none (the idea: a number built only from calls that worked)
-Status: pending
+Status: done 2026-09-14
 
 # Round 2 · Part D · Which calls a number counts
 
@@ -143,7 +143,7 @@ p95 latency      676 ms        410 ms
 
 ## R2-E · Find the planted bug
 New: none (reading a real report to find a one-word change)
-Status: pending
+Status: done 2026-09-14
 
 # Round 2 · Part E · Find the planted bug
 

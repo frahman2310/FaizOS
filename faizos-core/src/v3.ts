@@ -482,7 +482,11 @@ export function lessonProgress(db: Database.Database, capstoneSolid?: number): L
   const doneBuilds = (db.prepare(
     "SELECT COUNT(*) c FROM builds WHERE state IN ('done','provisional','unlocked')",
   ).get() as { c: number }).c;
-  const lessonsDone = Math.min(doneBuilds, LESSONS.length);
+  // Read-and-judge lessons (from L3) create no build, so a lesson also counts once it is recorded
+  // under its slug with faizos_record_lesson.
+  const recorded = new Set((db.prepare('SELECT topic FROM lessons').all() as Array<{ topic: string }>).map((r) => r.topic));
+  let lessonsDone = Math.min(doneBuilds, LESSONS.length);
+  for (const l of LESSONS) if (recorded.has(l.slug)) lessonsDone = Math.max(lessonsDone, l.n);
 
   // Split by kind. Lumping them together reads as 50% done when every production skill is at
   // zero, which overstates readiness. Production is the critical path; ML is already banked.

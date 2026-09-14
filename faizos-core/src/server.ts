@@ -343,7 +343,7 @@ server.registerTool('faizos_record_lesson', {
     skills: z.array(z.string()).optional(),
     struggles: z.array(z.string()).optional(),
     worked: z.array(z.string()).optional(),
-    new_insights: z.array(z.string()).optional().describe('1-2 concrete, reusable teaching adjustments for next time'),
+    new_insights: z.array(z.string()).optional().describe('a log line only; teaching rules go into the faiz-teach skill via faiz-reflect'),
     difficulty_felt: z.enum(['too_easy', 'right', 'too_hard']).optional(),
     mode: z.enum(['course', 'build']).optional(),
     depth: z.enum(['explain', 'flow', 'ship']).optional(),

@@ -112,7 +112,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 
 | ID | Move | Worked | Cases |
 |---|---|---|---|
-| D1 | Point at his own earlier answer, or a table of his own earlier numbers | **10 / 12** | v1 self-consistency tables ×4 (graph breaks, Amdahl, LoRA, quantization); bootcamp R3, R7, R9, R10; L3 R2 Q16; 09-14 F5. Failed: L3 Part C Q7, 09-14 G4 |
+| D1 | Point at his own earlier answer, or a table of his own earlier numbers | **15 / 17** | v1 self-consistency tables ×4 (graph breaks, Amdahl, LoRA, quantization); bootcamp R3, R7, R9, R10; L3 R2 Q16; 09-14 F5; 09-14 R2 B1, B4, B5, C5, D5. Failed: L3 Part C Q7, 09-14 G4 |
 | D2 | One new everyday picture | **8 / 10** | bias as a fixed cost, XOR fence, dimmer switch, parcel label vs contents, cashier closing the till, supermarket basket, house hallway, receipt book (09-14, fixed 2 questions). Failed: stopwatch race (09-11), torn-out notebook (09-12) |
 | D3 | Enumerate line by line ("1 held, 2 held...") | 3 / 3 | GPipe activations, speculative decoding, powers of two by doubling |
 | D4 | Shrink to a two-option question | 5 / 7 | bootcamp R4 Q3, R10 Q3; 09-14 D5 ("is the dashboard telling the truth?"), H4 (one per swipe or one per customer); v1 "2 knobs, how many updates". Failed: stopwatch sort-into-3-jobs, G4 two yes/no |
@@ -174,10 +174,12 @@ One row per teaching session. Questions = questions asked; right = right first t
 | 2026-09-14 | L3 R1 parts B (rebuilt), C, D, E (template) | 20 | 16 | kind vs note, sticker vs kind, "fine" vs quietly wrong | "reframe part B, i don't understand anything"; "this one was better"; "i just don't like repitition" |
 | 2026-09-14 | L3 R1 parts F, G, H (real-file lines, no template) | 11 | 3 | misread BACKOFF, 1 record vs tries, reset in loop; H unanswered | "give me the answer for 4 and move on"; "you're breaking the skill again" |
 | 2026-09-14 | L3 R1 H rebuilt (receipt book) + R2 Part A (closed-until sign) | 10 | 8 | failed record inside vs after loop, receipts per swipe; R2 Part B unanswered | "how many more of these rounds are left"; "The method is inconsistent, you keep deviating" |
+| 2026-09-14 | L3 R2 parts B-E, first lesson taught from a validated script | 20 | 15 | whole dict vs one label, the works path resets the streak, value from a broken line, "trips" read as crash, p50 of mostly zeros; all 5 resolved by pointing at his own earlier answer (5/5) | "explain number 5" |
 
 **Taught and answered right, do not re-teach** (as of 2026-09-14): six kinds of stuff, stickers,
 quotes, machines and slots, left and right of `=`, colon and push right, `return` stops the machine,
 lists and positions, `for`, piling up a total, dicts and `KeyError`, `if` and comparisons, the hallway
 rule, average vs p50/p95, the stopwatch, one record per call, try/except, named kinds, several kinds in
 brackets, `as err` and `str(err)`, the L3 retry loop (lines 76-90), success record (69-87), failure
-record after the loop (92-96), the closed-until sign. Open: L3 Round 2 Part B onward.
+record after the loop (92-96), the closed-until sign, changing a value under a dict label, `>=` and the trip, which calls a number counts
+(successes only), finding a one-word planted bug from a real report. Lesson 3 complete. Open: L4 live.
