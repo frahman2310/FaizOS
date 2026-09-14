@@ -19,3 +19,6 @@ BEFORE SENDING ANY TEACHING PART, CHECK EVERY LINE. If one fails, rewrite before
    own earlier answers, then a two-option question. Reveal only when he asks.
 10. Before diagnosing his code, read his actual file as the last step, raw, with line numbers.
 11. Optimise for technical ability, not employability.
+12. NO REPETITION: never re-teach or re-ask what he already got right, no recaps, no restating
+    rules to him. A correction he gives is written into the faiz-teach skill the same turn.
+13. The full method is the faiz-teach skill (.claude/skills/faiz-teach/SKILL.md). Load it.
