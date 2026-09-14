@@ -292,18 +292,17 @@ server.registerTool('faizos_radar_list', {
 
 // ================= Memory + self-improving feedback loop =================
 
-const LEARNING_PROFILE =
-  'Teach with the Brick Method: start below the floor, ONE tiny concept per step, ask a small ' +
-  'question, WAIT for his answer, then reveal the answer + the reasoning. Define each term in one ' +
-  'sentence + an analogy. He does the doing. No fluff. Small lessons. End with a rich revision note.';
+// The method lives in ONE place: .claude/skills/faiz-teach/SKILL.md, kept current by the faiz-reflect
+// skill from measured evidence. Insights are a historical log; they are never loaded as rules, because
+// loading them next to the skill is what produced contradictory teaching.
+const LEARNING_PROFILE = 'Follow the faiz-teach skill. It is the only source of teaching rules.';
 
 // ---- faizos_lesson_start: load what we've learned about teaching him ----
 server.registerTool('faizos_lesson_start', {
   title: 'Start a lesson',
-  description: 'Call at the START of a lesson/build. Returns the learning profile, accumulated teaching INSIGHTS to apply, weakest skills, and recent struggles. This is how FaizOS applies what it learned from past lessons.',
+  description: 'Call at the START of a lesson/build. Returns the active build, weakest skills and recent struggles. Teaching rules come only from the faiz-teach skill.',
   inputSchema: { topic: z.string().optional() },
 }, async ({ topic }) => {
-  const insights = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC, ts DESC LIMIT 8').all();
   const weak = db.prepare('SELECT id,name,mastery,must_know FROM skills WHERE on_curriculum=1 ORDER BY mastery ASC, must_know DESC LIMIT 5').all();
   const recentStruggles = (db.prepare('SELECT struggles FROM lessons ORDER BY id DESC LIMIT 3').all() as Array<{ struggles: string }>)
     .flatMap((l) => { try { return JSON.parse(l.struggles); } catch { return []; } });
@@ -327,7 +326,6 @@ server.registerTool('faizos_lesson_start', {
     active_venture: activeVenture(db),
     topic: topic ?? null,
     learning_profile: LEARNING_PROFILE,
-    insights_to_apply: insights,
     weak_skills: weak,
     recent_struggles: recentStruggles,
     current_build: activeMission(),
@@ -371,8 +369,7 @@ server.registerTool('faizos_record_lesson', {
   for (const n of new_insights ?? []) if (n.trim()) upsert.run(ts, n.trim(), mode ?? 'course');
   logEvent(db, ts, 'lesson', `${topic} (+${(new_insights ?? []).length} insights, ${errorsRecorded} errors classified)`);
   setMeta(db, 'pending_close', ''); // loop closed for this build
-  const active = db.prepare('SELECT note, weight FROM insights WHERE active=1 ORDER BY weight DESC LIMIT 8').all();
-  return ok({ recorded: topic, errors_recorded: errorsRecorded, new_insights: new_insights ?? [], active_insights: active, note: 'These load at the next faizos_lesson_start.' });
+  return ok({ recorded: topic, errors_recorded: errorsRecorded, new_insights: new_insights ?? [], note: 'Logged. Rule changes go into the faiz-teach skill via faiz-reflect, never into insights.' });
 });
 
 // ---- faizos_save_revision: store note + regenerate the compiled notebook ----

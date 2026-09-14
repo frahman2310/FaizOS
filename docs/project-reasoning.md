@@ -1,3 +1,5 @@
+> **SUPERSEDED 2026-09-14.** How Faiz is taught lives only in `.claude/skills/faiz-teach/SKILL.md`. Where this file disagrees, ignore this file.
+
 # Real-world project reasoning
 
 How to frame every build so it reads like production work rather than coursework. Synthesised

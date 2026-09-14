@@ -41,15 +41,15 @@ export const P_TRACKS: PTrackSeed[] = [
     completionTest: 'Diagnose a slow query from EXPLAIN output alone, and state where pgvector ceilings out for a given corpus and why.' },
   { code: 'P5', title: 'Streaming and reliability', position: 5, prereqs: ['P4'], kind: 'production', guidance: 'worked_example_first',
     completionTest: 'Kill the client mid-stream and prove the usage row still wrote.' },
-  { code: 'P6', title: 'Observability and evals', position: 6, prereqs: ['P5'], kind: 'production', guidance: 'write_from_empty',
+  { code: 'P6', title: 'Observability and evals', position: 6, prereqs: ['P5'], kind: 'production', guidance: 'worked_example_first',
     completionTest: 'A documented regression the CI gate caught, with a paired test proving the fix was real and not noise.' },
-  { code: 'P7', title: 'Cost engineering', position: 7, prereqs: ['P6'], kind: 'production', guidance: 'write_from_empty',
+  { code: 'P7', title: 'Cost engineering', position: 7, prereqs: ['P6'], kind: 'production', guidance: 'worked_example_first',
     completionTest: 'Every design answer ends with a number, unprompted.' },
-  { code: 'P8', title: 'Retrieval, properly', position: 8, prereqs: ['P6'], kind: 'production', guidance: 'write_from_empty',
+  { code: 'P8', title: 'Retrieval, properly', position: 8, prereqs: ['P6'], kind: 'production', guidance: 'worked_example_first',
     completionTest: 'A ten row ablation table on your own corpus, including the filtered-query recall collapse and the fixes that did not work.' },
-  { code: 'P9', title: 'Agents, tools and MCP', position: 9, prereqs: ['P8'], kind: 'production', guidance: 'write_from_empty',
+  { code: 'P9', title: 'Agents, tools and MCP', position: 9, prereqs: ['P8'], kind: 'production', guidance: 'worked_example_first',
     completionTest: 'An agent with designed tools, pass^k reported beside pass@1, and a written failure taxonomy.' },
-  { code: 'P10', title: 'Ship and sell', position: 10, prereqs: ['P9'], kind: 'ship', guidance: 'write_from_empty',
+  { code: 'P10', title: 'Ship and sell', position: 10, prereqs: ['P9'], kind: 'ship', guidance: 'worked_example_first',
     completionTest: 'One product with a user who is not you, carrying a real metric.' },
 ];
 
@@ -207,7 +207,7 @@ export function guidanceFor(db: Database.Database, buildId: number): GuidancePol
     reason:
       policy === 'write_from_empty'
         ? 'He is past novice here. Blank page; the guard is on.'
-        : 'He is a novice here. Show a worked reference first, have him modify it, then write from empty. The guard is off.',
+        : 'He is a novice here. Read and judge: complete working code he reads, predicts and debugs (faiz-teach skill). The guard is off.',
   };
 }
 

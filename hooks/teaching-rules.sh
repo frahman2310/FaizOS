@@ -1,5 +1,6 @@
 #!/bin/bash
-# UserPromptSubmit: put the teaching rules in front of Claude on every message.
-# Fails open: a missing file never blocks a prompt.
-cat "/Users/faizr/AI OS for Learning/docs/teaching-rules.md" 2>/dev/null
+# UserPromptSubmit: put the ONE teaching method in front of Claude on every message.
+# It injects the faiz-teach skill itself, so there is no second copy to drift. Fails open.
+SKILL="/Users/faizr/AI OS for Learning/.claude/skills/faiz-teach/SKILL.md"
+[ -f "$SKILL" ] && awk 'BEGIN{f=0} /^---$/{f++; next} f>=2' "$SKILL"
 exit 0

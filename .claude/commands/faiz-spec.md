@@ -26,15 +26,8 @@ exists when he is stuck.
 
 **Check the guidance policy first.** Call `faizos_guidance` with the build id.
 
-- `write_from_empty` (the ML tracks, where he is past novice): brief, rules card, failing tests,
-  empty file. The guard is on. Do not show him a reference.
-- `worked_example_first` (the production tracks, where he is a genuine novice): show a small
-  WORKING reference of the same shape first, have him read it and modify it, and only then blank
-  the file. The guard stands down here on purpose.
-
-Applying one policy to both is the design error. Worked examples beat blank pages for novices
-and the advantage reverses as expertise grows; forcing a blank page on P-track material produces
-failure he cannot learn from.
+Every track is taught read-and-judge (faiz-teach skill): a complete working file he reads,
+predicts and debugs. There is no blank-page policy.
 
 ## Handoff format, non-negotiable
 

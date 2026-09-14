@@ -18,6 +18,14 @@
             "command": "bash \"/Users/faizr/AI OS for Learning/hooks/session-stop.sh\""
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"/Users/faizr/AI OS for Learning/hooks/teaching-guard.py\""
+          }
+        ]
       }
     ],
     "PreToolUse": [

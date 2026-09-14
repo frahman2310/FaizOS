@@ -70,11 +70,11 @@ console.assert(Array.isArray(rq.items) && rq.items.some((i: any) => i.id === 'fl
 
 // --- Phase 1: memory + self-improving feedback loop (prove it closes) ---
 const ls0 = await call('faizos_lesson_start', { topic: 'test lesson' });
-console.assert(Array.isArray(ls0.insights_to_apply) && typeof ls0.learning_profile === 'string', 'lesson_start returns insights + profile');
+console.assert(ls0.insights_to_apply === undefined && ls0.learning_profile.includes('faiz-teach'), 'lesson_start points at the faiz-teach skill and loads no insight rules');
 const insightText = 'reinforce rows-vs-columns with the column-length trick';
 await call('faizos_record_lesson', { topic: 'matmul cost', skills: ['linalg-matmul'], struggles: ['confused rows vs columns'], new_insights: [insightText], difficulty_felt: 'right' });
 const ls1 = await call('faizos_lesson_start');
-console.assert(ls1.insights_to_apply.some((i: any) => i.note === insightText), 'insight surfaces at next lesson_start (loop closes)');
+console.assert(ls1.insights_to_apply === undefined, 'recorded insights stay a log and never come back as rules');
 const sv = await call('faizos_save_revision', { topic: 'matmul cost', note_md: '**Remember:** 2*M*N*K' });
 console.assert(sv.entries >= 1 && sv.notebook_path.endsWith('REVISIONS.md'), 'revision saved');
 const fsmod = await import('node:fs');

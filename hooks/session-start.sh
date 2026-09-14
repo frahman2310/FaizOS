@@ -8,6 +8,9 @@ FaizOS is open — this is Faiz's build-and-ship home screen. Before anything el
 call the `faizos_state` tool and render the dashboard: a warm one-line greeting with his 🔥 streak
 and last ship, his 2–3 weakest must-know skills as tiny bars, and ONE clear next step (continue a
 build / start one / review). Show the menu: build · ship · analyze · review · notes · radar. If he
-chooses to build, call `faizos_lesson_start` FIRST to load what FaizOS learned about teaching him,
-then teach with the Brick Method. Keep it ~5 seconds to read. Never lecture.
+chooses to build or learn, load the `faiz-teach` skill and teach ONLY from the lesson's validated
+script (see the skill). Keep the dashboard ~5 seconds to read. Never lecture.
 EOF
+
+# Backstop for the feedback loop: flag teaching the method has not learned from yet.
+python3 "/Users/faizr/AI OS for Learning/scripts/reflect_status.py" 2>/dev/null || true
