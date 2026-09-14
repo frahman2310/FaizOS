@@ -797,7 +797,7 @@ server.registerTool('faizos_cost_drill', {
 
 server.registerTool('faizos_record_insight', {
   title: 'Record what this session taught you about teaching him',
-  description: 'Write down a teaching lesson so it loads at the start of every future lesson. This is the mechanism that stops him giving the same correction twice. Call it at the end of EVERY session that taught anything; the Stop hook refuses to close a teaching session that recorded nothing.',
+  description: 'Log one line about a teaching session (the faiz-reflect step writes it). A log, never a rule: teaching rules live only in the faiz-teach skill. Call it at the end of EVERY session that taught anything; the Stop hook refuses to close a teaching session that recorded nothing.',
   inputSchema: {
     note: z.string().describe('what you learned about how to teach him, specific enough to act on next time'),
     weight: z.number().optional().describe('3 for a hard rule he stated directly, 1 for an observation'),
