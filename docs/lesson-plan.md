@@ -3,8 +3,7 @@
 Replaced the 20-lesson plan on 2026-09-11. Lessons 1-2 are done; the remaining 18 are now 9.
 Every one of the 133 skills is still assigned exactly once. Nothing was dropped.
 
-How each lesson is taught lives in `docs/how-faiz-learns.md`: bootcamp-style rounds in chat,
-then one small build file with a PASS/FAIL checker.
+How each lesson is taught lives only in `.claude/skills/faiz-teach/SKILL.md`.
 
 ## What changed and why
 

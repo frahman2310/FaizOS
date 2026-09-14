@@ -22,8 +22,8 @@ Two files, two jobs, never mixed:
    example before real code, a picture, paths spelled out, code shown in chat vs in a file.
 
 3. **Log it.** Append one row per part to `## Session ledger` in `docs/learning-evidence.md`
-   (date | lesson/part | questions | right first try | stuck points | his feedback). Update any
-   measured table whose totals changed. Evidence only: no instructions in this file.
+   (date | lesson/part | questions | right first try | stuck points | his feedback), update any
+   measured table whose totals changed, and update the "taught" list under the ledger. Evidence only.
 
 4. **Change the method only when justified:**
    - he stated a rule or a preference: change it now, his latest words win;
@@ -36,7 +36,8 @@ Two files, two jobs, never mixed:
 5. **Keep enforcement in step.** If a template marker changed, update the `Template markers:` line
    in faiz-teach. Validate every lesson script: `python3 scripts/check_lesson_script.py projects/<lesson>/script.md`.
 
-6. **Mark it done:** `python3 scripts/extract_teaching.py <transcript.jsonl> --mark`
+6. **Mark it done:** `python3 scripts/extract_teaching.py <transcript.jsonl> --mark`, then log one
+   line with `faizos_record_insight` ("REFLECT LOG: <session>, ledger row added"). A log, never a rule.
 
 7. **Commit** the skill, the evidence file and `docs/reflect-state.json` together, with a message
    naming the evidence behind each rule change.

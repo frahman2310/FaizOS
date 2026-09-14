@@ -57,6 +57,10 @@ def problems(part_id, new, body, has_key):
         n = len(code.strip("\n").splitlines())
         if n > 10:
             out.append(f"code block of {n} lines, max 10")
+    if len(body) > 2000:
+        out.append(f"part is {len(body)} characters, max 2000")
+    if re.search(r"(?i)open (the file|meter|[\w/]+\.py)|scroll (up|down)|go to line", body):
+        out.append("asks him to open, scroll or hunt in a file; paste the lines in chat instead")
     if not has_key:
         out.append("missing '### Key' answer section")
     return out

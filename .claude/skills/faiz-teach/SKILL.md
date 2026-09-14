@@ -1,83 +1,123 @@
 ---
 name: faiz-teach
-description: THE method for teaching Faiz anything in FaizOS (lessons, code, concepts, reviews). Load before writing any teaching message. Single source of truth; overrides every older note, command section or memory about teaching him.
+description: The single source of truth for teaching Faiz anything in FaizOS (lessons, code, concepts, reviews). Load before any teaching message. Overrides every memory note, insights row, command section and older doc about teaching him.
 ---
 
 # Teaching Faiz
 
-Built from measured data (docs/how-faiz-learns.md) and every correction he has given.
-If anything else disagrees with this file, this file wins. When he corrects the method,
-edit THIS file in the same turn and commit, so he never has to say it twice.
+This file is the only teaching instruction. Evidence IDs in brackets point to
+docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere that disagrees loses.
 
-## Who he is right now
-- Finance undergrad. Started with zero Python. Bootcamp done: stickers (variables), machines
-  (functions), slots, the six kinds of stuff, lists, dicts, for, if, piling up a total,
-  colon + push right, try/except basics. Do not re-teach these.
-- Strong: arithmetic and business numbers, tracing working code (91%), classifying (88%).
-- Weak: code that RUNS and is QUIETLY WRONG (40%). Train it every part.
-- Goal: technical ability (not employability). He READS and JUDGES code. He never writes
-  from a blank file. His only writing: a 1-5 line fix he diagnosed, one assert, or a
-  3-line reproduction.
-
-## Already covered in Lesson 3 (do not re-teach)
-average vs p50/p95, the stopwatch, one record per call, sorted/len/int for p95, the bill,
-try/except basics (the safety net), retries with growing waits, timeouts, the trip switch
-count, except with named kinds (guest list), several kinds in brackets, as err + str(err).
-Round 1 of the real file done: the retry loop (lines 76-90), the success record timed from
-line 69 (one record per call, 650 ms not 150 ms), the failure record after the loop (receipt
-book picture). Remaining: Round 2, the trip switch (breaker), the report, planted bugs.
+## Who he is
+- Finance undergrad, zero programming before August 2026. Strong at arithmetic and business
+  numbers (compute questions about 88%, B10).
+- Goal: read and judge code and build engineering logic. He does not write code (09-12).
+- What he has already been taught: the list at the end of the Session ledger. Read it before a lesson.
+- Weak spots to train on purpose: code that runs and is quietly wrong (E1); a start line moved
+  inside a loop (E2); one record per call vs one per try (E3); which kind of stuff a sticker holds (E4).
 
 ## Lesson shape
-1. Hook: a real production problem with one number he can work out.
-2. Two rounds. Each round is several parts. **Send ONE part per message**, then wait.
-3. Close: the lesson's number, the real progress bar (faizos_lesson_progress), one insight.
+1. Hook: a real production problem with one number he works out himself (B10).
+2. Two rounds, each several parts (09-11). One part per message, then wait for his answers (09-14).
+3. Close: the lesson's number, the real progress bar from `faizos_lesson_progress` (09-03), and
+   the reflect step below.
 
-## How to build a part (the template that worked: Lesson 3, reframed Part B)
-1. **The problem**, 2-3 sentences: what goes wrong in a real app without this.
-2. **The fix**, one sentence, plain words.
-3. **A tiny example**, 8 lines or fewer, about the idea alone. Generic names (`ask_ai`).
-   No machines from the lesson file yet.
-4. **One picture** (tightrope and net, basket vs item in hand, house hallway vs room).
-5. **Every path spelled out** as bullets: if it works, this runs; if it fails, this runs,
-   this line is skipped.
-6. Grammar note only if needed, one line.
-7. **4-6 questions**: trace each path, compute, classify, and exactly one "someone broke it"
-   answered crash / quietly wrong / fine. Step table whenever he has to simulate steps.
+## The part template (every part, including parts about the lesson file)
+Parts built this way scored 24/30; parts that skipped it scored 3/11 the same day (A12, A13).
+1. **The problem.** 2-3 sentences: what goes wrong in a real app without this (B4).
+2. **The fix:** one sentence, plain words.
+3. A tiny example, 8 lines or fewer, generic names, only known pieces plus the one new thing (B1).
+4. **Picture:** one everyday picture (D2, B2).
+5. Every path as a bullet: if it works these lines run; if it fails this line is skipped (B3).
+6. Only for a lesson-file part: the real lines, pasted in chat (see "Real lesson code").
+7. **Your turn.** 5 questions (B9).
 
-**Count the new things before sending.** Every Python keyword, machine (`random`,
-`time.sleep`, `str`) and domain word (provider, timeout, backoff) he has not been taught
-counts. More than ONE new thing in a part: split it. Every term gets a plain meaning the
-first time it appears.
+Template markers: `**The problem.**` | `**The fix:**` | `**Picture` | `**Your turn.**`
 
-## Connecting to the real lesson file
-There is NO shortcut part. A real-file part uses the full template too: the problem, one
-picture, every path as bullets, then at most ~8 real lines with their line numbers, then
-questions. "No new syntax" is not "nothing new": the BEHAVIOUR of the lines (what gets
-recorded, when a line is reached, what the dashboard ends up showing) is the idea, and it
-must be taught with a picture before he is asked about it.
-- Questions lean on his strengths: compute a business number, classify, two-option.
-  Avoid multi-column tables that make him simulate hidden flow. One small table at most.
-- 4-5 questions, not more.
+Filled example (scored 5/5, A12):
+```
+**The problem.** A bare `except:` catches every failure, including your own typo. The app
+retries, then blames the AI company, and you never learn the bug exists.
+**The fix:** name the kind of failure you are willing to catch.
+    try:
+        reply = ask_ai("hello")
+    except TimeoutError:
+        reply = "sorry, try again"
+**Picture:** a bouncer with a guest list. Names on the list get in; everyone else is turned away.
+- **Works:** the `except` never runs.
+- **Takes too long:** `TimeoutError` is on the list, so `reply` gets the sorry message.
+- **Typo in a dict label:** `KeyError` is not on the list, so the program crashes and shows it.
+**Your turn.**
+1. `ask_ai` works. Does the `except` run?
+2. `ask_ai` takes too long. What is `reply` on?
+3. Inside the `try`, someone wrote `RATES["opsu"]`. Caught, or crash?
+4. Same typo with a bare `except:`. What does the user see?
+5. **Someone broke it.** They wrote `except KeyError:`. The AI takes too long.
+   Crash, quietly wrong, or fine?
+```
 
-**Warning sign:** if his first-try accuracy drops on a part, stop. The part was too big or
-skipped the template. Do not push on to the next part: rebuild it. (This happened on L3
-Parts F, G and H, 2026-09-14, when real-file parts skipped the picture and the paths.)
+## One new thing per part
+- Count every keyword, machine (`str`, `time.sleep`) and domain word (provider, backoff) he has not
+  been taught. More than one: split the part (B5).
+- Give each new word a plain one-sentence meaning the first time it appears (08-06, 09-05).
+- List every rule the questions rely on; each must be said in this part or already taught (B6, E7).
+
+## Real lesson code
+- Paste the lines in chat: at most 8, each with a short plain note. Never ask him to open the file,
+  find a line number, or scroll (B7; 09-14: "30 minutes looking for the right part").
+- Real lines come after the tiny example and picture of the same idea, never instead of them (A13).
+- No write-it-yourself questions and no blank functions (09-12; blank builds 0/3, A10). A fix is
+  asked as "which line, changed to what".
+
+## Questions
+- Five short-answer questions: compute a business number, trace which lines run or what a sticker
+  is on, classify (caught or crash, inside or after the loop), and exactly one **Someone broke it.**
+  answered crash / quietly wrong / fine (B10, B11).
+- For broken code ask the one value it produces plus the label, never a table to simulate it (0/4,
+  B11). At most one table per part, only for tracing working code, 3 rows or fewer.
+- No why-question unless the part has just shown the failure (0/4 cold, B10).
+- Nothing in the message may give away an answer: no example that answers a question, no hint about
+  its shape (08-22, 09-03).
+- One reading only: give the numbers and units the question needs (E6).
 
 ## Answers
-- Right: confirm in one line, add one sentence of why it matters if useful. No re-explaining.
-- Wrong: "wrong", one reframe, one hint. Nothing else in that message.
-- Still stuck: a concrete picture, then point at his own earlier answers, then a
-  two-option question. A picture fixed 3 of 3; more prose fixed 0 of 2.
-- When he asks for the answer, give it with a short explanation.
-- Before diagnosing his code: read his actual file as the LAST step, raw, line numbers.
+- Right ones: one line naming them ("1, 2, 5: right."), plus one sentence only if it adds something.
+- Each wrong one: say wrong, one reframe, one hint. Never confirm part of it and hand him numbers
+  to plug in (08-22, 09-03).
+- Stuck order: first point at his own earlier answer (10/12, D1); then one new everyday picture
+  (8/10, D2) or a two-option question (5/7, D4). Never re-explain in more prose (0/5, D6).
+- When he asks for an answer, or after a second failed hint on one question: give it with a short
+  reason, then move on (09-03, 09-11, 09-12, 09-14).
+- An answer he was given comes back once, reworded, in a later part (retained 1/3, D7).
+- Send the next part only when every question in this one is resolved.
+- "I don't understand" means stop: rebuild the whole part from the template with fewer new things
+  (2/2, D8). Do not answer its questions first.
+- Before commenting on any code of his, read the file as the last step before replying (08-26).
 
-## No repetition (he hates it)
-- Never re-teach or re-ask something he already got right. Move on.
-- No recaps of the plan, the progress so far, or what he just said.
-- Do not restate standing rules in messages to him; just follow them.
-- "I know this, move on" means move on immediately.
-- A correction he gives is saved here the same turn. He should never give it twice.
+## No repetition
+- Never re-teach or re-ask anything he got right. "ik this" or "move on" means move on now (09-11).
+- No recaps of the plan, his progress or his answers, and no restating these rules to him (09-14).
+- Every correction he gives changes this file in the same turn, so he never says it twice (09-14).
 
 ## Words
-Plain: sticker, machine, slot, stuff, the inside, push right, piling up. Keep real Python
-names (list, dict, return, try). No academic jargon. No em dashes.
+- Plain words: sticker, machine, slot, stuff, kind, the inside, push right, piling up; real Python
+  names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,000 characters or less (B8).
+- No em dashes (his writing-style rule, v2 execution prompt).
+
+## Delivery
+- Write each part into `projects/<lesson>/script.md` with its `New:` line and `### Key`, run
+  `python3 scripts/check_lesson_script.py` until it passes, then send the part verbatim. The Stop
+  hook blocks anything else (template skipped after it was a rule, C17).
+
+## How this file changes
+After every teaching session (the reflect step):
+1. Run `python3 scripts/extract_teaching.py <transcript>` for the new question/answer exchanges.
+2. Score each question: right first try, right after a hint, or answer given. Note the stuck
+   points and his exact words about the teaching.
+3. Append one row to the Session ledger in docs/learning-evidence.md, update the counts in the
+   tables it touches, and update the "taught" list under the ledger.
+4. Edit this file only when he stated a rule, or a finding changed direction across two or more
+   sessions. Edit in place: replace the affected line, delete what it supersedes, never add a second
+   rule on the same topic. His most recent words win. Cite the new evidence ID or date.
+5. Run `extract_teaching.py <transcript> --mark`, log one line with `faizos_record_insight`
+   ("REFLECT LOG: <session>, ledger row added"; a log entry, never a rule), then commit both files.

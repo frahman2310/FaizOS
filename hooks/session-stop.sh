@@ -47,7 +47,7 @@ fi
 
 # The teaching feedback loop, enforced. A session that taught a lesson and recorded nothing
 # about HOW to teach him has dropped what it learned, and he ends up giving the same correction
-# twice. Insights load at every faizos_lesson_start, so this is the mechanism that stops that.
+# twice. The reflect step edits the faiz-teach skill; insights are only its log line.
 INSIGHT_GAP=$(cd "$ROOT/faizos-core" && node --input-type=commonjs -e '
 try {
   const Database = require("better-sqlite3");
@@ -63,7 +63,7 @@ try {
 ' 2>/dev/null)
 if [ -n "$INSIGHT_GAP" ]; then
   cat <<EOF
-{"decision":"block","reason":"FaizOS: a lesson ran on $INSIGHT_GAP and no teaching insight has been recorded since. Call faizos_record_insight with what this session taught you about how to teach him: what landed, what confused him, what you assumed he knew and he did not, what format worked. Insights load at every faizos_lesson_start, so this is what stops him giving you the same correction twice. Weight 3 for a rule he stated directly, 1 for an observation."}
+{"decision":"block","reason":"FaizOS: a lesson ran on $INSIGHT_GAP and has not been reflected on. Run the faiz-reflect skill now: extract this session's question and answer exchanges, add the Session ledger row in docs/learning-evidence.md, and edit the faiz-teach skill in place only if his words or the evidence justify it. Its last step logs one REFLECT LOG line with faizos_record_insight, which clears this gate."}
 EOF
   exit 0
 fi
