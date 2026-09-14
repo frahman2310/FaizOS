@@ -14,3 +14,5 @@ EOF
 
 # Backstop for the feedback loop: flag teaching the method has not learned from yet.
 python3 "/Users/faizr/AI OS for Learning/scripts/reflect_status.py" 2>/dev/null || true
+# Cohesion gate: say so at session start if the teaching system has drifted.
+python3 "/Users/faizr/AI OS for Learning/scripts/check_teaching_system.py" --quiet 2>/dev/null || true

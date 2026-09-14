@@ -10,18 +10,38 @@ import sys
 SKILL = "/Users/faizr/AI OS for Learning/.claude/skills/faiz-teach/SKILL.md"
 
 
-def required_markers():
-    """Template markers come from the faiz-teach skill, so the checker never drifts from it."""
+def markers(label, default):
+    """Markers come from the faiz-teach skill, so the checker never drifts from it."""
     try:
         for line in open(SKILL):
-            if line.startswith("Template markers:"):
+            if line.startswith(label + ":"):
                 return [m.strip().strip("`") for m in line.split(":", 1)[1].split("|") if m.strip()]
     except OSError:
         pass
-    return ["**The problem.**", "**The fix:**", "**Picture", "**Your turn.**"]
+    return default
 
 
-REQUIRED = required_markers()
+REQUIRED = markers("Template markers", ["**The problem.**", "**The fix:**", "**Picture", "**Your turn.**"])
+BUILD_REQUIRED = markers("Build markers", ["**The build.**", "**Decision", "**Your call.**"])
+START_MARKERS = [REQUIRED[0], BUILD_REQUIRED[0]]
+ASK_MARKERS = [REQUIRED[-1], BUILD_REQUIRED[-1]]
+
+
+def build_problems(new, body, has_key):
+    out = [f"missing {r}" for r in BUILD_REQUIRED if r not in body]
+    if new is None:
+        out.append("missing 'New:' line")
+    decisions = re.split(re.escape(BUILD_REQUIRED[1]), body.split(BUILD_REQUIRED[-1])[0])[1:]
+    if not 3 <= len(decisions) <= 5:
+        out.append(f"{len(decisions)} decisions, need 3-5")
+    for i, d in enumerate(decisions, 1):
+        if d.count("rules out") < 2:
+            out.append(f"decision {i}: every option must say what it rules out (need 2+)")
+    if len(body) > 3000:
+        out.append(f"build is {len(body)} characters, max 3000")
+    if not has_key:
+        out.append("missing '### Key' section (the target number and a sound set of choices)")
+    return out
 
 
 def parts(text):
@@ -36,6 +56,8 @@ def parts(text):
 
 
 def problems(part_id, new, body, has_key):
+    if part_id.startswith("BUILD"):
+        return build_problems(new, body, has_key)
     out = []
     for r in REQUIRED:
         if r not in body:

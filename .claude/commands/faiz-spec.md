@@ -1,5 +1,5 @@
 ---
-description: Produce the design brief and a complete working file with planted checks for the current build, taught the faiz-teach way.
+description: Write the current lesson's build as 3-5 decisions with costs and what each rules out, per the faiz-teach skill, then implement and run what he chooses.
 argument-hint: [topic] (blank = the active build's topic)
 ---
 Produce exactly three things for the current build, in this order, and nothing else.

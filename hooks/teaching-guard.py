@@ -42,20 +42,22 @@ def main():
     data = json.load(sys.stdin)
     if data.get("stop_hook_active"):
         return
+    from check_lesson_script import parts, problems, START_MARKERS, ASK_MARKERS
     text = last_assistant_text(data["transcript_path"])
-    if "**Your turn.**" not in text:
+    if not any(a in text for a in ASK_MARKERS):
         return
-    if "**The problem.**" not in text:
-        reason = "A teaching part was sent without the faiz-teach template (no '**The problem.**')."
+    starts = [text.index(m) for m in START_MARKERS if m in text]
+    if not starts:
+        reason = "A teaching part or build was sent without the faiz-teach template."
     else:
-        from check_lesson_script import parts, problems
-        sent = norm(text[text.index("**The problem.**"):])
-        reason = "This teaching part does not come from a validated lesson script (projects/*/script.md)."
+        sent = norm(text[min(starts):])
+        reason = "This teaching part or build does not come from a validated lesson script (projects/*/script.md)."
         for path in glob.glob(os.path.join(ROOT, "projects", "*", "script.md")):
             for part_id, new, body, has_key in parts(open(path).read()):
-                if "**The problem.**" not in body:
+                found = [body.index(m) for m in START_MARKERS if m in body]
+                if not found:
                     continue
-                scripted = norm(body[body.index("**The problem.**"):])
+                scripted = norm(body[min(found):])
                 if scripted and scripted in sent:
                     errs = problems(part_id, new, body, has_key)
                     if not errs:

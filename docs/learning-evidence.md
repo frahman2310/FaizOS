@@ -94,6 +94,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C27 | 09-14 | "i just don't like repitition and the need to repeat something again and again. Fix the way you teach code(this one was better)" | standing |
 | C28 | 09-14 | "give me the answer for 4 and move on"; "The method is inconsistent, you keep deviating, its incoherent and haphazard" | standing |
 | C29 | 09-14 | "I don't want code in files where I have to spend 30 minutes looking for the right part"; patterns go "continuously" into the feedback loop "without conflicting instructions" | standing |
+| C30 | 09-14 | "Each lesson can still have a build (just needs to be one I understand and build through my concepts and decisionmaking rather than my code writing)" | standing; in faiz-teach "The build" |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.

@@ -19,7 +19,8 @@ docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere
 ## Lesson shape
 1. Hook: a real production problem with one number he works out himself (B10).
 2. Two rounds, each several parts (09-11). One part per message, then wait for his answers (09-14).
-3. Close: the lesson's number, the real progress bar from `faizos_lesson_progress` (09-03), and
+3. The build: a real working thing he builds through his decisions, not his code (09-14, C30). See "The build".
+4. Close: the lesson's number, the real progress bar from `faizos_lesson_progress` (09-03), and
    the reflect step below.
 
 ## The part template (every part, including parts about the lesson file)
@@ -55,6 +56,17 @@ retries, then blames the AI company, and you never learn the bug exists.
 5. **Someone broke it.** They wrote `except KeyError:`. The AI takes too long.
    Crash, quietly wrong, or fine?
 ```
+
+## The build
+Every lesson ends in one build he understands and makes through concepts and decisions (09-14, C30).
+1. **The build.** What it is and the one number it must hit, 2 sentences.
+2. 3 to 5 decisions, each headed **Decision N:**, one situation with a real number, 2-3 options.
+   Every option states what it costs and what it rules out ("rules out ___"). Only ideas already taught.
+3. **Your call.** He picks an option for each decision and predicts the build's number.
+4. I implement exactly his choices, run it, and paste the real output and the few lines that
+   carry each decision in chat. He compares prediction and result. If the number is missed, he
+   changes one decision and it runs again.
+Build markers: `**The build.**` | `**Decision` | `**Your call.**`
 
 ## One new thing per part
 - Count every keyword, machine (`str`, `time.sleep`) and domain word (provider, backoff) he has not
@@ -105,7 +117,8 @@ retries, then blames the AI company, and you never learn the bug exists.
 - No em dashes (his writing-style rule, v2 execution prompt).
 
 ## Delivery
-- Write each part into `projects/<lesson>/script.md` with its `New:` line and `### Key`, run
+- Write each part, and the build (id starting `BUILD`), into `projects/<lesson>/script.md` with its
+  `New:` line and `### Key`, run
   `python3 scripts/check_lesson_script.py` until it passes, then send the part verbatim. The Stop
   hook blocks anything else (template skipped after it was a rule, C17).
 
