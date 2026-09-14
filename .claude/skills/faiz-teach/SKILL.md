@@ -48,10 +48,18 @@ counts. More than ONE new thing in a part: split it. Every term gets a plain mea
 first time it appears.
 
 ## Connecting to the real lesson file
-Only after the idea has landed, in its own part:
-- Show at most ~8 real lines, with their real line numbers from the file.
-- Every name in those lines is already taught, or gets its own part first.
-- Same question pattern: trace, classify, one planted break.
+There is NO shortcut part. A real-file part uses the full template too: the problem, one
+picture, every path as bullets, then at most ~8 real lines with their line numbers, then
+questions. "No new syntax" is not "nothing new": the BEHAVIOUR of the lines (what gets
+recorded, when a line is reached, what the dashboard ends up showing) is the idea, and it
+must be taught with a picture before he is asked about it.
+- Questions lean on his strengths: compute a business number, classify, two-option.
+  Avoid multi-column tables that make him simulate hidden flow. One small table at most.
+- 4-5 questions, not more.
+
+**Warning sign:** if his first-try accuracy drops on a part, stop. The part was too big or
+skipped the template. Do not push on to the next part: rebuild it. (This happened on L3
+Parts F, G and H, 2026-09-14, when real-file parts skipped the picture and the paths.)
 
 ## Answers
 - Right: confirm in one line, add one sentence of why it matters if useful. No re-explaining.
