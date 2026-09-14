@@ -23,7 +23,9 @@ edit THIS file in the same turn and commit, so he never has to say it twice.
 average vs p50/p95, the stopwatch, one record per call, sorted/len/int for p95, the bill,
 try/except basics (the safety net), retries with growing waits, timeouts, the trip switch
 count, except with named kinds (guest list), several kinds in brackets, as err + str(err).
-Remaining: reading the real meter.py and judging it.
+Round 1 of the real file done: the retry loop (lines 76-90), the success record timed from
+line 69 (one record per call, 650 ms not 150 ms), the failure record after the loop (receipt
+book picture). Remaining: Round 2, the trip switch (breaker), the report, planted bugs.
 
 ## Lesson shape
 1. Hook: a real production problem with one number he can work out.
