@@ -23,7 +23,6 @@ edit THIS file in the same turn and commit, so he never has to say it twice.
 average vs p50/p95, the stopwatch, one record per call, sorted/len/int for p95, the bill,
 try/except basics (the safety net), retries with growing waits, timeouts, the trip switch
 count, except with named kinds (guest list), several kinds in brackets, as err + str(err).
-Also covered: except with named kinds (guest list), several kinds in brackets, as err + str(err).
 Remaining: reading the real meter.py and judging it.
 
 ## Lesson shape
