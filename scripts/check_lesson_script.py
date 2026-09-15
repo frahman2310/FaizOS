@@ -55,7 +55,8 @@ def jargon_problems(body):
         m = re.search(r"(?<![a-z])" + re.escape(term) + r"(?![a-z])", plain)
         if not m:
             continue
-        sentence = re.split(r"(?<=[.!?])\s", plain[m.start():], maxsplit=1)[0]
+        start = max(plain.rfind(". ", 0, m.start()), plain.rfind("\n", 0, m.start())) + 1
+        sentence = re.split(r"(?<=[.!?])\s", plain[start:], maxsplit=1)[0]
         if not re.search(r"\b(means|is|are|called)\b|\(", sentence):
             out.append(f"'{term}' is not taught yet and is not explained where it first appears")
     return out
