@@ -24,7 +24,7 @@ export interface PTrackSeed {
   prereqs: string[];
   completionTest: string;
   kind: 'production' | 'ship';
-  /** Novice domain: read a worked example first. Expert domain: write from empty. */
+  /** worked_example_first: read and judge complete code (faiz-teach). The other value keeps the blank-page guard for ML tracks. */
   guidance: 'worked_example_first' | 'write_from_empty';
 }
 
@@ -187,7 +187,7 @@ export interface GuidancePolicy {
 /**
  * Expertise reversal: worked examples beat blank pages for novices and reverse for experts.
  * The guard only fires where he is already expert; on production tracks he reads a reference
- * first, modifies it, and only then writes from empty.
+ * first and judges it; teaching itself follows the faiz-teach skill.
  */
 export function guidanceFor(db: Database.Database, buildId: number): GuidancePolicy {
   const row = db
