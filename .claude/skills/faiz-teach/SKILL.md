@@ -131,6 +131,10 @@ Call markers: `**Your call.**`
 - Plain words: sticker, machine, slot, stuff, kind, the inside, push right, piling up; real Python
   names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,000 characters or less (B8).
 - No em dashes (his writing-style rule, v2 execution prompt).
+- Every technical word must be taught before or explained in plain words where it first appears
+  ("You need to explain the jargon you throw", 09-15, C33). `docs/glossary.md` lists what is taught
+  and a watchlist of technical words; the checker fails a part that uses an untaught watchlist word
+  without explaining it. Add any new technical word to the watchlist the moment you use it.
 
 ## Delivery
 - Write each part, and the build (id starting `BUILD`), into `projects/<lesson>/script.md` with its
@@ -145,7 +149,8 @@ the reflect step (the faiz-reflect skill) has run, and SessionStart flags any un
 2. Score each question: right first try, right after a hint, or answer given. Note the stuck points,
    the build picks versus the sound set, and his exact words about the teaching.
 3. Append one row to the Session ledger in docs/learning-evidence.md, update the counts in the tables
-   it touches (add a new finding row when a pattern appears twice), and update the "taught" list.
+   it touches (add a new finding row when a pattern appears twice), update the "taught" list, and move
+   every word he has now been taught into Taught in `docs/glossary.md` with its plain meaning.
 4. Write `Carry-over from L<n>:` at the top of the next lesson's `projects/<lesson>/script.md`: the 1-3
    concrete adjustments this lesson's evidence implies for the next one. The checker refuses a lesson
    script from L5 on without it.

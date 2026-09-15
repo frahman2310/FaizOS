@@ -67,7 +67,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 
 | # | Date | His words (short) | Status |
 |---|---|---|---|
-| C1 | 08-06 | "tell me what each word means" | B ×4: micrograd jargon 08-07, P0 terms 08-23, "Again... fancy jargon" 09-05, "provider" undefined 09-14 |
+| C1 | 08-06 | "tell me what each word means" | B ×4: micrograd jargon 08-07, P0 terms 08-23, "Again... fancy jargon" 09-05, "provider" undefined 09-14, L5 Part A prompt/ship/summariser/eval set 09-15 (now ×5) |
 | C2 | 08-06 | "complete beginner... jargon explanation too detailed... simple analogies... start simpler" | standing |
 | C3 | 08-07 | "build it slowly brick by brick... answer small parts THEN reveals the right answer... keep the lessons small and compact" | S: one-question-per-message by C17 (09-03); size by C6, C22 |
 | C4 | 08-07 | "the revision should include the background/context and the reasoning" | standing (revision notes) |
@@ -99,6 +99,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C30 | 09-14 | "Each lesson can still have a build (just needs to be one I understand and build through my concepts and decisionmaking rather than my code writing)" | standing; in faiz-teach "The build" |
 | C31 | 09-15 | "decision 3 and 4 depend on where the majority of my users are which is unknown so correct that for the future and also explain these questions more throughly" | standing; in faiz-teach "The build" |
 | C32 | 09-15 | "I liked the build part, i want it to be more throughly explained (the implications of my decisions and the choices should be explained much better)"; "parse this lesson, add to the feedback loop and improve the next lessons (make this automatic)" | standing; in faiz-teach "The build" and "How this file changes" |
+| C33 | 09-15 | "Rephrase this, I don't understand what this is saying. You need to explain the jargon you throw" (L5 Part A used prompt, ship, summariser, eval set undefined) | standing; enforced by docs/glossary.md in the checker |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.

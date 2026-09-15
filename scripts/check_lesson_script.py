@@ -29,6 +29,38 @@ START_MARKERS = [REQUIRED[0], "**The build.**", DECISION[0], CALL[0]]
 ASK_MARKERS = [REQUIRED[-1], DECISION[-1], CALL[-1]]
 
 
+GLOSSARY = "/Users/faizr/AI OS for Learning/docs/glossary.md"
+
+
+def glossary():
+    """(taught terms, watchlist terms), lower-case. Missing file means nothing is checked."""
+    try:
+        text = open(GLOSSARY).read()
+    except OSError:
+        return set(), []
+    taught_part = text.split("## Taught", 1)[1].split("## Watchlist", 1)[0] if "## Taught" in text else ""
+    taught = {line.split(":", 1)[0].strip().lower() for line in taught_part.splitlines() if ":" in line}
+    watch_part = text.split("## Watchlist", 1)[1] if "## Watchlist" in text else ""
+    watch = [w.strip().lower() for w in watch_part.replace("\n", ",").split(",") if w.strip()]
+    return taught, sorted(watch, key=len, reverse=True)
+
+
+def jargon_problems(body):
+    taught, watch = glossary()
+    plain = re.sub(r"```.*?```", " ", body, flags=re.S).lower()
+    out = []
+    for term in watch:
+        if term in taught:
+            continue
+        m = re.search(r"(?<![a-z])" + re.escape(term) + r"(?![a-z])", plain)
+        if not m:
+            continue
+        sentence = re.split(r"(?<=[.!?])\s", plain[m.start():], maxsplit=1)[0]
+        if not re.search(r"\b(means|is|are|called)\b|\(", sentence):
+            out.append(f"'{term}' is not taught yet and is not explained where it first appears")
+    return out
+
+
 def parts(text):
     """Yield (part_id, new_line, body, key_text, status) for every '## ' part."""
     for block in re.split(r"(?m)^## ", text)[1:]:
@@ -42,7 +74,7 @@ def parts(text):
 
 
 def problems(part_id, new, body, key, status):
-    if status.startswith("done"):
+    if status.startswith(("done", "withdrawn")):
         return []
     out = []
     if new is None:
@@ -53,6 +85,7 @@ def problems(part_id, new, body, key, status):
         out.append("missing '### Key' section")
     if len(body) > 2000:
         out.append(f"part is {len(body)} characters, max 2000")
+    out += jargon_problems(body)
     if re.search(r"(?i)open (the file|meter|[\w/]+\.py)|scroll (up|down)|go to line", body):
         out.append("asks him to open, scroll or hunt in a file; paste the lines in chat instead")
 
