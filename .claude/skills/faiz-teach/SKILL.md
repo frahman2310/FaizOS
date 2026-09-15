@@ -20,8 +20,9 @@ docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere
 1. Hook: a real production problem with one number he works out himself (B10).
 2. Two rounds, each several parts (09-11). One part per message, then wait for his answers (09-14).
 3. The build: a real working thing he builds through his decisions, not his code (09-14, C30). See "The build".
-4. Close: the lesson's number, the real progress bar from `faizos_lesson_progress` (09-03), and
-   the reflect step below.
+4. Close: `faizos_record_lesson` under the lesson's slug, `faizos_analyze` crediting each skill with
+   his first-try accuracy on its parts (without it Production stays at 0), the lesson's number, the
+   real progress bar from `faizos_lesson_progress` (09-03), and the reflect step below.
 
 ## The part template (every part, including parts about the lesson file)
 Parts built this way scored 24/30; parts that skipped it scored 3/11 the same day (A12, A13).
@@ -60,8 +61,11 @@ retries, then blames the AI company, and you never learn the bug exists.
 ## The build
 Every lesson ends in one build he understands and makes through concepts and decisions (09-14, C30).
 1. **The build.** What it is and the one number it must hit, 2 sentences.
-2. 3 to 5 decisions, each headed **Decision N:**, one situation with a real number, 2-3 options.
-   Every option states what it costs and what it rules out ("rules out ___"). Only ideas already taught.
+2. 3 to 5 decisions, each headed **Decision N:**. First 2-3 sentences explaining the situation, with
+   every fact the choice depends on stated as a given (who the users are, where, how often they call);
+   a fact nobody knows yet is named as unknown, never silently assumed (09-15, C31). Then each option
+   on its own line: what happens, what it costs, and what it rules out ("rules out ___"). Only ideas
+   already taught. A build is 4,000 characters or less.
 3. **Your call.** He picks an option for each decision and predicts the build's number.
 4. I implement exactly his choices, run it, and paste the real output and the few lines that
    carry each decision in chat. He compares prediction and result. If the number is missed, he

@@ -37,8 +37,8 @@ def build_problems(new, body, has_key):
     for i, d in enumerate(decisions, 1):
         if d.count("rules out") < 2:
             out.append(f"decision {i}: every option must say what it rules out (need 2+)")
-    if len(body) > 3000:
-        out.append(f"build is {len(body)} characters, max 3000")
+    if len(body) > 4000:
+        out.append(f"build is {len(body)} characters, max 4000")
     if not has_key:
         out.append("missing '### Key' section (the target number and a sound set of choices)")
     return out

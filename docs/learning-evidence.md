@@ -95,6 +95,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C28 | 09-14 | "give me the answer for 4 and move on"; "The method is inconsistent, you keep deviating, its incoherent and haphazard" | standing |
 | C29 | 09-14 | "I don't want code in files where I have to spend 30 minutes looking for the right part"; patterns go "continuously" into the feedback loop "without conflicting instructions" | standing |
 | C30 | 09-14 | "Each lesson can still have a build (just needs to be one I understand and build through my concepts and decisionmaking rather than my code writing)" | standing; in faiz-teach "The build" |
+| C31 | 09-15 | "decision 3 and 4 depend on where the majority of my users are which is unknown so correct that for the future and also explain these questions more throughly" | standing; in faiz-teach "The build" |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.
@@ -176,6 +177,8 @@ One row per teaching session. Questions = questions asked; right = right first t
 | 2026-09-14 | L3 R1 parts F, G, H (real-file lines, no template) | 11 | 3 | misread BACKOFF, 1 record vs tries, reset in loop; H unanswered | "give me the answer for 4 and move on"; "you're breaking the skill again" |
 | 2026-09-14 | L3 R1 H rebuilt (receipt book) + R2 Part A (closed-until sign) | 10 | 8 | failed record inside vs after loop, receipts per swipe; R2 Part B unanswered | "how many more of these rounds are left"; "The method is inconsistent, you keep deviating" |
 | 2026-09-14 | L3 R2 parts B-E, first lesson taught from a validated script | 20 | 15 | whole dict vs one label, the works path resets the streak, value from a broken line, "trips" read as crash, p50 of mostly zeros; all 5 resolved by pointing at his own earlier answer (5/5) | "explain number 5" |
+| 2026-09-14/15 | L4 live: R1 A-D, R2 A-E (validated script) + decision build | 45 + build | 41 | the gap saved vs a whole time (R2-B Q2, R2-C Q3), a redone step redoes the rest (R2-C Q2), "wrong" for slow-but-correct (R2-C Q5), all fixed on one hint; build: picked no deadline, predicted 736 ms, measured 1,753, changed decision 5, 500-call rerun 802 ms vs 2,066 | "decision 3 and 4 depend on where the majority of my users are which is unknown"; "explain these questions more throughly" |
+
 
 **Taught and answered right, do not re-teach** (as of 2026-09-14): six kinds of stuff, stickers,
 quotes, machines and slots, left and right of `=`, colon and push right, `return` stops the machine,
@@ -183,4 +186,6 @@ lists and positions, `for`, piling up a total, dicts and `KeyError`, `if` and co
 rule, average vs p50/p95, the stopwatch, one record per call, try/except, named kinds, several kinds in
 brackets, `as err` and `str(err)`, the L3 retry loop (lines 76-90), success record (69-87), failure
 record after the loop (92-96), the closed-until sign, changing a value under a dict label, `>=` and the trip, which calls a number counts
-(successes only), finding a one-word planted bug from a real report. Lesson 3 complete. Open: L4 live.
+(successes only), finding a one-word planted bug from a real report. Lesson 3 complete.
+L4: a URL, the @app.get tag, health checks, one socket for AI companies, the image box, two stages,
+reused build steps, cold starts, travel time; decision build shipped in a local container. Open: L5 evals.
