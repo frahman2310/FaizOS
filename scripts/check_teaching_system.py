@@ -21,7 +21,7 @@ STALE = [r"Brick Method", r"one tiny concept per (message|step)", r"ONE self-con
 SURFACES = (glob.glob(os.path.join(ROOT, ".claude/commands/*.md"))
             + [p for p in glob.glob(os.path.join(ROOT, ".claude/skills/*/SKILL.md")) if "faiz-teach" not in p]
             + [os.path.join(ROOT, f) for f in ("hooks/session-start.sh", "hooks/session-stop.sh", "hooks/teaching-rules.sh",
-                                               "faizos-core/src/server.ts", "CLAUDE.md")]
+                                               "faizos-core/src/server.ts", "faizos-core/src/v3.ts", "CLAUDE.md")]
             + glob.glob(os.path.join(MEMORY, "*.md")))
 
 results = []

@@ -423,7 +423,7 @@ export function recordInsight(db: Database.Database, note: string, weight = 1, m
     `INSERT INTO insights (ts, note, weight, mode) VALUES (?, ?, ?, ?)
      ON CONFLICT(note) DO UPDATE SET weight = weight + 1, active = 1, ts = excluded.ts`,
   ).run(now(), trimmed, weight, mode);
-  return { recorded: true, reason: 'recorded. It loads at the start of every future lesson.' };
+  return { recorded: true, reason: 'Logged. Teaching rules live only in the faiz-teach skill.' };
 }
 
 /**
