@@ -53,13 +53,13 @@ def main():
         sent = norm(text[min(starts):])
         reason = "This teaching part or build does not come from a validated lesson script (projects/*/script.md)."
         for path in glob.glob(os.path.join(ROOT, "projects", "*", "script.md")):
-            for part_id, new, body, has_key in parts(open(path).read()):
+            for part_id, new, body, key, status in parts(open(path).read()):
                 found = [body.index(m) for m in START_MARKERS if m in body]
                 if not found:
                     continue
                 scripted = norm(body[min(found):])
                 if scripted and scripted in sent:
-                    errs = problems(part_id, new, body, has_key)
+                    errs = problems(part_id, new, body, key, "")
                     if not errs:
                         return
                     reason = f"Part {part_id} in {path} fails validation: " + "; ".join(errs)

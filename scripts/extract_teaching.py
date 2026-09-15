@@ -14,7 +14,7 @@ import sys
 
 ROOT = "/Users/faizr/AI OS for Learning"
 STATE = os.path.join(ROOT, "docs", "reflect-state.json")
-ASKED = ("**Your turn", "Your turn.", "**Your turn.**")
+ASKED = ("**Your turn", "Your turn.", "**Your pick.**", "**Your call.**", "Change one decision")
 
 
 def typed_text(content):
@@ -34,7 +34,9 @@ def typed_text(content):
 
 
 def exchanges(path):
-    out, asked, texts = [], None, []
+    """Every typed reply that follows teaching. kind is 'answer' when the message before it asked
+    questions, 'follow-up' when it came after a hint, a correction or a build result."""
+    out, texts, teaching = [], [], False
     for line in open(path, encoding="utf-8", errors="replace"):
         try:
             e = json.loads(line)
@@ -48,11 +50,11 @@ def exchanges(path):
             if reply is None:
                 continue
             said = "\n".join(texts)
-            if asked is not None:
-                out.append({"ts": e.get("timestamp", ""), "asked": asked, "reply": reply})
-                asked = None
             if any(a in said for a in ASKED):
-                asked = said
+                out.append({"ts": e.get("timestamp", ""), "kind": "answer", "asked": said, "reply": reply})
+                teaching = True
+            elif teaching and said.strip():
+                out.append({"ts": e.get("timestamp", ""), "kind": "follow-up", "asked": said, "reply": reply})
             texts = []
     return out
 
@@ -79,7 +81,7 @@ def main(argv):
         return
     start = 0 if "--all" in argv else state.get(key, 0)
     for i, x in enumerate(ex[start:], start + 1):
-        print(f"===== exchange {i}  {x['ts'][:16]}")
+        print(f"===== exchange {i}  {x['ts'][:16]}  {x['kind']}")
         print("----- ASKED (tail)")
         print(x["asked"][-2500:])
         print("----- HE REPLIED")

@@ -54,8 +54,10 @@ message length (1,550-2,120 chars). The difference was the template, not him.
 | B9 | Questions per message | 5: 80% (A12); 6-10: 78% (A9) | 1: 87% but he called it too slow ("group more bricks", 09-03; "add more questions in every part it helps", 08-10); 16: see B8; 51: not answered | |
 | B10 | Question type | compute a number: v1 ~88%, 09-14 6 / 8, hooks 12 / 12; trace which lines run or what a sticker holds, short answer: 09-14 11 / 13; classify (caught or crash, legal or not): bootcamp 88% (how-faiz-learns), 09-14 4 / 6 | cold why-question: **0 / 4**; write code from a blank: 0 / 3 (L3 build), 0 / 1 (v3); predict broken code: see B11 | |
 | B11 | "Someone broke it" format | label only (crash / quietly wrong / fine) inside a template part: **5 / 6** | simulating the broken code in a fill-in table: **0 / 4** first try (stopwatch, `log = []` in loop, F5 attempts table, G5); in real-file parts 0 / 2 | Tables of WORKING code: 5 / 6 |
+| B11b | Label wording | L4: 8 / 10 first try with a label; both misses answered "wrong" instead of a label (R2-A Q5 for quietly wrong, R2-C Q5 for fine) | labels were never defined inside the question |
 | B12 | Answer given away in my text (confirming half, numbers to plug in, a hint implying the answer) | | he flagged it 4 times: 08-22, 09-03 07:26, 07:32, 08:05 ("i wont say this again") | |
 | B13 | Worked example whose parts do not transfer | shopping-bill example with the exact same shape: Task 2 structurally right first try (08-26), 9 / 9 (09-03) | `longest_word` used `len()` and `>` for a cheapest search: he copied both, then "the example you gave was horrible" (09-03) | |
+| B14 | Build decision states each option's effect on the target number, with the chain | not yet tested (L4 build gave only per-call costs) | L4: 4 / 5 picks sound; decision 5 "no deadline" chosen though timeouts were taught in L3, prediction 736 ms vs 1,753 ms measured. Per-call cost ("a 2 s wait each time") was given, the effect on p95 (hangs above 5% of calls set p95) was not. He asked twice for deeper explanation (C31, C32) |
 
 ---
 
@@ -96,6 +98,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C29 | 09-14 | "I don't want code in files where I have to spend 30 minutes looking for the right part"; patterns go "continuously" into the feedback loop "without conflicting instructions" | standing |
 | C30 | 09-14 | "Each lesson can still have a build (just needs to be one I understand and build through my concepts and decisionmaking rather than my code writing)" | standing; in faiz-teach "The build" |
 | C31 | 09-15 | "decision 3 and 4 depend on where the majority of my users are which is unknown so correct that for the future and also explain these questions more throughly" | standing; in faiz-teach "The build" |
+| C32 | 09-15 | "I liked the build part, i want it to be more throughly explained (the implications of my decisions and the choices should be explained much better)"; "parse this lesson, add to the feedback loop and improve the next lessons (make this automatic)" | standing; in faiz-teach "The build" and "How this file changes" |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.
@@ -142,6 +145,7 @@ one question or inside a message with 7+ questions.
 | E8 | Copying a visible pattern that does not apply | 4 | KV cache `range(step+1)` from the version above, LoRA `d * d` from the adjacent function, math in a comment pasted as code, `longest_word`'s `len()` and `>` |
 | E9 | Inverse relationships and expression vs statement (v1 era, DB) | 3 + 3 | rate vs duration, exp/ln; `return 2 trips`, `rm_score = drift * -beta` |
 | E10 | Arithmetic slips (not a concept gap) | 3 | 6500 ms for 0.65 × 1000, a dropped zero, 12x for 12.5x |
+| E11 | A saving or difference computed from one side only (the new cost, or the part saved per unit) instead of before minus after | L4 0 / 2 first try | R2-B Q2 answered 4 x 30 = 120 (right: (20 - 4) x 30 = 480); R2-C Q3 answered 1,760 (right: 90 x 20 = 1,800). Both fixed by pointing at his own two numbers (2 / 2) |
 
 ---
 

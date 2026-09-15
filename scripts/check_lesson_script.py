@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Validate a lesson teaching script against the faiz-teach part template.
+"""Validate a lesson teaching script against the faiz-teach skill.
 
-Usage: python3 scripts/check_lesson_script.py projects/meter/script.md
-Exit 0 if every part passes, 1 otherwise. Deterministic, stdlib only.
+Usage: python3 scripts/check_lesson_script.py projects/<lesson>/script.md
+Exit 0 if the script passes, 1 otherwise. Markers come from the skill so this never drifts from it.
+Parts already marked 'Status: done' were validated when sent and are not re-checked.
 """
 import re
 import sys
@@ -11,7 +12,6 @@ SKILL = "/Users/faizr/AI OS for Learning/.claude/skills/faiz-teach/SKILL.md"
 
 
 def markers(label, default):
-    """Markers come from the faiz-teach skill, so the checker never drifts from it."""
     try:
         for line in open(SKILL):
             if line.startswith(label + ":"):
@@ -22,78 +22,88 @@ def markers(label, default):
 
 
 REQUIRED = markers("Template markers", ["**The problem.**", "**The fix:**", "**Picture", "**Your turn.**"])
-BUILD_REQUIRED = markers("Build markers", ["**The build.**", "**Decision", "**Your call.**"])
-START_MARKERS = [REQUIRED[0], BUILD_REQUIRED[0]]
-ASK_MARKERS = [REQUIRED[-1], BUILD_REQUIRED[-1]]
-
-
-def build_problems(new, body, has_key):
-    out = [f"missing {r}" for r in BUILD_REQUIRED if r not in body]
-    if new is None:
-        out.append("missing 'New:' line")
-    decisions = re.split(re.escape(BUILD_REQUIRED[1]), body.split(BUILD_REQUIRED[-1])[0])[1:]
-    if not 3 <= len(decisions) <= 5:
-        out.append(f"{len(decisions)} decisions, need 3-5")
-    for i, d in enumerate(decisions, 1):
-        if d.count("rules out") < 2:
-            out.append(f"decision {i}: every option must say what it rules out (need 2+)")
-    if len(body) > 4000:
-        out.append(f"build is {len(body)} characters, max 4000")
-    if not has_key:
-        out.append("missing '### Key' section (the target number and a sound set of choices)")
-    return out
+DECISION = markers("Decision markers", ["**Decision", "**What happens:**", "**Effect on the target:**",
+                                        "**Cost:**", "**Rules out:**", "**Your pick.**"])
+CALL = markers("Call markers", ["**Your call.**"])
+START_MARKERS = [REQUIRED[0], "**The build.**", DECISION[0], CALL[0]]
+ASK_MARKERS = [REQUIRED[-1], DECISION[-1], CALL[-1]]
 
 
 def parts(text):
-    """Yield (part_id, new_line, body) for every '## ' part in a script."""
+    """Yield (part_id, new_line, body, key_text, status) for every '## ' part."""
     for block in re.split(r"(?m)^## ", text)[1:]:
         head, _, rest = block.partition("\n")
-        part_id = head.split(" ")[0]
         new = re.search(r"(?m)^New: (.*)$", rest)
-        body = rest.split("### Key")[0]
+        status = re.search(r"(?m)^Status: (.*)$", rest)
+        body, _, key = rest.partition("### Key")
         body = re.sub(r"(?m)^(New|Status): .*\n", "", body).strip()
-        yield part_id, (new.group(1).strip() if new else None), body, "### Key" in rest
+        yield (head.split(" ")[0], new.group(1).strip() if new else None, body,
+               key if "### Key" in rest else None, status.group(1).strip() if status else "")
 
 
-def problems(part_id, new, body, has_key):
-    if part_id.startswith("BUILD"):
-        return build_problems(new, body, has_key)
+def problems(part_id, new, body, key, status):
+    if status.startswith("done"):
+        return []
     out = []
-    for r in REQUIRED:
-        if r not in body:
-            out.append(f"missing {r}")
     if new is None:
         out.append("missing 'New:' line (the one new thing, or 'none')")
     elif re.search(r";| \+ | and ", new):
         out.append(f"'New:' lists more than one thing: {new}")
-    turn = body.split("**Your turn.**")
+    if key is None:
+        out.append("missing '### Key' section")
+    if len(body) > 2000:
+        out.append(f"part is {len(body)} characters, max 2000")
+    if re.search(r"(?i)open (the file|meter|[\w/]+\.py)|scroll (up|down)|go to line", body):
+        out.append("asks him to open, scroll or hunt in a file; paste the lines in chat instead")
+
+    if part_id.startswith("BUILD-D"):
+        out += [f"missing {m}" for m in DECISION if m not in body]
+        for m in DECISION[1:5]:
+            if body.count(m) < 2:
+                out.append(f"every option needs its own {m} (found {body.count(m)}, need 2+)")
+        return out
+    if part_id.startswith("BUILD-CALL"):
+        return out + [f"missing {m}" for m in CALL if m not in body]
+
+    out += [f"missing {m}" for m in REQUIRED if m not in body]
+    turn = body.split(REQUIRED[-1])
     before, after = turn[0], (turn[1] if len(turn) > 1 else "")
     if len(re.findall(r"(?m)^- \*\*", before)) < 2:
-        out.append("fewer than 2 paths spelled out as '- **...' bullets before Your turn")
+        out.append("fewer than 2 paths spelled out as '- **...' bullets")
     questions = re.findall(r"(?m)^\d+\. ", after)
     if not 4 <= len(questions) <= 6:
         out.append(f"{len(questions)} questions, need 4-6")
     if after.count("**Someone broke it.**") != 1:
         out.append("need exactly one '**Someone broke it.**' question")
+    elif "quietly wrong (runs, wrong result)" not in after:
+        out.append("the Someone broke it question must define the labels (crash, quietly wrong, fine)")
     for code in re.findall(r"```[^\n]*\n(.*?)```", body, flags=re.S):
-        n = len(code.strip("\n").splitlines())
-        if n > 10:
-            out.append(f"code block of {n} lines, max 10")
-    if len(body) > 2000:
-        out.append(f"part is {len(body)} characters, max 2000")
-    if re.search(r"(?i)open (the file|meter|[\w/]+\.py)|scroll (up|down)|go to line", body):
-        out.append("asks him to open, scroll or hunt in a file; paste the lines in chat instead")
-    if not has_key:
-        out.append("missing '### Key' answer section")
+        if len(code.strip("\n").splitlines()) > 10:
+            out.append("code block over 10 lines")
+    if key is not None and "Relies on:" not in key:
+        out.append("'### Key' needs a 'Relies on:' line listing the rules the questions use")
     return out
+
+
+def script_problems(text):
+    m = re.search(r"(?m)^# Lesson (\d+)", text)
+    if m and int(m.group(1)) >= 5:
+        prev = int(m.group(1)) - 1
+        c = re.search(rf"(?m)^Carry-over from L{prev}:(.*)$", text)
+        if not c or not c.group(1).strip():
+            return [f"missing 'Carry-over from L{prev}:' with the adjustments from the last lesson's evidence"]
+    return []
 
 
 def main(path):
     text = open(path).read()
     failed = False
-    for part_id, new, body, has_key in parts(text):
-        errs = problems(part_id, new, body, has_key)
-        print(f"{'PASS' if not errs else 'FAIL'}  {part_id}")
+    for e in script_problems(text):
+        print(f"FAIL  script header\n        {e}")
+        failed = True
+    for part_id, new, body, key, status in parts(text):
+        errs = problems(part_id, new, body, key, status)
+        print(f"{'PASS' if not errs else 'FAIL'}  {part_id}{'  (done)' if status.startswith('done') else ''}")
         for e in errs:
             print(f"        {e}")
         failed = failed or bool(errs)

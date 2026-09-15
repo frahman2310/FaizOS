@@ -33,7 +33,11 @@ Two files, two jobs, never mixed:
    Then read the whole skill top to bottom and remove or rewrite anything the change contradicts.
    Cite the evidence briefly in parentheses next to the rule.
 
-5. **Keep enforcement in step.** If a template marker changed, update the `Template markers:` line
+5. **Carry it into the next lesson.** Write `Carry-over from L<n>:` at the top of the next lesson's
+   `projects/<lesson>/script.md` (create the file if needed): the 1-3 adjustments this lesson's evidence
+   implies. The checker refuses a script from L5 on without it.
+
+5b. **Keep enforcement in step.** If a template marker changed, update the `Template markers:` line
    in faiz-teach. Validate every lesson script: `python3 scripts/check_lesson_script.py projects/<lesson>/script.md`.
 
 6. **Mark it done:** `python3 scripts/extract_teaching.py <transcript.jsonl> --mark`, then log one

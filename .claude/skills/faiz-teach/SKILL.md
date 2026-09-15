@@ -54,29 +54,40 @@ retries, then blames the AI company, and you never learn the bug exists.
 2. `ask_ai` takes too long. What is `reply` on?
 3. Inside the `try`, someone wrote `RATES["opsu"]`. Caught, or crash?
 4. Same typo with a bare `except:`. What does the user see?
-5. **Someone broke it.** They wrote `except KeyError:`. The AI takes too long.
-   Crash, quietly wrong, or fine?
+5. **Someone broke it.** They wrote `except KeyError:`. The AI takes too long. Crash (it stops),
+   quietly wrong (runs, wrong result), or fine (runs, right result)?
 ```
 
 ## The build
 Every lesson ends in one build he understands and makes through concepts and decisions (09-14, C30).
-1. **The build.** What it is and the one number it must hit, 2 sentences.
-2. 3 to 5 decisions, each headed **Decision N:**. First 2-3 sentences explaining the situation, with
-   every fact the choice depends on stated as a given (who the users are, where, how often they call);
-   a fact nobody knows yet is named as unknown, never silently assumed (09-15, C31). Then each option
-   on its own line: what happens, what it costs, and what it rules out ("rules out ___"). Only ideas
-   already taught. A build is 4,000 characters or less.
-3. **Your call.** He picks an option for each decision and predicts the build's number.
-4. I implement exactly his choices, run it, and paste the real output and the few lines that
-   carry each decision in chat. He compares prediction and result. If the number is missed, he
-   changes one decision and it runs again.
-Build markers: `**The build.**` | `**Decision` | `**Your call.**`
+He asked for the implications of every choice to be explained much better (C31, C32; B14).
+1. **One decision per message** (`BUILD-D1`, `BUILD-D2`, ...; 3 to 5 of them). The first also opens
+   with **The build.**: what it is and the one number it must hit.
+2. Each decision message: **Decision N:** then 3-4 sentences on the situation, with every fact it
+   depends on stated as a given and any unknown named as unknown (C31). Then each option as a block:
+   - **What happens:** what the system actually does with this choice.
+   - **Effect on the target:** the chain from this choice to the target number, worked with numbers
+     (for example: 4 of 100 calls hang for 2 s; p95 is the 95th slowest call, so any group above 5
+     calls sets it).
+   - **Cost:** money, time, or effort.
+   - **Rules out:** what this choice makes impossible.
+   End with **Your pick.** Only ideas already taught. 2,000 characters or less.
+3. `BUILD-CALL`: his picks listed back as data, then **Your call.** he predicts the target number(s).
+4. I implement exactly his picks, run it, and paste the real output and the few lines that carry each
+   decision. Then the **debrief**, one line per decision: his pick, what it measurably did, and what
+   the other option would have done (run it when that takes under 5 minutes, otherwise estimate and
+   say so). If the target is missed, he changes one decision and it runs again.
+Decision markers: `**Decision` | `**What happens:**` | `**Effect on the target:**` | `**Cost:**` | `**Rules out:**` | `**Your pick.**`
+Call markers: `**Your call.**`
 
 ## One new thing per part
 - Count every keyword, machine (`str`, `time.sleep`) and domain word (provider, backoff) he has not
   been taught. More than one: split the part (B5).
 - Give each new word a plain one-sentence meaning the first time it appears (08-06, 09-05).
-- List every rule the questions rely on; each must be said in this part or already taught (B6, E7).
+- List every rule the questions rely on under `Relies on:` in the part's `### Key`; each must be said
+  in this part or already taught (B6, E7).
+- A question asking for a saving or a difference needs one worked "before minus after" on other numbers
+  earlier in the part (E11: 0/2 first try without it).
 
 ## Real lesson code
 - Paste the lines in chat: at most 8, each with a short plain note. Never ask him to open the file,
@@ -88,7 +99,8 @@ Build markers: `**The build.**` | `**Decision` | `**Your call.**`
 ## Questions
 - Five short-answer questions: compute a business number, trace which lines run or what a sticker
   is on, classify (caught or crash, inside or after the loop), and exactly one **Someone broke it.**
-  answered crash / quietly wrong / fine (B10, B11).
+  ending with the labels defined: "Crash (it stops), quietly wrong (runs, wrong result), or fine
+  (runs, right result)?" (B10, B11, B11b).
 - For broken code ask the one value it produces plus the label, never a table to simulate it (0/4,
   B11). At most one table per part, only for tracing working code, 3 rows or fewer.
 - No why-question unless the part has just shown the failure (0/4 cold, B10).
@@ -127,14 +139,18 @@ Build markers: `**The build.**` | `**Decision` | `**Your call.**`
   hook blocks anything else (template skipped after it was a rule, C17).
 
 ## How this file changes
-After every teaching session (the reflect step):
-1. Run `python3 scripts/extract_teaching.py <transcript>` for the new question/answer exchanges.
-2. Score each question: right first try, right after a hint, or answer given. Note the stuck
-   points and his exact words about the teaching.
-3. Append one row to the Session ledger in docs/learning-evidence.md, update the counts in the
-   tables it touches, and update the "taught" list under the ledger.
-4. Edit this file only when he stated a rule, or a finding changed direction across two or more
-   sessions. Edit in place: replace the affected line, delete what it supersedes, never add a second
-   rule on the same topic. His most recent words win. Cite the new evidence ID or date.
-5. Run `extract_teaching.py <transcript> --mark`, log one line with `faizos_record_insight`
-   ("REFLECT LOG: <session>, ledger row added"; a log entry, never a rule), then commit both files.
+This runs automatically: the Stop hook refuses to finish a session after a lesson is recorded until
+the reflect step (the faiz-reflect skill) has run, and SessionStart flags any unreflected teaching.
+1. Run `python3 scripts/extract_teaching.py <transcript>`: every answer and follow-up since last time.
+2. Score each question: right first try, right after a hint, or answer given. Note the stuck points,
+   the build picks versus the sound set, and his exact words about the teaching.
+3. Append one row to the Session ledger in docs/learning-evidence.md, update the counts in the tables
+   it touches (add a new finding row when a pattern appears twice), and update the "taught" list.
+4. Write `Carry-over from L<n>:` at the top of the next lesson's `projects/<lesson>/script.md`: the 1-3
+   concrete adjustments this lesson's evidence implies for the next one. The checker refuses a lesson
+   script from L5 on without it.
+5. Edit this file only when he stated a rule, or a finding repeats across two or more lessons. Edit in
+   place: replace the affected line, delete what it supersedes, never add a second rule on the same
+   topic. His most recent words win. Cite the evidence ID or date.
+6. Run `extract_teaching.py <transcript> --mark`, log one line with `faizos_record_insight`
+   ("REFLECT LOG: <session>, ledger row added"; a log entry, never a rule), then commit.
