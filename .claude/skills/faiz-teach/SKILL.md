@@ -26,7 +26,9 @@ docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere
 
 ## The part template (every part, including parts about the lesson file)
 Parts built this way scored 24/30; parts that skipped it scored 3/11 the same day (A12, A13).
-1. **The problem.** 2-3 sentences: what goes wrong in a real app without this (B4).
+1. **The problem.** 4-6 sentences with the full context, so he can reason about it (09-17, C34):
+   who uses this and why it matters to them, how it works today, what changes, what goes wrong,
+   why it goes wrong (the mechanism), and what it costs. Never a bare summary of the failure (B4).
 2. **The fix:** one sentence, plain words.
 3. A tiny example, 8 lines or fewer, generic names, only known pieces plus the one new thing (B1).
 4. **Picture:** one everyday picture (D2, B2).
@@ -129,7 +131,7 @@ Call markers: `**Your call.**`
 
 ## Words
 - Plain words: sticker, machine, slot, stuff, kind, the inside, push right, piling up; real Python
-  names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,000 characters or less (B8).
+  names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,600 characters or less (B8; raised for C34).
 - No em dashes (his writing-style rule, v2 execution prompt).
 - Every technical word must be taught before or explained in plain words where it first appears
   ("You need to explain the jargon you throw", 09-15, C33). `docs/glossary.md` lists what is taught

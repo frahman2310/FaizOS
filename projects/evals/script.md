@@ -50,13 +50,52 @@ The pass rate is cases passed divided by all cases. To compare two runs, take be
 5. quietly wrong (the test just repeats the new prompt's answers)
 Relies on: pass rate = passed / all; before minus after; separate chances multiply; a case passes only if the text is contained exactly
 
+## R1-Av2 · Checking every change the same way
+New: a test case, one real invoice paired with the text a correct summary must include
+Status: withdrawn 2026-09-17 (problem had no context; C34)
+
+# Lesson 5 · Round 1 · Part A · Checking every change the same way
+
+**The problem.** Your app sends each invoice to the AI with the same written instructions, and the AI writes back a short summary. You reword the instructions, read 3 summaries, they look fine, and put the change live. A week later you find that 40 of every 100 summaries leave out the total amount.
+
+**The fix:** before any change goes live, run it on the same list of real invoices, each paired with the one piece of text a correct summary must include. Each of those pairs is called a test case.
+
+```python
+test_cases = [
+    {"invoice": "INV-001", "must_include": "$120"},
+    {"invoice": "INV-002", "must_include": "$45"},
+]
+```
+
+**Picture:** a teacher's answer key. For each exam question it lists the one thing a correct answer must have, so every student is marked exactly the same way.
+
+- **The summary includes the required text exactly:** that test case passes.
+- **It does not:** that test case fails.
+- **After every change:** the whole list runs again and you count how many passed.
+
+**Your turn.**
+
+1. INV-002 must include `$45`. The summary says "Total due: $54". Pass or fail?
+2. INV-001 must include `$120`. The summary says "Invoice total $120, due Friday". Pass or fail?
+3. The list has 100 test cases and 88 pass. What percentage passed?
+4. 40 in every 100 summaries leave out the total. Which is more likely to catch that: reading 3 summaries by eye, or checking all 100 test cases?
+5. **Someone broke it.** The required text for every test case was copied from the new instructions' own summaries, so every test case passes. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. fail
+2. pass
+3. 88%
+4. checking all 100 test cases
+5. quietly wrong (the answer key was copied from the answers being marked)
+Relies on: a test case passes only when the exact text appears; percentage = passed / all x 100
+
 ## R1-A · Checking every change the same way
 New: a test case, one real invoice paired with the text a correct summary must include
 Status: pending
 
 # Lesson 5 · Round 1 · Part A · Checking every change the same way
 
-**The problem.** Your app sends each invoice to the AI with the same written instructions, and the AI writes back a short summary. You reword the instructions, read 3 summaries, they look fine, and put the change live. A week later you find that 40 of every 100 summaries leave out the total amount.
+**The problem.** Your client is an accounting firm that receives 1,000 supplier invoices a week. Your app sends each invoice to the AI with the same written instructions, the AI writes back a three-line summary, and the firm's staff approve payments from that summary without opening the invoice. The AI does not follow fixed rules the way a calculator does: it follows your wording, so rewording the instructions changes how it handles every invoice, including the ones you never look at. You reword the instructions, read 3 summaries, they look fine, and put the change live. For a week nobody reads the other 997, and 40 in every 100 summaries now leave out the total, so staff approve payments without seeing the amount.
 
 **The fix:** before any change goes live, run it on the same list of real invoices, each paired with the one piece of text a correct summary must include. Each of those pairs is called a test case.
 

@@ -100,6 +100,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C31 | 09-15 | "decision 3 and 4 depend on where the majority of my users are which is unknown so correct that for the future and also explain these questions more throughly" | standing; in faiz-teach "The build" |
 | C32 | 09-15 | "I liked the build part, i want it to be more throughly explained (the implications of my decisions and the choices should be explained much better)"; "parse this lesson, add to the feedback loop and improve the next lessons (make this automatic)" | standing; in faiz-teach "The build" and "How this file changes" |
 | C33 | 09-15 | "Rephrase this, I don't understand what this is saying. You need to explain the jargon you throw" (L5 Part A used prompt, ship, summariser, eval set undefined) | standing; enforced by docs/glossary.md in the checker |
+| C34 | 09-17 | "Explain the problem with the right context and background so I can fully understand and develop my thought process. Commit this to the lesson dev" | standing; faiz-teach template step 1, checker requires 4+ sentences |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.

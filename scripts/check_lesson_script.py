@@ -84,8 +84,9 @@ def problems(part_id, new, body, key, status):
         out.append(f"'New:' lists more than one thing: {new}")
     if key is None:
         out.append("missing '### Key' section")
-    if len(body) > 2000:
-        out.append(f"part is {len(body)} characters, max 2000")
+    limit = 2000 if part_id.startswith("BUILD") else 2600
+    if len(body) > limit:
+        out.append(f"part is {len(body)} characters, max {limit}")
     out += jargon_problems(body)
     if re.search(r"(?i)open (the file|meter|[\w/]+\.py)|scroll (up|down)|go to line", body):
         out.append("asks him to open, scroll or hunt in a file; paste the lines in chat instead")
@@ -100,6 +101,11 @@ def problems(part_id, new, body, key, status):
         return out + [f"missing {m}" for m in CALL if m not in body]
 
     out += [f"missing {m}" for m in REQUIRED if m not in body]
+    if REQUIRED[0] in body and REQUIRED[1] in body:
+        problem = body.split(REQUIRED[0], 1)[1].split(REQUIRED[1], 1)[0]
+        sentences = len(re.findall(r"[.!?](\s|$)", problem.strip()))
+        if sentences < 4:
+            out.append(f"The problem has {sentences} sentences; give the full context in 4-6 (C34)")
     turn = body.split(REQUIRED[-1])
     before, after = turn[0], (turn[1] if len(turn) > 1 else "")
     if len(re.findall(r"(?m)^- \*\*", before)) < 2:
