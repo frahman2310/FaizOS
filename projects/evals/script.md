@@ -282,7 +282,7 @@ Relies on: a case passes only when the exact text appears; the gate runs on the 
 
 ## R2-B · What the gate compares against
 New: the baseline, the score of the version the firm is using today
-Status: pending
+Status: done 2026-09-18
 
 # Lesson 5 · Round 2 · Part B · What the gate compares against
 
@@ -317,3 +317,79 @@ proposed change:      94 of 100 pass  -> better, allowed
 4. blocked (the baseline is 94 now)
 5. quietly wrong (the two scores always match, so everything is allowed)
 Relies on: the baseline is the live version's score on the same cases; a passing change becomes the new baseline
+
+## R2-C · The computer that runs the gate
+New: a recipe file that starts a fresh computer to run the gate (GitHub Actions)
+Status: done 2026-09-18
+
+# Lesson 5 · Round 2 · Part C · The computer that runs the gate
+
+**The problem.** The gate has to run on some computer, and the obvious one is your laptop. Your laptop is asleep at 2am when a teammate in another city proposes a change, so nothing checks it. Worse, your laptop has Python 3.12 and theirs has 3.9, so the same cases can pass on one machine and fail on the other, and the team ends up arguing about whose computer is right instead of whether the change is good. A check that depends on which machine ran it is not a gate, it is a coin flip with extra steps.
+
+**The fix:** keep a recipe file in the project that says what to run, and let a service start a fresh identical computer for every proposed change and run it there. The service that does this is called GitHub Actions.
+
+```
+when:   a change is proposed
+start:  a fresh computer, same setup every time
+run:    build the box, run the 100 cases
+report: pass or fail, back onto the proposal
+```
+
+**Picture:** a rented test kitchen. Every baker uses the same oven, so a burnt cake says something about the recipe rather than about somebody's oven at home.
+
+- **A change is proposed at 2am:** a fresh computer starts, runs the cases and reports, with nobody awake.
+- **A case fails:** the report says fail, and the change is blocked.
+- **Your laptop has a different Python:** it makes no difference, because the fresh computer is set up identically every run.
+
+**Your turn.**
+
+1. Your laptop is off when a teammate proposes a change. Does the gate still run?
+2. Three teammates have three different laptops. How many different setups actually run the cases?
+3. The service charges $0.008 a minute, a run takes 3 minutes, and there are 20 runs a day. What does that cost per day?
+4. Should the recipe file live inside the project, so it travels with the code, or in one person's private notes?
+5. **Someone broke it.** The recipe was changed so the cases run only when a person clicks a button. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. yes
+2. one
+3. $0.48 (0.008 x 3 x 20)
+4. inside the project
+5. quietly wrong (the gate looks present but only runs when somebody remembers to click)
+Relies on: the gate blocks a change when a case fails; the fresh computer is identical every run
+
+## R2-D · The password the robot needs
+New: a short-lived pass the robot asks for at run time instead of a stored password
+Status: pending
+
+# Lesson 5 · Round 2 · Part D · The password the robot needs
+
+**The problem.** The fresh computer has to call the AI to run your 100 cases, so it needs the password your app uses with the AI company. The easy route is to paste that password into the service's settings, where it sits forever, readable by every run and by anyone who can edit the recipe file. Your AI account has a $500 a day spending limit and access to the firm's invoices, so that one string of text is the whole lock. Leaked passwords are usually found and used within minutes, and then you are changing the password everywhere it appears while the bill runs.
+
+**The fix:** store no lasting password, and have the robot prove which project it is at run time and receive a pass that expires within minutes. Proving identity that way is called OIDC.
+
+```
+stored password:  valid forever, readable by every run
+short-lived pass: asked for when the run starts, expires in 15 minutes
+```
+
+**Picture:** a building. Posting a permanent master key through the letterbox, or issuing a visitor badge that stops working at 5pm.
+
+- **A stored password leaks:** it works until somebody notices and changes it everywhere.
+- **A short-lived pass leaks:** it is worthless a few minutes later.
+- **The robot needs access:** it asks at the start of the run and is given only what the run needs.
+
+**Your turn.**
+
+1. A stored password leaks at 9am and you notice at 5pm. For how many hours can a stranger use it?
+2. A 15 minute pass leaks at 9am and you notice at 5pm. For how long can it be used?
+3. The AI account allows $500 a day. What is the most a leaked password can cost you per day until it is changed?
+4. Should the run's pass also be allowed to change the live service, or only to run the cases?
+5. **Someone broke it.** To avoid permission errors the short-lived pass was given the right to do everything in the account. The 100 cases run and report correctly. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. 8 hours
+2. 15 minutes
+3. $500 a day
+4. only to run the cases
+5. fine (the result is right; the risk if that pass leaks is now the whole account)
+Relies on: a leaked password works until it is changed; a short-lived pass expires by itself
