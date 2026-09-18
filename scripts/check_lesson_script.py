@@ -123,9 +123,10 @@ def problems(part_id, new, body, key, status):
         out.append("the Someone broke it question must define the labels (crash, quietly wrong, fine)")
     if key is not None:
         answers = re.findall(r"(?m)^\d+\.\s*(.+)$", key)
+        asked = re.sub(r"(?m)^\d+\.\s", "", after)          # question numbers are not content
         readback = [i + 1 for i, a in enumerate(answers)
                     if (nums := re.findall(r"\d[\d,.]*", a.split("(")[0]))
-                    and all(re.search(r"(?<![\d.,])" + re.escape(n.rstrip(".,")) + r"(?![\d])", after)
+                    and all(re.search(r"(?<![\d.,])" + re.escape(n.rstrip(".,")) + r"(?![\d])", asked)
                             for n in nums)]
         if readback:
             out.append(f"question(s) {readback} only read back a number already in the questions (C36)")
