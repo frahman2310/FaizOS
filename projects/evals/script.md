@@ -168,7 +168,7 @@ Relies on: == asks whether two things are the same; >= asks at least; a stopped 
 
 ## R1-C · Where the cases come from
 New: cases come from real failures, not from invoices you imagine
-Status: pending
+Status: done 2026-09-18
 
 # Lesson 5 · Round 1 · Part C · Where the cases come from
 
@@ -204,3 +204,116 @@ test_cases = [
 4. yes
 5. quietly wrong (100% now measures only the cases that already passed)
 Relies on: a case passes only when the exact text appears; the list only tests what is in it
+
+## R1-D · How many cases you need
+New: the size of the list decides the smallest change it can show
+Status: done 2026-09-18
+
+# Lesson 5 · Round 1 · Part D · How many cases you need
+
+**The problem.** You keep 20 test cases because each one costs an AI call to run. You reword the instructions, the pass rate goes from 90% to 85%, and you spend an afternoon arguing with yourself about whether the change is worse or whether that is just noise. With 20 cases, one single case swinging from pass to fail moves the number by 5 points all on its own, so a 5 point drop tells you nothing at all. Meanwhile the firm is waiting, and you either ship a worse change or throw away a good one on a coin flip.
+
+**The fix:** hold enough cases that one case is worth far less than the change you need to notice.
+
+```
+ 20 cases  -> one case is worth 100 / 20  = 5 points
+100 cases  -> one case is worth 100 / 100 = 1 point
+500 cases  -> one case is worth 0.2 points
+```
+
+**Picture:** bathroom scales that only show whole stones. Step on them after a month of dieting and they read the same number, not because nothing changed but because the marks are too far apart.
+
+- **20 cases, a 5 point drop:** that is one case, so you cannot tell a real fall from luck.
+- **100 cases, a 5 point drop:** that is 5 cases changing together, which luck explains far less easily.
+- **Every extra case:** one more AI call on every run, so the list costs money and time.
+
+**Your turn.**
+
+1. Your list has 25 cases. How many points is one case worth?
+2. You need to notice a 2 point drop. Which list can even show a difference that small: 25 cases or 100 cases?
+3. Each case costs $0.0027 to run. You run the 100 case list 20 times a day. What does that cost per day?
+4. A 500 case list at the same price: what does one run cost?
+5. **Someone broke it.** To save money the list was cut from 100 cases to 10, and a change is still blocked only when the pass rate falls. A change arrives that really makes 5 in every 100 summaries worse. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. 4 points
+2. 100 cases
+3. $5.40 a day (100 x 0.0027 x 20)
+4. $1.35
+5. quietly wrong (with 10 cases one case is 10 points, so a 5 point fall cannot show and the change goes through)
+Relies on: one case is worth 100 / number of cases; a run costs one AI call per case
+
+## R2-A · A check nobody can skip
+New: a gate, an automatic check that every proposed change must pass before it is allowed in
+Status: done 2026-09-18
+
+# Lesson 5 · Round 2 · Part A · A check nobody can skip
+
+**The problem.** You now have 100 real cases and a check that stops on a failure, but both only run when you remember to run them. On Friday evening you make a one word change to the instructions, decide it is too small to be worth a run, and push it out. The change quietly breaks handwritten scans, and the accounting firm approves a week of payments from summaries with no totals before anyone notices. Nothing in this story is a technical failure: the machinery worked and was simply not switched on, which is how most of these weeks happen.
+
+**The fix:** put the check in the path the change must travel, so it runs on every proposed change by itself and refuses the ones that fail. A check placed there is called a gate.
+
+```
+change proposed -> run all 100 cases -> all pass? -> yes: allowed in
+                                                 -> no:  blocked
+```
+
+**Picture:** airport security. Every passenger goes through the same scanner, and nobody gets to decide that their own bag is too small to bother with.
+
+- **Every case passes:** the change is allowed in.
+- **Any case fails:** the change is blocked and the failing case is named.
+- **You forget to run anything:** it makes no difference, because the gate runs on the proposal, not on your good intentions.
+
+**Your turn.**
+
+1. 100 cases run, 99 pass and 1 fails. Is the change allowed in or blocked?
+2. You never run the cases on your own laptop. Does the change still get checked?
+3. With a gate in place, how many bad summaries does the Friday change deliver to the firm?
+4. One run of the 100 cases costs $0.27. Your team proposes 20 changes a day, 5 days a week. What do the runs cost for the week?
+5. **Someone broke it.** The gate was set to report failures but allow the change in anyway, so the Friday change goes through with 1 case failing. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. blocked
+2. yes
+3. 0
+4. $27 (0.27 x 20 x 5)
+5. quietly wrong (the report is right and the change still reaches the firm)
+Relies on: a case passes only when the exact text appears; the gate runs on the proposed change, not on the laptop
+
+## R2-B · What the gate compares against
+New: the baseline, the score of the version the firm is using today
+Status: pending
+
+# Lesson 5 · Round 2 · Part B · What the gate compares against
+
+**The problem.** Your gate blocks anything scoring under 95%, which sounded strict and sensible when you set it. The trouble is that your list is full of the firm's genuinely hard invoices, so the version they are happily using today scores 92%. Every change you propose is now blocked, including the ones that fix handwritten scans, so within a week your team quietly drops the bar to 85% to get any work through. Now a change that takes the firm from 92% down to 86% sails past, because an absolute number tells you nothing about whether this change makes the firm's life better or worse.
+
+**The fix:** run both versions on the same cases and block the change only when it scores lower than the version the firm is using today, whose score is called the baseline.
+
+```
+baseline, live today: 92 of 100 pass
+proposed change:      89 of 100 pass  -> worse, blocked
+proposed change:      94 of 100 pass  -> better, allowed
+```
+
+**Picture:** a runner's personal best. Nobody bans an athlete for missing the world record. You compare them with their own last time, on the same track.
+
+- **The change scores above the baseline:** allowed in, and its score becomes the new baseline.
+- **The change scores the same:** allowed in, because the firm is no worse off.
+- **The change scores below:** blocked, and the cases that changed are named.
+
+**Your turn.**
+
+1. The baseline is 92 and the change scores 90. Blocked or allowed?
+2. The baseline is 92 and the change scores 92. Blocked or allowed?
+3. With the old rule of "must beat 95%" and today's live version at 92%, how many of your changes get through?
+4. The baseline is 92, a change scoring 94 is allowed in, and the next change scores 93. Blocked or allowed?
+5. **Someone broke it.** The baseline is measured by running the proposed change itself and comparing that score with itself. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. blocked
+2. allowed
+3. none
+4. blocked (the baseline is 94 now)
+5. quietly wrong (the two scores always match, so everything is allowed)
+Relies on: the baseline is the live version's score on the same cases; a passing change becomes the new baseline

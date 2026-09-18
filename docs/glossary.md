@@ -28,6 +28,8 @@ host: the company running the always-on computer
 test case: one real input paired with the text a correct answer must include
 assert: a line that stops the program when its yes-or-no check is false
 regression: a failure that was fixed coming back later
+pass rate: the share of test cases that pass
+gate: an automatic check every proposed change must pass before it is allowed in
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,
