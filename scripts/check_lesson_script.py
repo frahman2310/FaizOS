@@ -123,13 +123,21 @@ def problems(part_id, new, body, key, status):
         out.append("the Someone broke it question must define the labels (crash, quietly wrong, fine)")
     if key is not None:
         answers = re.findall(r"(?m)^\d+\.\s*(.+)$", key)
-        asked = re.sub(r"(?m)^\d+\.\s", "", after)          # question numbers are not content
-        readback = [i + 1 for i, a in enumerate(answers)
-                    if (nums := re.findall(r"\d[\d,.]*", a.split("(")[0]))
-                    and all(re.search(r"(?<![\d.,])" + re.escape(n.rstrip(".,")) + r"(?![\d])", asked)
-                            for n in nums)]
+        qs = re.split(r"(?m)^\d+\.\s", after)[1:]
+        num = lambda t: {n.rstrip(".,") for n in re.findall(r"(?<![\w])\d[\d,.]*", t)}
+        readback = []
+        for i, a in enumerate(answers):
+            core = a.split("(")[0]
+            if i >= len(qs) or len(re.sub(r"[\d\s,.$%]", "", core)) > 12:
+                continue                                   # a worded answer, not a bare number
+            an, qn = num(core), num(qs[i])
+            others = num(before) | set().union(*(num(q) for k, q in enumerate(qs) if k != i))
+            echo = an and an <= qn and len(qn) <= len(an)       # the question's only number, repeated
+            cross = an and not qn and an <= others              # a number printed elsewhere in the part
+            if echo or cross:
+                readback.append(i + 1)
         if readback:
-            out.append(f"question(s) {readback} only read back a number already in the questions (C36)")
+            out.append(f"question(s) {readback} only read back a number already in the part (C36)")
     for code in re.findall(r"```[^\n]*\n(.*?)```", body, flags=re.S):
         if len(code.strip("\n").splitlines()) > 10:
             out.append("code block over 10 lines")

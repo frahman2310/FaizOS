@@ -89,7 +89,7 @@ Relies on: quotes mean the text itself (bootcamp round 3); capitals count; a sha
 
 ## R1-C · Every count in one question
 New: GROUP BY, sorting rows into piles by one column with a count per pile
-Status: pending
+Status: done 2026-09-18
 
 # Lesson 6 · Round 1 · Part C · Every count in one question
 
@@ -125,3 +125,84 @@ It returns one line per name that exists in the table right now, with its count 
 4. one
 5. quietly wrong
 Relies on: GROUP BY makes one pile per distinct value; a count without GROUP BY is one pile; remaining = before minus the fixed pile
+
+## R1-D · Joining two tables
+New: JOIN, lining up rows of two tables by a column they share
+Status: done 2026-09-18
+
+# Lesson 6 · Round 1 · Part D · Joining two tables
+
+**The problem.** Your failures table says which invoices failed, but not who sent them or how much money was on them. That information lives in a separate invoices table the firm already keeps. The firm's finance director does not care that 131 summaries lost their total; she cares how much money her staff approved without seeing it, and which supplier keeps causing it. Copying supplier and amount across by hand for 131 rows takes an afternoon and invites mistakes, and it has to be redone every week.
+
+**The fix:** ask the database to line up rows from both tables wherever their invoice number matches, which is what JOIN does, and then read the columns you need from either side.
+
+```sql
+SELECT invoices.supplier, invoices.amount
+FROM failures
+JOIN invoices ON failures.invoice = invoices.invoice
+WHERE failures.failure = 'missing_total';
+```
+
+`invoices.amount` means the amount column of the invoices table; the name before the dot says which table.
+
+**Picture:** a bank statement laid against a pile of receipts. You pair each line with the receipt carrying the same reference number, and only then can you see what each payment was for.
+
+- **The invoice number is in both tables:** the two rows are joined into one line.
+- **It is in failures but missing from invoices:** that failure drops out of the result.
+- **The invoices table holds the same number twice:** the failure is joined to both copies and appears twice.
+
+**Your turn.**
+
+1. failures holds INV-7 and INV-9. invoices holds INV-7 (Acme, $500) and INV-8 (Zed, $90). How many lines does the join return, and whose?
+2. INV-9 failed but the firm never entered it in invoices. Does it appear anywhere in the result?
+3. The joined result says missing_total put $52,000 of payments at risk this week, 60% of it from Acme. The firm can ask one supplier to send typed invoices. Which supplier, and how many dollars of that risk does it cover?
+4. The director asks for the money at risk. Can the failures table answer that alone, or do you need the join?
+5. **Someone broke it.** Last month's import loaded every invoice into the invoices table twice. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. one line: Acme
+2. no
+3. Acme, $31,200
+4. you need the join (the amount lives in invoices)
+5. quietly wrong (every failure is joined twice, so the money at risk doubles)
+Relies on: rows join where the shared column matches; unmatched rows drop out; a duplicate matches twice; 60% of 52,000
+
+## R1-E · The latest problem per supplier
+New: numbering rows inside each pile without merging them (ROW_NUMBER over a PARTITION)
+Status: pending
+
+# Lesson 6 · Round 1 · Part E · The latest problem per supplier
+
+**The problem.** Every Friday the finance director rings each supplier whose invoices keep failing, and she wants to quote their most recent bad invoice so the call is specific. GROUP BY supplier gives her a count per supplier, but it squashes each pile into one line, so the actual latest invoice is gone. Sorting all 320 failures by date and hunting down each supplier's newest by eye takes an hour and she has twice quoted the wrong invoice to an angry supplier. She needs each supplier's rows kept whole, numbered newest first, so she can take number 1 from each.
+
+**The fix:** number the rows inside each supplier's pile, newest first, without merging the pile, and keep only the rows numbered 1.
+
+```sql
+SELECT supplier, invoice, day,
+  ROW_NUMBER() OVER (PARTITION BY supplier ORDER BY day DESC) AS place
+FROM failed_invoices;
+```
+
+`PARTITION BY supplier` makes one pile per supplier but keeps every row. `ORDER BY day DESC` puts the newest day first. `ROW_NUMBER()` writes 1, 2, 3 down each pile, and `AS place` names that new column.
+
+**Picture:** a race run in separate heats. Every heat has its own winner, and nobody merges the heats to find them.
+
+- **Within a supplier's pile:** the newest failure gets place 1, the next newest place 2.
+- **Every row stays:** unlike GROUP BY, nothing is squashed into one line.
+- **Keep only place 1:** you get exactly one row per supplier, their latest failure.
+
+**Your turn.**
+
+1. Acme failed on days 3, 9 and 5; Zed failed on days 2 and 8. Which Acme day gets place 1, and which Zed day?
+2. Someone removes `DESC`, so each pile is ordered oldest first. Which Acme day gets place 1 now?
+3. The director wants each supplier's latest bad invoice. Does GROUP BY supplier give her that, or the numbering query keeping place 1?
+4. This week 40 different suppliers had failures, and each call takes the director 6 minutes. How long do her Friday calls take?
+5. **Someone broke it.** `PARTITION BY supplier` was deleted, so the whole table is numbered as one pile, and the director keeps place 1. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. Acme day 9, Zed day 8
+2. day 3
+3. the numbering query keeping place 1
+4. 240 minutes, 4 hours (one row per supplier, 40 x 6)
+5. quietly wrong (one row comes back, the newest failure overall, so she rings one supplier)
+Relies on: GROUP BY squashes a pile into one line; DESC means largest first; place 1 per pile gives one row per pile
