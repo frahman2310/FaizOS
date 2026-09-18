@@ -187,6 +187,7 @@ One row per teaching session. Questions = questions asked; right = right first t
 | 2026-09-14/15 | L4 live: R1 A-D, R2 A-E (validated script) + decision build | 45 + build | 41 | the gap saved vs a whole time (R2-B Q2, R2-C Q3), a redone step redoes the rest (R2-C Q2), "wrong" for slow-but-correct (R2-C Q5), all fixed on one hint; build: picked no deadline, predicted 736 ms, measured 1,753, changed decision 5, 500-call rerun 802 ms vs 2,066 | "decision 3 and 4 depend on where the majority of my users are which is unknown"; "explain these questions more throughly" |
 
 
+| 2026-09-17/18 | L5 evals: R1 A-D, R2 A-D, build D1-D5 + predictions | 40 + build | 31 | always-true assert, absolute bar vs baseline, the baseline moving after a change lands, least access; 2 of my questions were worded abstractly ("does the list notice", "how many setups") | "You need to explain the jargon you throw"; "Explain the problem with the right context and background"; "decisions cannot be this obvious" |
 **Taught and answered right, do not re-teach** (as of 2026-09-14): six kinds of stuff, stickers,
 quotes, machines and slots, left and right of `=`, colon and push right, `return` stops the machine,
 lists and positions, `for`, piling up a total, dicts and `KeyError`, `if` and comparisons, the hallway
@@ -194,5 +195,8 @@ rule, average vs p50/p95, the stopwatch, one record per call, try/except, named 
 brackets, `as err` and `str(err)`, the L3 retry loop (lines 76-90), success record (69-87), failure
 record after the loop (92-96), the closed-until sign, changing a value under a dict label, `>=` and the trip, which calls a number counts
 (successes only), finding a one-word planted bug from a real report. Lesson 3 complete.
+L5: test cases, assert, cases from real failures, list size vs the smallest visible change, the gate,
+the baseline, the fresh computer that runs it, short-lived passes. Build: a gate that blocks a 5 point
+fall and allows a 3 point gain, $0.54 a run. Open: L6 judge.
 L4: a URL, the @app.get tag, health checks, one socket for AI companies, the image box, two stages,
 reused build steps, cold starts, travel time; decision build shipped in a local container. Open: L5 evals.
