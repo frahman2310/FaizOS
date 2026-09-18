@@ -125,7 +125,8 @@ def problems(part_id, new, body, key, status):
         answers = re.findall(r"(?m)^\d+\.\s*(.+)$", key)
         readback = [i + 1 for i, a in enumerate(answers)
                     if (nums := re.findall(r"\d[\d,.]*", a.split("(")[0]))
-                    and all(n.rstrip(".,") in after for n in nums)]
+                    and all(re.search(r"(?<![\d.,])" + re.escape(n.rstrip(".,")) + r"(?![\d])", after)
+                            for n in nums)]
         if readback:
             out.append(f"question(s) {readback} only read back a number already in the questions (C36)")
     for code in re.findall(r"```[^\n]*\n(.*?)```", body, flags=re.S):

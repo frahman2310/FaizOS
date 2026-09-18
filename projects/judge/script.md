@@ -86,3 +86,42 @@ Read it as: count the rows (`SELECT COUNT(*)`) in the table called calls (`FROM 
 4. a column
 5. quietly wrong
 Relies on: quotes mean the text itself (bootcamp round 3); capitals count; a share is part / whole x 100
+
+## R1-C · Every count in one question
+New: GROUP BY, sorting rows into piles by one column with a count per pile
+Status: pending
+
+# Lesson 6 · Round 1 · Part C · Every count in one question
+
+**The problem.** The firm's Monday question grew: they now want the count for every failure name, not just missing_total. You write one query per name, twelve in all, and run them one by one. On Thursday a new kind of failure appears, dates read in the wrong order, and you name it date_wrong, but none of your twelve queries ask about it, so it never shows up in Monday's report while it quietly spreads. A report built from a fixed list of names can only ever find the failures you already knew about.
+
+**The fix:** ask for all the counts at once, letting the database sort the rows into piles by failure name and count each pile, which is what GROUP BY does.
+
+```sql
+SELECT failure, COUNT(*) FROM failures
+GROUP BY failure;
+```
+
+It returns one line per name that exists in the table right now, with its count beside it.
+
+**Picture:** a heap of shop receipts. You sort them into piles by shop name, then count each pile. A receipt from a shop you have never heard of simply starts a new pile.
+
+- **Rows share a failure name:** they land in one pile and get one count.
+- **A name appears for the first time:** it gets its own line without anyone writing a new query.
+- **The GROUP BY line is removed:** all rows form one pile, so you get one number for the whole table.
+
+**Your turn.**
+
+1. On Thursday date_wrong appears 7 times. Does it show up in your old twelve queries? Does it show up in the GROUP BY query?
+2. The failures table holds five rows: missing_total, wrong_currency, missing_total, missing_total, wrong_currency. Write down exactly what the GROUP BY query returns.
+3. About 320 summaries fail a week, and the counts say missing_total is the biggest pile at 131. You can afford one fix this month. After fixing missing_total, roughly how many failures a week remain?
+4. You delete the GROUP BY line but keep `SELECT failure, COUNT(*)`. How many lines of output come back?
+5. **Someone broke it.** The query was changed to `GROUP BY invoice`, and almost every line shows a count of 1. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. no; yes
+2. missing_total 3, wrong_currency 2
+3. about 189
+4. one
+5. quietly wrong
+Relies on: GROUP BY makes one pile per distinct value; a count without GROUP BY is one pile; remaining = before minus the fixed pile
