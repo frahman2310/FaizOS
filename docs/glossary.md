@@ -30,6 +30,8 @@ assert: a line that stops the program when its yes-or-no check is false
 regression: a failure that was fixed coming back later
 pass rate: the share of test cases that pass
 gate: an automatic check every proposed change must pass before it is allowed in
+baseline: the score of the version people are using today, measured on the same cases
+GitHub Actions: the service that starts a fresh computer and runs the gate on every proposed change
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,

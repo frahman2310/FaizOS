@@ -457,3 +457,126 @@ Status: done 2026-09-18 (picked C)
 
 ### Key
 C. A cannot see the failure at all; B sees it but is too coarse for smaller ones. C gives up an honest pass rate, since 82 of its cases are invented and inflate the score.
+
+## BUILD-D3 · The rule the gate uses
+New: none
+Status: done 2026-09-18 (picked B)
+
+# Lesson 5 · The build · Decision 3 of 5
+
+**Decision 3: the rule that blocks a change.** Given: the AI does not answer identically every time, so running the same version twice scores up to 2 cases apart on your 100 cases. The change you must catch costs 5 points. Your team proposes 20 changes a day, and a blocked change costs someone an hour of rechecking.
+
+**Option A, block on any fall below the baseline.**
+- **What happens:** score once, block if even one case fewer passes.
+- **Effect on the target:** catches the 5 point fall every time. It also blocks unchanged work whenever the AI wobbles 1 or 2 cases down, which is most days, so perhaps 5 of 20 changes a day get stopped for nothing.
+- **Cost:** $0.27 a run, plus about 5 wasted hours a day across the team.
+- **Rules out:** trusting a block, which is how teams end up switching the gate off.
+
+**Option B, block only on a fall of more than 2 points.**
+- **What happens:** score once, allow anything within the wobble.
+- **Effect on the target:** the 5 point fall is still blocked. A real 2 point fall now passes silently, and three of those in a row take the firm down 6 points with no warning.
+- **Cost:** $0.27 a run, no wasted hours.
+- **Rules out:** catching small real falls, and noticing slow decay.
+
+**Option C, run each version twice and compare the averages.**
+- **What happens:** four runs per change instead of two, then compare.
+- **Effect on the target:** averaging halves the wobble to about 1 case, so a 2 point fall is catchable and the 5 point fall is certain.
+- **Cost:** $0.54 and 80 seconds a run, and double the AI calls on every proposal.
+- **Rules out:** the cheapest run, and it still leaves some wobble.
+
+**Your pick.**
+
+### Key
+B for a team shipping 20 changes a day; C once small falls matter more than the extra spend. B gives up small real falls; C gives up half the run budget; A gives up the team's trust.
+
+## BUILD-D4 · When the gate runs
+New: none
+Status: done 2026-09-18 (picked C)
+
+# Lesson 5 · The build · Decision 4 of 5
+
+**Decision 4: when the gate runs.** Givens: your team proposes 20 changes a day, a run costs $0.27 and takes 40 seconds, and the firm processes about 140 invoices a day. A bad change that reaches the firm ruins every summary it touches until someone pulls it back.
+
+**Option A, on every proposed change.**
+- **What happens:** all 20 proposals a day are scored before anyone can let them in.
+- **Effect on the target:** a bad change never reaches the firm, so bad summaries from it are 0.
+- **Cost:** $5.40 a day, and 40 seconds added to each proposal.
+- **Rules out:** a free gate, and instant proposals: every change now waits on a run.
+
+**Option B, once a night.**
+- **What happens:** one run at 2am scores whatever went in that day.
+- **Effect on the target:** a bad change let in at 9am is live all day, so about 140 invoices get bad summaries before the night run finds it.
+- **Cost:** $0.27 a day, and nothing added to any proposal.
+- **Rules out:** blocking anything, since the change is already in when the run happens.
+
+**Option C, on every proposed change that touches the instructions, nightly for everything else.**
+- **What happens:** changes to the AI instructions are gated; changes elsewhere wait for the night run.
+- **Effect on the target:** the 5 point change you must catch is an instructions change, so it is blocked. A bad change in other code still reaches the firm for up to a day.
+- **Cost:** about $1.35 a day if 5 of the 20 proposals touch instructions.
+- **Rules out:** catching failures that come from the rest of the code before they land.
+
+**Your pick.**
+
+### Key
+A when the firm is live and 140 invoices a day are at stake; C when the run budget matters more than code-side failures. A gives up $5.40 a day and 40 seconds per proposal; C gives up protection against non-instruction changes; B gives up the ability to block at all.
+
+## BUILD-D5 · What the run uses for a password
+New: none
+Status: done 2026-09-18 (picked B)
+
+# Lesson 5 · The build · Decision 5 of 5
+
+**Decision 5: what the run uses for a password.** Givens: the run must call the AI 200 times per proposal, your AI account allows $500 a day, setting up a short-lived pass takes about two hours of fiddling with settings, and you are one person with no security team. The cases must reflect what the real AI does today.
+
+**Option A, a stored password.**
+- **What happens:** the password sits in the service's settings and every run reads it.
+- **Effect on the target:** the gate works exactly as designed and the numbers are real.
+- **Cost:** nothing to set up. If it ever leaks, someone can spend $500 a day and read the firm's invoices until you notice and change it everywhere.
+- **Rules out:** limiting the damage of a leak, and knowing which run used the password.
+
+**Option B, a short-lived pass.**
+- **What happens:** each run proves which project it is and gets a pass that dies in 15 minutes.
+- **Effect on the target:** identical numbers, since the AI calls are the same.
+- **Cost:** about two hours of setup now, and a fiddly settings page you will forget the details of.
+- **Rules out:** a five minute setup, and running the gate anywhere that cannot do this handshake.
+
+**Option C, recorded AI answers, no password.**
+- **What happens:** the run replays answers recorded earlier instead of calling the AI.
+- **Effect on the target:** it cannot catch the change you must catch. Reworded instructions produce the same recorded answers, so the 5 point fall is invisible.
+- **Cost:** free, instant, and no password anywhere.
+- **Rules out:** testing anything about the AI itself, which is the whole point of the gate.
+
+**Your pick.**
+
+### Key
+B for anything the firm depends on; A only while nothing real is behind the account. B gives up two hours and portability; A gives up any limit on a leak; C gives up the ability to catch instruction changes at all.
+
+## BUILD-CALL · Predict the numbers
+New: none
+Status: pending
+
+# Lesson 5 · The build · Your predictions
+
+Your five picks, which I will build exactly:
+
+```
+1  100 cases
+2  the 18 real complaints plus 82 invented
+3  block only on a fall of more than 2 points
+4  gate every change that touches the instructions, nightly for the rest
+5  a short-lived pass, no stored password
+```
+
+Two versions will run against your list. The version live today passes 92 of 100. The proposed change reworks the wording and breaks handwritten scans, turning 5 cases that used to pass into failures. A second, better change fixes 3 invoices that were failing and breaks nothing.
+
+**Your call.** Predict five numbers:
+
+1. The broken version's pass rate.
+2. Under your rule from decision 3, is the broken change blocked or allowed?
+3. The better change's pass rate.
+4. Under your rule, is the better change blocked or allowed?
+5. One run scores both versions over your list, at $0.0027 an AI call. What does one run cost?
+
+### Key
+1. 87%  2. blocked (a 5 point fall is more than 2)  3. 95%  4. allowed  5. $0.54 (200 calls)
+What this gives up: with rule B a 2 point fall would pass unseen, and 82 invented cases inflate the 92.
