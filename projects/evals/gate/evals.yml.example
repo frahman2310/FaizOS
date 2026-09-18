@@ -1,0 +1,18 @@
+# Decision 4: gate every change that touches the instructions; everything else runs nightly.
+# Decision 5: no stored password. id-token lets the run fetch a short-lived pass (OIDC).
+name: evals
+on:
+  pull_request:
+    paths: ["projects/evals/**", "prompts/**"]     # instruction changes are gated
+  schedule:
+    - cron: "0 2 * * *"                            # everything else, once a night
+permissions:
+  contents: read
+  id-token: write                                  # ask for a short-lived pass, store nothing
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv run --no-project python projects/evals/gate/gate.py    # exit 1 blocks the change
