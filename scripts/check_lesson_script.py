@@ -93,6 +93,10 @@ def problems(part_id, new, body, key, status):
 
     if part_id.startswith("BUILD-D"):
         out += [f"missing {m}" for m in DECISION if m not in body]
+        if re.search(r"(?i)\*\*Rules out:\*\*\s*(nothing|none)", body):
+            out.append("an option that rules out nothing is not a trade-off (C35)")
+        if key is not None and "gives up" not in key:
+            out.append("'### Key' must name what the winning option gives up (C35)")
         for m in DECISION[1:5]:
             if body.count(m) < 2:
                 out.append(f"every option needs its own {m} (found {body.count(m)}, need 2+)")

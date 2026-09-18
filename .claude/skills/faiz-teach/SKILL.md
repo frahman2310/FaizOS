@@ -74,6 +74,10 @@ He asked for the implications of every choice to be explained much better (C31, 
    - **Cost:** money, time, or effort.
    - **Rules out:** what this choice makes impossible.
    End with **Your pick.** Only ideas already taught. 2,000 characters or less.
+   Every decision must be a real trade-off ("decisions cannot be this obvious", 09-18, C35): no
+   option may rule out nothing, each option must win on some dimension the others lose, and the
+   sound pick must depend on a stated given, so changing that given would change the answer. The
+   `### Key` names what the winning option gives up.
 3. `BUILD-CALL`: his picks listed back as data, then **Your call.** he predicts the target number(s).
 4. I implement exactly his picks, run it, and paste the real output and the few lines that carry each
    decision. Then the **debrief**, one line per decision: his pick, what it measurably did, and what

@@ -359,7 +359,7 @@ Relies on: the gate blocks a change when a case fails; the fresh computer is ide
 
 ## R2-D · The password the robot needs
 New: a short-lived pass the robot asks for at run time instead of a stored password
-Status: pending
+Status: done 2026-09-18
 
 # Lesson 5 · Round 2 · Part D · The password the robot needs
 
@@ -393,3 +393,67 @@ short-lived pass: asked for when the run starts, expires in 15 minutes
 4. only to run the cases
 5. fine (the result is right; the risk if that pass leaks is now the whole account)
 Relies on: a leaked password works until it is changed; a short-lived pass expires by itself
+
+## BUILD-D1 · How many cases
+New: none
+Status: done 2026-09-18 (picked B)
+
+# Lesson 5 · The build · Decision 1 of 5
+
+**The build.** A working gate on this Mac: it runs your cases against two versions of the instructions and blocks the worse one. Target: it must block a change that makes 5 in every 100 summaries worse, must not block a change that is equal or better, and one run must cost under $1 and finish in under 2 minutes.
+
+**Decision 1: how many cases.** Givens: the firm has sent 18 real complaints, you can invent as many cases as you like, each case costs $0.0027 in AI calls and about 0.4 seconds. The change you must catch makes 5 in every 100 summaries worse.
+
+**Option A, 20 cases.**
+- **What happens:** one quick run over a small list.
+- **Effect on the target:** one case is worth 100 / 20 = 5 points, so a 5 point fall is a single case and cannot be told apart from luck. The gate misses the change you must catch.
+- **Cost:** $0.05 and 8 seconds a run.
+- **Rules out:** noticing anything smaller than a 5 point change.
+
+**Option B, 100 cases.**
+- **What happens:** every run scores both versions over 100 cases.
+- **Effect on the target:** one case is worth 1 point, so the 5 point fall shows up as 5 cases turning red, which luck rarely produces.
+- **Cost:** $0.27 and 40 seconds a run.
+- **Rules out:** the cheapest possible run, and any hope of seeing a 1 point change.
+
+**Option C, 500 cases.**
+- **What happens:** the same run over a much longer list.
+- **Effect on the target:** one case is worth 0.2 points, so even a 1 point fall is visible.
+- **Cost:** $1.35 and about 3 minutes a run, which breaks both limits.
+- **Rules out:** staying under $1 a run and under 2 minutes.
+
+**Your pick.**
+
+### Key
+B. A is blind to the 5 point fall; C is sharper but breaks the cost and time limits. B gives up the resolution C would have had.
+
+## BUILD-D2 · Where the 100 cases come from
+New: none
+Status: done 2026-09-18 (picked C)
+
+# Lesson 5 · The build · Decision 2 of 5
+
+**Decision 2: where the 100 cases come from.** Givens: 18 invoices really failed and the firm complained about each one. The rest of the list has to come from somewhere. The change you must catch breaks handwritten scans, and 12 of the 18 complaints are handwritten scans. An invented case is one you write at your desk from a clean typed invoice.
+
+**Option A, 100 invented cases.**
+- **What happens:** you write 100 tidy invoices and the text each summary should contain.
+- **Effect on the target:** none of them are handwritten, so the broken change passes all 100 and the gate lets it through. The target is missed outright.
+- **Cost:** an afternoon of writing, no waiting on the firm.
+- **Rules out:** catching any failure you did not already imagine.
+
+**Option B, the 18 real complaints only.**
+- **What happens:** the list is exactly what the firm has complained about.
+- **Effect on the target:** 12 of 18 are handwritten, so the change turns them red and the gate blocks it. But one case is worth 100 / 18 = 5.6 points, so smaller changes stay invisible.
+- **Cost:** $0.05 a run, and you wait for complaints to grow the list.
+- **Rules out:** seeing changes smaller than about 6 points.
+
+**Option C, the 18 real plus 82 invented.**
+- **What happens:** every real complaint stays in, and invented cases pad the list to 100.
+- **Effect on the target:** the 12 handwritten cases still turn red, and with 100 cases one case is 1 point, so the 5 point fall is clear. Both halves of the target hold.
+- **Cost:** $0.27 a run plus the afternoon of writing.
+- **Rules out:** pretending the pass rate describes the firm's real post bag, since 82 cases are your own inventions.
+
+**Your pick.**
+
+### Key
+C. A cannot see the failure at all; B sees it but is too coarse for smaller ones. C gives up an honest pass rate, since 82 of its cases are invented and inflate the score.
