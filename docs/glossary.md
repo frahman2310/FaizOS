@@ -25,6 +25,9 @@ image: a sealed box holding your app plus everything it needs (Docker image)
 cold start: the wait while a switched-off app starts again
 travel time: the round trip from the user to the always-on computer
 host: the company running the always-on computer
+test case: one real input paired with the text a correct answer must include
+assert: a line that stops the program when its yes-or-no check is false
+regression: a failure that was fixed coming back later
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,

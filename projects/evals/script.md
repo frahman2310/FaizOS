@@ -91,7 +91,7 @@ Relies on: a test case passes only when the exact text appears; percentage = pas
 
 ## R1-A · Checking every change the same way
 New: a test case, one real invoice paired with the text a correct summary must include
-Status: pending
+Status: done 2026-09-18
 
 # Lesson 5 · Round 1 · Part A · Checking every change the same way
 
@@ -127,3 +127,80 @@ test_cases = [
 4. checking all 100 test cases
 5. quietly wrong (the answer key was copied from the answers being marked)
 Relies on: a test case passes only when the exact text appears; percentage = passed / all x 100
+
+## R1-B · A check that stops the program
+New: assert, a line that stops the program when a check is false
+Status: done 2026-09-18
+
+# Lesson 5 · Round 1 · Part B · A check that stops the program
+
+**The problem.** Your test cases now run automatically every time you change the instructions, and they print how many passed. The person putting the change live at 6pm sees a hundred lines of output scroll past and does not read them, because nothing about a printed line demands attention. So a run that printed "88 of 100 passed" goes live anyway, and the accounting firm gets a week of summaries with no totals. A printed message is a suggestion. What you want is something that makes the machine refuse to carry on when a check fails, so the bad change physically cannot reach the firm.
+
+**The fix:** use `assert`, a line that asks a yes-or-no question and stops the whole program the moment the answer is no.
+
+```python
+passed = 88
+total = 100
+assert passed == total
+```
+
+**Picture:** a smoke alarm. Silent while everything is fine, and impossible to ignore when it is not.
+
+- **The answer is yes (88 == 88):** nothing happens at all and the next line runs.
+- **The answer is no (88 == 100):** the program stops on that line with an error called AssertionError, and nothing after it runs.
+- **A printed message instead:** it scrolls past and the program carries on regardless.
+
+**Your turn.**
+
+1. `passed` is 100 and `total` is 100. What does the assert line do?
+2. `passed` is 88 and `total` is 100. What does it do, and does the line after it run?
+3. Which is harder to ignore at 6pm: one printed line among a hundred, or the program stopping with an error?
+4. The firm gets 1,000 invoices a week and 40 in every 100 summaries lose the total. How many bad summaries is that in a week?
+5. **Someone broke it.** The line was changed to `assert passed >= 0`, and `passed` is 88. What does the assert line do? Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. nothing; the next line runs
+2. stops with AssertionError; the next line does not run
+3. the program stopping
+4. 400
+5. nothing (88 is at least 0), so every change passes the check; quietly wrong
+Relies on: == asks whether two things are the same; >= asks at least; a stopped program shows the line it stopped on
+
+## R1-C · Where the cases come from
+New: cases come from real failures, not from invoices you imagine
+Status: pending
+
+# Lesson 5 · Round 1 · Part C · Where the cases come from
+
+**The problem.** You sit at your desk and write 100 test cases by inventing invoices: one page, clean English, a total at the bottom. The accounting firm's real post bag is nothing like that. It holds handwritten scans, two-page invoices with the total on page two, amounts in rupees and dollars, and credit notes whose total is negative. Your list passes 100% every time while the firm keeps ringing up to complain, because a list you invented can only test the failures you already thought of, and those were never the ones hurting you. The failures that cost money are the ones nobody imagined.
+
+**The fix:** build the list out of invoices that really failed, so every complaint the firm makes becomes a new test case.
+
+```python
+test_cases = [
+    {"invoice": "scan-0412-handwritten", "must_include": "PKR 84,000"},
+    {"invoice": "credit-note-77", "must_include": "-$310"},
+]
+```
+
+**Picture:** a driving instructor. Practising in an empty car park forever is comfortable and teaches nothing. The roundabout that fails people is the one worth driving again and again.
+
+- **A complaint arrives:** that invoice becomes a case with the text its summary should have contained, and the list gets closer to the real post bag.
+- **A later change breaks a case that used to pass:** the list catches it. The same failure coming back is called a regression.
+- **A case you invented at your desk:** it passes forever and tells you nothing new.
+
+**Your turn.**
+
+1. The firm complains 6 times a month and each complaint becomes a case. How many real cases after 3 months?
+2. Which list is more likely to catch tomorrow's failure: 100 invoices you invented, or 18 invoices that really failed?
+3. A complaint about a handwritten scan was fixed and became a case. Months later a change breaks it again. Does the list notice?
+4. The AI misread a credit note and reported the total as positive. Should that invoice become a test case?
+5. **Someone broke it.** The pass rate, meaning the share of cases that pass, had to read 100% before a meeting, so someone deleted the 12 cases that were failing. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. 18
+2. the 18 real ones
+3. yes, that case fails
+4. yes
+5. quietly wrong (100% now measures only the cases that already passed)
+Relies on: a case passes only when the exact text appears; the list only tests what is in it
