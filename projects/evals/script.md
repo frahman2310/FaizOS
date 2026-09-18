@@ -384,7 +384,7 @@ short-lived pass: asked for when the run starts, expires in 15 minutes
 2. A 15 minute pass leaks at 9am and you notice at 5pm. For how long can it be used?
 3. The AI account allows $500 a day. What is the most a leaked password can cost you per day until it is changed?
 4. Should the run's pass also be allowed to change the live service, or only to run the cases?
-5. **Someone broke it.** To avoid permission errors the short-lived pass was given the right to do everything in the account. The 100 cases run and report correctly. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+5. **Someone broke it.** To stop runs ever being refused access, the short-lived pass was given the right to do everything in the account. The 100 cases run and report correctly. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
 
 ### Key
 1. 8 hours
