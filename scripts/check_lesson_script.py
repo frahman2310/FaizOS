@@ -121,6 +121,13 @@ def problems(part_id, new, body, key, status):
         out.append("need exactly one '**Someone broke it.**' question")
     elif "quietly wrong (runs, wrong result)" not in after:
         out.append("the Someone broke it question must define the labels (crash, quietly wrong, fine)")
+    if key is not None:
+        answers = re.findall(r"(?m)^\d+\.\s*(.+)$", key)
+        readback = [i + 1 for i, a in enumerate(answers)
+                    if (nums := re.findall(r"\d[\d,.]*", a.split("(")[0]))
+                    and all(n.rstrip(".,") in after for n in nums)]
+        if readback:
+            out.append(f"question(s) {readback} only read back a number already in the questions (C36)")
     for code in re.findall(r"```[^\n]*\n(.*?)```", body, flags=re.S):
         if len(code.strip("\n").splitlines()) > 10:
             out.append("code block over 10 lines")

@@ -103,6 +103,11 @@ Call markers: `**Your call.**`
   asked as "which line, changed to what".
 
 ## Questions
+- Every question must make him USE the idea, not read the part back ("improve the quality of your
+  questions... so they improve my understanding", 09-18, C36). No answer may be a number or phrase
+  already printed in the part or the question. At least 3 of the 5 put him somewhere new: a variation
+  of the example he has not seen, a choice between two versions with what each costs, or a
+  prediction of what changes when one thing is altered. One warm-up compute is allowed.
 - Five short-answer questions: compute a business number, trace which lines run or what a sticker
   is on, classify (caught or crash, inside or after the loop), and exactly one **Someone broke it.**
   ending with the labels defined: "Crash (it stops), quietly wrong (runs, wrong result), or fine
