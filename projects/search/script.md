@@ -52,7 +52,7 @@ Relies on: cost = pages x price; the AI answers from what it is sent; a test on 
 
 ## R1-B · Scoring a passage by the words it shares
 New: scoring passages by shared words, rare words counting more
-Status: pending
+Status: done 2026-09-22
 
 # Lesson 7 · Round 1 · Part B · Scoring a passage by the words it shares
 
@@ -98,3 +98,48 @@ def score(question_words, passage_words, found_in):
 4. down, from 2 to about 0.3 (24,000 / 12,120 is about 2); the tax partner, when non-filer answers start quoting 2019 circulars [which-way]
 5. quietly wrong (every weight turns negative, so the rarest words push a passage down hardest) [broke]
 Relies on: log10 of 10 is 1, of 100 is 2, of 2 is about 0.3; a word counts once; rarer means fewer passages contain it
+
+## R1-C · Measuring whether search finds the right passage
+New: Recall@5, the share of test questions whose right passage lands in the top 5
+Status: pending
+
+# Lesson 7 · Round 1 · Part C · Measuring whether search finds the right passage
+
+**The problem.** The firm switched to the weighted search from Part B, and the engineer says it "feels better". Nobody can check that by reading answers: when an answer quotes a wrong rate, you cannot tell whether search failed to fetch the right passage or the AI misread a passage it was given. The two failures need different fixes, one in search and one in the instructions, so the firm needs a number for search alone. A tax partner spends two days writing 200 real client questions and, for each, marks the one passage that holds the answer. Search is then scored on how often that marked passage makes the 5 sent to the AI.
+
+**The fix:** run every test question through search and count how many times the marked passage lands in the top 5; that count over the number of questions is called Recall@5.
+
+```python
+hits = 0
+for q in test_questions:
+    top5 = search(q["question"], 5)
+    if q["right_passage"] in top5:
+        hits = hits + 1
+recall_at_5 = hits / len(test_questions)
+```
+
+Counted case: the old word-counting search put the marked passage in the top 5 for 124 of the 200 questions, so its Recall@5 is 124 / 200 = 62%.
+
+**Picture:** a fishing net that can hold 5 fish. Recall@5 is how often the one fish you wanted is in the net. Where it breaks: some questions need two passages (a rate and its exemption), and the partner marked only one.
+
+- **The marked passage is in the top 5:** a hit, the AI has what it needs.
+- **It is 6th:** a miss, counted exactly the same as if it were 500th.
+- **The question needs two passages and one is marked:** it can count as a hit while the AI still lacks half the answer.
+
+**Worked chain** (another case): the engineer writes the test questions using the Ordinance's own wording → every question shares rare words with its passage → Recall@5 reads high → the firm stops improving search → clients who ask in their own words ("filer status") get misses.
+
+**Your turn.**
+
+1. The weighted search puts the marked passage in the top 5 for 158 of the 200 questions. What is its Recall@5?
+2. Search X: the marked passage is in the top 5 for 150 questions and exactly 6th for the other 50. Search Y: top 5 for 150, and beyond 100th for the other 50. Give both Recall@5 figures, and say which one is closer to good, and what one cheap change shows it.
+3. The partner found each "right passage" by typing the question into the current search and picking from its results. Which way does Recall@5 read, which way does the decision to ship bend, and what reaches clients?
+4. Recall@5 is 79%. Does that show 79% of client answers are correct, or only something weaker? Name the two other things that must hold for an answer to be correct.
+5. **Someone broke it.** The scoring loop calls `search(q["question"], 50)`, while the app still sends the AI 5 passages. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. 79% [warmup]
+2. both 75%; X is closer, sending 6 passages instead of 5 lifts X to 100% and does nothing for Y [pair]
+3. reads high (every marked passage is one the search already finds) → bends toward putting it in front of clients → questions the search cannot find fail in front of clients [chain]
+4. only that the right passage reached the AI; the AI must read it correctly, and the passage must be current law [prove]
+5. quietly wrong (it measures recall at 50 and reports it as recall at 5, so it reads high) [broke]
+Relies on: a hit means the marked passage is in the top 5; 6th counts as a miss; a test built with the tool it tests reads high
