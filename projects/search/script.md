@@ -191,3 +191,44 @@ mrr = total / len(test_questions)
 4. too high (the right passage is no longer reliably first when the AI reads); the tax partner, seeing answers lean on the wrong passage while MRR looks fine [which-way]
 5. quietly wrong (worse places add more points, so a worse search scores higher) [broke]
 Relies on: 1 over the place; missing adds 0; average is total over count; the AI leans on the first passage
+
+## R1-E · How big each passage should be
+New: passage size, how many words each cut-out passage holds
+Status: pending
+
+# Lesson 7 · Round 1 · Part E · How big each passage should be
+
+**The problem.** Before search runs, the 6,000 pages are cut into passages, and the size of the cut decides what search can find. A tax answer often spans neighbouring sentences: one says who the rule covers, the next gives the rate. Cut too small and they land in different passages, so the 5 sent can carry one half without the other. Cut too big and each passage holds dozens of topics, so wrong passages share the question's words by accident and push the right one out. On the 200 test questions, 25-word passages scored 58% Recall@5 (116 of 200), 250 words 81% (162), 1,000 words 66% (132).
+
+**The fix:** cut passages big enough to keep a rule and its rate together, and no bigger, and pick the size by measuring Recall@5 at each one.
+
+```
+Section 153(1)(b), services. A person not on the Active Taxpayer
+List pays withholding at twice the normal rate. The normal rate is 4%.
+```
+
+At 1 sentence that is three passages, and the answer (8%) needs two. At 250 words it is one passage. At 1,000 words it shares a passage with 30 other rates.
+
+**Picture:** a newspaper scrapbook. Cut single lines and a headline loses its story; paste whole pages and the story is lost in the crowd. Where it breaks: a reader sees neighbouring clippings; search sees each passage alone.
+
+- **Rule and rate together:** it matches the rare words and carries the answer.
+- **Split across two passages:** each matches part of the question; one half can miss the top 5.
+- **Buried in a huge passage:** it matches, but so do many wrong ones, and it gets crowded out.
+
+**Worked chain** (another case): test questions all ask about long rate schedules → big passages score best → the firm picks big passages → short everyday questions get crowded out, at a higher bill.
+
+**Your turn.**
+
+1. A page is 500 words and costs $0.003 to send. At 1,000-word passages, what do 5 passages per question cost a week, at 150 questions?
+2. 25 words and 1,000 words both lose to 250. Give the reason each loses; they differ.
+3. A colleague reasons: 1) bigger passages hold more text; 2) so the right sentence is more likely among the 5 sent; 3) so answers improve. Which step is wrong, and what does the test show?
+4. The test questions were all answered by a single sentence. Which way does the 25-word Recall@5 read against real questions, which way does the size decision bend, and what reaches clients?
+5. **Someone broke it.** A typo set the passage size to 25,000 words instead of 250. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. $4.50 (150 x 5 x 2 pages x $0.003) [warmup]
+2. 25 words: the rule and its rate split into different passages; 1,000 words: wrong passages match by accident and crowd the right one out [pair]
+3. step 2: more text means wrong passages match too, so Recall@5 fell from 81% to 66% [wrong-step]
+4. reads high (single-sentence answers never split) → bends toward small passages → questions needing a rule and its rate together miss [chain]
+5. quietly wrong (it still runs: each passage is 50 pages, recall falls and the bill jumps) [broke]
+Relies on: pages x price; a passage matches only the words inside it; more words per passage means more accidental matches
