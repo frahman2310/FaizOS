@@ -125,8 +125,10 @@ Call markers: `**Your call.**`
   wrong result), or fine (runs, right result)?" (B10, B11, B11b). Tag each Key answer with its
   pattern: [warmup] [chain] [prove] [flip] [pair] [gap] [which-way] [wrong-step] [must-be-true] [broke].
 - The question bank (docs/research/adaptation.md has a worked example of each):
-  - [chain] "X is off this way. Which way does the number move, which way does the decision bend,
-    what reaches the customer?" Only after a **Worked chain** of the same shape in the part: four
+  - [chain] "X is off this way. Does the number read higher or lower, does the decision lean toward
+    A or B, and what reaches the customer?" Always two named options for each link: open "which way"
+    wording missed first try 3 of 3 in L7 Round 1 and the two-option rewording fixed all 3 (E12, D4).
+    Only after a **Worked chain** of the same shape in the part: four
     links, wrong input, number moves, decision bends, cost. Once he gets one right cold, the next
     lesson's chain leaves a link blank, then none is shown (E11 0/2, E12 0/3 without it).
   - [prove] "The system reports N. Does that show A, or only the weaker B? What one measurement

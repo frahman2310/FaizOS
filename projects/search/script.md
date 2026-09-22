@@ -194,7 +194,7 @@ Relies on: 1 over the place; missing adds 0; average is total over count; the AI
 
 ## R1-E · How big each passage should be
 New: passage size, how many words each cut-out passage holds
-Status: pending
+Status: done 2026-09-22
 
 # Lesson 7 · Round 1 · Part E · How big each passage should be
 

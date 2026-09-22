@@ -153,7 +153,7 @@ one question or inside a message with 7+ questions.
 | E9 | Inverse relationships and expression vs statement (v1 era, DB) | 3 + 3 | rate vs duration, exp/ln; `return 2 trips`, `rm_score = drift * -beta` |
 | E10 | Arithmetic slips (not a concept gap) | 3 | 6500 ms for 0.65 × 1000, a dropped zero, 12x for 12.5x |
 | E11 | A saving or difference computed from one side only (the new cost, or the part saved per unit) instead of before minus after | L4 0 / 2 first try | R2-B Q2 answered 4 x 30 = 120 (right: (20 - 4) x 30 = 480); R2-C Q3 answered 1,760 (right: 90 x 20 = 1,800). Both fixed by pointing at his own two numbers (2 / 2) |
-| E12 | Which way a wrong number bends a decision, or what a number proves | L6 R2 0 / 3 first try | R2-A Q4 (300 PASS proves only the judge's view), R2-B Q4 (70% catch bends toward passing, said failing), R2-C Q4 (best of five reads high). Two fixed on one hint, one answer given |
+| E12 | Which way a wrong number bends a decision, or what a number proves | L6 R2 0 / 3 first try | R2-A Q4 (300 PASS proves only the judge's view), R2-B Q4 (70% catch bends toward passing, said failing), R2-C Q4 (best of five reads high). Two fixed on one hint, one answer given; L7 R1-A, C, E: 0 / 3 first try even with a Worked chain, 3 / 3 once reworded as two options (higher or lower, toward or away) |
 
 ---
 
