@@ -146,7 +146,7 @@ Relies on: a hit means the marked passage is in the top 5; 6th counts as a miss;
 
 ## R1-D · Rewarding the right passage for ranking high
 New: MRR, the average of 1 over the place where the right passage lands
-Status: pending
+Status: done 2026-09-22 (How it works skipped 4th place; he had to ask)
 
 # Lesson 7 · Round 1 · Part D · Rewarding the right passage for ranking high
 
