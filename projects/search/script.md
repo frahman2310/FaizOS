@@ -105,9 +105,9 @@ Status: pending
 
 # Lesson 7 · Round 1 · Part C · Measuring whether search finds the right passage
 
-**The problem.** The firm switched to the weighted search from Part B, and the engineer says it "feels better". Nobody can check that by reading answers: when an answer quotes a wrong rate, you cannot tell whether search failed to fetch the right passage or the AI misread a passage it was given. The two failures need different fixes, one in search and one in the instructions, so the firm needs a number for search alone. A tax partner spends two days writing 200 real client questions and, for each, marks the one passage that holds the answer. Search is then scored on how often that marked passage makes the 5 sent to the AI.
+**The problem.** The firm switched to the weighted search, and the engineer says it "feels better". Reading answers cannot check that: when an answer quotes a wrong rate, you cannot tell if search missed the right passage or the AI misread one it was given. The two need different fixes, so the firm needs a number for search alone. A tax partner spends two days writing 200 real client questions and marking, for each, the one passage that holds the answer.
 
-**The fix:** run every test question through search and count how many times the marked passage lands in the top 5; that count over the number of questions is called Recall@5.
+**The fix:** run every test question through search and count how often the marked passage lands in the top 5; that count over the number of questions is called Recall@5.
 
 ```python
 hits = 0
@@ -118,22 +118,22 @@ for q in test_questions:
 recall_at_5 = hits / len(test_questions)
 ```
 
-Counted case: the old word-counting search put the marked passage in the top 5 for 124 of the 200 questions, so its Recall@5 is 124 / 200 = 62%.
+Counted case: the old word-counting search hit on 124 of the 200 questions, so its Recall@5 is 124 / 200 = 62%.
 
-**Picture:** a fishing net that can hold 5 fish. Recall@5 is how often the one fish you wanted is in the net. Where it breaks: some questions need two passages (a rate and its exemption), and the partner marked only one.
+**Picture:** a net that holds 5 fish. Recall@5 is how often the fish you wanted is in it. Where it breaks: some questions need two passages (a rate and its exemption), and only one is marked.
 
-- **The marked passage is in the top 5:** a hit, the AI has what it needs.
-- **It is 6th:** a miss, counted exactly the same as if it were 500th.
-- **The question needs two passages and one is marked:** it can count as a hit while the AI still lacks half the answer.
+- **Marked passage in the top 5:** a hit, the AI has what it needs.
+- **It is 6th:** a miss, same as 500th.
+- **Two passages needed, one marked:** a hit, while the AI still lacks half the answer.
 
-**Worked chain** (another case): the engineer writes the test questions using the Ordinance's own wording → every question shares rare words with its passage → Recall@5 reads high → the firm stops improving search → clients who ask in their own words ("filer status") get misses.
+**Worked chain** (another case): the engineer writes test questions in the Ordinance's own wording → each shares rare words with its passage → Recall@5 reads high → the firm stops improving search → clients asking in their own words get misses.
 
 **Your turn.**
 
 1. The weighted search puts the marked passage in the top 5 for 158 of the 200 questions. What is its Recall@5?
-2. Search X: the marked passage is in the top 5 for 150 questions and exactly 6th for the other 50. Search Y: top 5 for 150, and beyond 100th for the other 50. Give both Recall@5 figures, and say which one is closer to good, and what one cheap change shows it.
-3. The partner found each "right passage" by typing the question into the current search and picking from its results. Which way does Recall@5 read, which way does the decision to ship bend, and what reaches clients?
-4. Recall@5 is 79%. Does that show 79% of client answers are correct, or only something weaker? Name the two other things that must hold for an answer to be correct.
+2. Search X: marked passage in the top 5 for 150 questions, exactly 6th for the other 50. Search Y: top 5 for 150, beyond 100th for the other 50. Give both Recall@5 figures; which is closer to good, and what one cheap change shows it?
+3. The partner found each "right passage" by typing the question into the current search and picking from what it returned. Which way does Recall@5 read, which way does the decision to let clients use it bend, and what reaches them?
+4. Recall@5 is 79%. Does that show 79% of client answers are correct, or only something weaker? Name two other things a correct answer needs.
 5. **Someone broke it.** The scoring loop calls `search(q["question"], 50)`, while the app still sends the AI 5 passages. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
 
 ### Key
