@@ -232,3 +232,48 @@ At 1 sentence that is three passages, and the answer (8%) needs two. At 250 word
 4. reads high (single-sentence answers never split) → bends toward small passages → questions needing a rule and its rate together miss [chain]
 5. quietly wrong (it still runs: each passage is 50 pages, recall falls and the bill jumps) [broke]
 Relies on: pages x price; a passage matches only the words inside it; more words per passage means more accidental matches
+
+## R2-A · Searching by meaning instead of words
+New: an embedding, a list of numbers that places a text on a map of meanings
+Status: pending
+
+# Lesson 7 · Round 2 · Part A · Searching by meaning instead of words
+
+**The problem.** The 250-word search still missed 38 of the 200 test questions, and 22 of those 38 were clients using different words from the law. A client writes "I'm not registered with FBR, what gets deducted from my consultancy invoices?", while the law says "a person not on the Active Taxpayer List" and "services". They share no rare word, so every weight from Part B is zero and the right passage never makes the top 5. Real clients rarely use the Ordinance's wording, so the gap grows with every ordinary client.
+
+**The fix:** turn every passage and question into a list of numbers where similar meanings get similar numbers, and rank passages by closeness to the question. That list is called an embedding.
+
+```python
+q = embed("not registered with FBR, consultancy invoices")
+p = embed("person not on the Active Taxpayer List, services")
+print(closeness(q, p))    # 0.91; near 1 means near in meaning
+```
+
+**How it works**, with 2 numbers instead of the real 1,024:
+1. `embed` places each text on a map: "not registered" lands at [0.9, 0.1], "not on the Active Taxpayer List" at [0.85, 0.2], "sales tax on goods" at [0.1, 0.95].
+2. `closeness` multiplies the matching numbers and adds them: 0.9 x 0.85 + 0.1 x 0.2 = 0.785, against 0.9 x 0.1 + 0.1 x 0.95 = 0.185 for sales tax.
+3. Highest closeness ranks first, so a passage sharing no words with the question still wins.
+
+**Picture:** a city where shops of one kind cluster on one street; you find tailors by walking to that street, whatever each sign says. Where it breaks: the map is drawn from ordinary text, where "filer" and "non-filer" share sentences, so it parks them together although their rates differ.
+
+- **Other words, same meaning:** close, found.
+- **Same topic, opposite rule:** "filer" and "non-filer" sit close, so the wrong rate can rank first.
+- **An exact code like 153(1)(b):** the map blurs numbers, so word search finds it better.
+
+**Worked chain** (another case): meaning search is tested only on rate questions → it reads higher than on real questions → the firm leans toward dropping word search → questions citing a section number start missing.
+
+**Your turn.**
+
+1. On the 2-number map a question sits at [0.8, 0.3]; passage A at [0.7, 0.4]; passage B at [0.2, 0.9]. Give both closeness scores. Which ranks first?
+2. A client asks "what is the rate under section 153(1)(b)?". Word or meaning search: which likelier puts the right passage first, and why?
+3. The meaning search is tested only on questions written in the Ordinance's own words. Does its lead over word search read bigger or smaller than on real client questions, does that push the firm toward adopting it or skipping it, and what reaches clients?
+4. For a non-filer's question, meaning search ranks a passage stating the filer rate first, at closeness 0.93. Does 0.93 show that passage answers the question, or only something weaker? Say what.
+5. **Someone broke it.** `embed` was upgraded: questions get numbers from the new version, the 12,000 passages still hold the old version's. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. A 0.68, B 0.43; A first [warmup]
+2. word search: the section number is an exact rare token, and the meaning map blurs numbers [pair]
+3. smaller (on the law's own wording word search already scores well) → toward skipping it → client paraphrases keep missing [chain]
+4. only that it is near in topic; filer and non-filer sit close on the map although their rates differ [prove]
+5. quietly wrong (the two versions draw different maps, so closeness compares points from two maps) [broke]
+Relies on: multiply matching numbers and add; nearest ranks first; word search scores rare exact words; a map drawn from ordinary text
