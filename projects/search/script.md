@@ -101,7 +101,7 @@ Relies on: log10 of 10 is 1, of 100 is 2, of 2 is about 0.3; a word counts once;
 
 ## R1-C · Measuring whether search finds the right passage
 New: Recall@5, the share of test questions whose right passage lands in the top 5
-Status: pending
+Status: done 2026-09-22
 
 # Lesson 7 · Round 1 · Part C · Measuring whether search finds the right passage
 
@@ -143,3 +143,51 @@ Counted case: the old word-counting search hit on 124 of the 200 questions, so i
 4. only that the right passage reached the AI; the AI must read it correctly, and the passage must be current law [prove]
 5. quietly wrong (it measures recall at 50 and reports it as recall at 5, so it reads high) [broke]
 Relies on: a hit means the marked passage is in the top 5; 6th counts as a miss; a test built with the tool it tests reads high
+
+## R1-D · Rewarding the right passage for ranking high
+New: MRR, the average of 1 over the place where the right passage lands
+Status: pending
+
+# Lesson 7 · Round 1 · Part D · Rewarding the right passage for ranking high
+
+**The problem.** Recall@5 counts a hit the same whether the right passage came 1st or 5th. That matters for two reasons at the firm. First, when two passages disagree, the AI tends to lean on the one placed first, so a right passage at 5th loses to an old circular at 1st. Second, finance wants to send 2 passages instead of 5 to cut cost and wait time, and a right passage sitting at 4th or 5th would then be dropped. Two searches can both score 79% Recall@5 while one puts the right passage 1st and the other puts it 5th, and the firm cannot tell them apart.
+
+**The fix:** score each question by 1 divided by the place where the right passage landed (0 if it is not in the top 5), and average over all questions. This is called MRR (mean reciprocal rank: mean is average, reciprocal is 1 over).
+
+```python
+total = 0
+for q in test_questions:
+    rank = place_of(q["right_passage"], search(q["question"], 5))
+    if rank > 0:
+        total = total + 1 / rank
+mrr = total / len(test_questions)
+```
+
+**How it works:**
+1. `place_of` gives 1 for first place, 2 for second, up to 5, and 0 when the passage is missing.
+2. `1 / rank` turns a place into points: 1st is 1, 2nd is 0.5, 3rd 0.33, 5th 0.2. Missing adds nothing.
+3. `total / len(...)` averages. Counted case: four questions landing 1st, 2nd, 5th and missing give 1 + 0.5 + 0.2 + 0 = 1.7, over 4 is 0.425.
+
+**Picture:** prize money for a race: $1 for 1st, 50 cents for 2nd, 20 cents for 5th, nothing outside the top 5. MRR is the average prize. Where it breaks: the prize halves from 1st to 2nd, but an AI that reads all 5 passages carefully does almost as well with the answer 2nd.
+
+- **Right passage 1st:** full point, the passage the AI leans on is the right one.
+- **Right passage 5th:** a hit for Recall@5 but only 0.2 here, and it is cut if only 2 are sent.
+- **Missing:** 0 for both measures.
+
+**Worked chain** (another case): the test set holds only questions with a single matching circular → nothing competes for 1st place → MRR reads high → finance cuts to 2 passages → questions where an old and a new circular both match lose the new one.
+
+**Your turn.**
+
+1. Five questions land 1st, 1st, 3rd, 4th and missing. What is MRR?
+2. Search P puts the right passage 5th for all 200 questions. Search Q puts it 1st for 120 and misses the other 80. Give Recall@5 and MRR for each. If the firm sends only the top 1 passage, which search gets more questions right, and how many?
+3. For cutting from 5 passages to 2 to lose no hits at all, what would have to be true about where right passages land?
+4. The app shuffles each top 5 into random order before the AI sees it, but MRR is measured before the shuffle. Nothing crashes. Is the MRR too high or too low for what the AI actually gets, and who notices first, and how?
+5. **Someone broke it.** The points line was typed as `total = total + rank`. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. about 0.52 ((1 + 1 + 0.33 + 0.25 + 0) / 5 = 2.58 / 5) [warmup]
+2. P: Recall@5 100%, MRR 0.2; Q: Recall@5 60%, MRR 0.6. With 1 passage, Q gets 120 right and P gets 0 [pair]
+3. every right passage lands 1st or 2nd; none at 3rd to 5th [must-be-true]
+4. too high (the right passage is no longer reliably first when the AI reads); the tax partner, seeing answers lean on the wrong passage while MRR looks fine [which-way]
+5. quietly wrong (worse places add more points, so a worse search scores higher) [broke]
+Relies on: 1 over the place; missing adds 0; average is total over count; the AI leans on the first passage
