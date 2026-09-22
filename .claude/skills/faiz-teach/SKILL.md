@@ -78,13 +78,14 @@ He asked for the implications of every choice to be explained much better (C31, 
    option may rule out nothing, each option must win on some dimension the others lose, and the
    sound pick must depend on a stated given, so changing that given would change the answer. The
    `### Key` names what the winning option gives up.
-3. `BUILD-CALL`: his picks listed back as data, then **Your call.** he predicts the target number(s).
-4. I implement exactly his picks, run it, and paste the real output and the few lines that carry each
+3. No prediction step: after the last pick I implement exactly his picks at once (09-22: "Idw predict,
+   just build", C37). Before scripting Decision 1, write and run the model the build uses and take
+   every given from its output, so givens in different decisions cannot clash (L6 D3 vs D4).
+4. I run it, and paste the real output and the few lines that carry each
    decision. Then the **debrief**, one line per decision: his pick, what it measurably did, and what
    the other option would have done (run it when that takes under 5 minutes, otherwise estimate and
    say so). If the target is missed, he changes one decision and it runs again.
 Decision markers: `**Decision` | `**What happens:**` | `**Effect on the target:**` | `**Cost:**` | `**Rules out:**` | `**Your pick.**`
-Call markers: `**Your call.**`
 
 ## One new thing per part
 - Count every keyword, machine (`str`, `time.sleep`) and domain word (provider, backoff) he has not
@@ -92,8 +93,9 @@ Call markers: `**Your call.**`
 - Give each new word a plain one-sentence meaning the first time it appears (08-06, 09-05).
 - List every rule the questions rely on under `Relies on:` in the part's `### Key`; each must be said
   in this part or already taught (B6, E7).
-- A question asking for a saving or a difference needs one worked "before minus after" on other numbers
-  earlier in the part (E11: 0/2 first try without it).
+- A question asking for a saving or a difference, or which way a wrong number bends a decision, needs
+  one worked chain of the same kind on other numbers earlier in the part (E11: 0/2, E12: 0/3 first try
+  without it).
 
 ## Real lesson code
 - Paste the lines in chat: at most 8, each with a short plain note. Never ask him to open the file,

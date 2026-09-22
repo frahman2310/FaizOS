@@ -103,6 +103,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C34 | 09-17 | "Explain the problem with the right context and background so I can fully understand and develop my thought process. Commit this to the lesson dev" | standing; faiz-teach template step 1, checker requires 4+ sentences |
 | C35 | 09-18 | "Option C obviously (decisions cannot be this obvious)" on L5 build decisions 1 and 2 | standing; faiz-teach "The build", checker rejects an option that rules out nothing |
 | C36 | 09-18 | "You need to improve the quality of your questions too, make them so they improve my understanding" (L6 Part B Q1, Q2 only read back numbers printed in the part) | standing; faiz-teach Questions, checker flags read-back answers |
+| C37 | 09-22 | "Idw predict, just build" (L6 build, at the prediction step) | standing; faiz-teach "The build" step 3, prediction step removed |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.
@@ -150,6 +151,7 @@ one question or inside a message with 7+ questions.
 | E9 | Inverse relationships and expression vs statement (v1 era, DB) | 3 + 3 | rate vs duration, exp/ln; `return 2 trips`, `rm_score = drift * -beta` |
 | E10 | Arithmetic slips (not a concept gap) | 3 | 6500 ms for 0.65 × 1000, a dropped zero, 12x for 12.5x |
 | E11 | A saving or difference computed from one side only (the new cost, or the part saved per unit) instead of before minus after | L4 0 / 2 first try | R2-B Q2 answered 4 x 30 = 120 (right: (20 - 4) x 30 = 480); R2-C Q3 answered 1,760 (right: 90 x 20 = 1,800). Both fixed by pointing at his own two numbers (2 / 2) |
+| E12 | Which way a wrong number bends a decision, or what a number proves | L6 R2 0 / 3 first try | R2-A Q4 (300 PASS proves only the judge's view), R2-B Q4 (70% catch bends toward passing, said failing), R2-C Q4 (best of five reads high). Two fixed on one hint, one answer given |
 
 ---
 
@@ -186,9 +188,9 @@ One row per teaching session. Questions = questions asked; right = right first t
 | 2026-09-14 | L3 R1 H rebuilt (receipt book) + R2 Part A (closed-until sign) | 10 | 8 | failed record inside vs after loop, receipts per swipe; R2 Part B unanswered | "how many more of these rounds are left"; "The method is inconsistent, you keep deviating" |
 | 2026-09-14 | L3 R2 parts B-E, first lesson taught from a validated script | 20 | 15 | whole dict vs one label, the works path resets the streak, value from a broken line, "trips" read as crash, p50 of mostly zeros; all 5 resolved by pointing at his own earlier answer (5/5) | "explain number 5" |
 | 2026-09-14/15 | L4 live: R1 A-D, R2 A-E (validated script) + decision build | 45 + build | 41 | the gap saved vs a whole time (R2-B Q2, R2-C Q3), a redone step redoes the rest (R2-C Q2), "wrong" for slow-but-correct (R2-C Q5), all fixed on one hint; build: picked no deadline, predicted 736 ms, measured 1,753, changed decision 5, 500-call rerun 802 ms vs 2,066 | "decision 3 and 4 depend on where the majority of my users are which is unknown"; "explain these questions more throughly" |
-
-
 | 2026-09-17/18 | L5 evals: R1 A-D, R2 A-D, build D1-D5 + predictions | 40 + build | 31 | always-true assert, absolute bar vs baseline, the baseline moving after a change lands, least access; 2 of my questions were worded abstractly ("does the list notice", "how many setups") | "You need to explain the jargon you throw"; "Explain the problem with the right context and background"; "decisions cannot be this obvious" |
+| 2026-09-18/22 | L6 judge: R1 A-E (SQL), R2 A-C, build D1-D4 | 40 + build | 31 | complement count (36 of 40 agreed, said 6 disagreed), GROUP BY one pile vs many, a duplicate row joining twice, all three R2 direction questions (E12); build: two cost-adding picks together broke $5 ($7.36), changed D3 to plain C, met target (catch 93%, clear 95%, 4.4 h, $4.80) | "improve the quality of your questions"; "explain and answer 4 then proceed"; "Idw predict, just build" |
+
 **Taught and answered right, do not re-teach** (as of 2026-09-14): six kinds of stuff, stickers,
 quotes, machines and slots, left and right of `=`, colon and push right, `return` stops the machine,
 lists and positions, `for`, piling up a total, dicts and `KeyError`, `if` and comparisons, the hallway
@@ -198,6 +200,10 @@ record after the loop (92-96), the closed-until sign, changing a value under a d
 (successes only), finding a one-word planted bug from a real report. Lesson 3 complete.
 L5: test cases, assert, cases from real failures, list size vs the smallest visible change, the gate,
 the baseline, the fresh computer that runs it, short-lived passes. Build: a gate that blocks a 5 point
-fall and allows a 3 point gain, $0.54 a run. Open: L6 judge.
+fall and allows a 3 point gain, $0.54 a run.
+L6: failure names and counts, SQL WHERE/COUNT, GROUP BY, JOIN (drops unmatched, duplicates double),
+ROW_NUMBER over a PARTITION, a judge with one checkable rule, catch rate (TPR) and clear rate (TNR),
+the wobble 2*sqrt(p(1-p)/n) and square-root scaling. Not yet taught: Cohen's kappa. Build: judge at
+catch 93%, clear 95%, $4.80 a week. Open: L7 search.
 L4: a URL, the @app.get tag, health checks, one socket for AI companies, the image box, two stages,
 reused build steps, cold starts, travel time; decision build shipped in a local container. Open: L5 evals.
