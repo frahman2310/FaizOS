@@ -41,7 +41,7 @@ for path in SURFACES:
 
 skill = open(SKILL).read() if os.path.exists(SKILL) else ""
 check("faiz-teach skill exists", bool(skill))
-for label in ("Template markers:", "Decision markers:", "## The build", "## How this file changes", "Carry-over from L"):
+for label in ("Template markers:", "Decision markers:", "Call markers:", "## The build", "## How this file changes", "Carry-over from L"):
     check(f"skill has '{label}'", label in skill)
 
 teaching_notes = [p for p in glob.glob(os.path.join(MEMORY, "*.md"))

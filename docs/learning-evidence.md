@@ -103,7 +103,9 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C34 | 09-17 | "Explain the problem with the right context and background so I can fully understand and develop my thought process. Commit this to the lesson dev" | standing; faiz-teach template step 1, checker requires 4+ sentences |
 | C35 | 09-18 | "Option C obviously (decisions cannot be this obvious)" on L5 build decisions 1 and 2 | standing; faiz-teach "The build", checker rejects an option that rules out nothing |
 | C36 | 09-18 | "You need to improve the quality of your questions too, make them so they improve my understanding" (L6 Part B Q1, Q2 only read back numbers printed in the part) | standing; faiz-teach Questions, checker flags read-back answers |
-| C37 | 09-22 | "Idw predict, just build" (L6 build, at the prediction step) | standing; faiz-teach "The build" step 3, prediction step removed |
+| C37 | 09-22 | "Idw predict, just build" (L6 build, at the prediction step) | superseded by C39 (09-22) |
+| C38 | 09-22 | "This lesson was better, but the quality needs to be improved... improve the quality of the questions, make them more analytical and thought provoking. The explanations need to be more specific and MUCH clearer with all the background/context and necessary details." Asked for a research agent (best teaching methods, catching and keeping attention) and an adapter agent (fit them to his way of learning) | standing; in progress 09-22 |
+| C39 | 09-22 | "I don't mind predicting if I'm given all the data I need to make my prediction there. The decisions need to be harder, more like actual engineering decisions and more realistic" | standing; faiz-teach "The build" steps 2-3 |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.

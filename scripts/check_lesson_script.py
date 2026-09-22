@@ -84,7 +84,7 @@ def problems(part_id, new, body, key, status):
         out.append(f"'New:' lists more than one thing: {new}")
     if key is None:
         out.append("missing '### Key' section")
-    limit = 2000 if part_id.startswith("BUILD") else 2600
+    limit = 2000 if part_id.startswith("BUILD") else (3200 if "**How it works" in body else 2600)
     if len(body) > limit:
         out.append(f"part is {len(body)} characters, max {limit}")
     out += jargon_problems(body)
@@ -97,6 +97,10 @@ def problems(part_id, new, body, key, status):
             out.append("an option that rules out nothing is not a trade-off (C35)")
         if key is not None and "gives up" not in key:
             out.append("'### Key' must name what the winning option gives up (C35)")
+        if "unknown" not in body.lower() and "assumed:" not in body:
+            out.append("a decision needs an uncertain given: an 'Unknown:' or an 'assumed:' figure (C39)")
+        if key is not None and not re.search(r"\bIf\b", key):
+            out.append("'### Key' must name the one given that, if it changed, would change the pick (C39)")
         for m in DECISION[1:5]:
             if body.count(m) < 2:
                 out.append(f"every option needs its own {m} (found {body.count(m)}, need 2+)")
@@ -112,6 +116,16 @@ def problems(part_id, new, body, key, status):
             out.append(f"The problem has {sentences} sentences; give the full context in 4-6 (C34)")
     turn = body.split(REQUIRED[-1])
     before, after = turn[0], (turn[1] if len(turn) > 1 else "")
+    vague = re.findall(r"(?i)\b(happens? to|somehow|naturally|and so on|etc\.?|various)\b", before)
+    if vague:
+        out.append(f"vague phrase(s) that hide the mechanism: {sorted(set(v.lower() for v in vague))} (C38)")
+    for code in re.findall(r"```[^\n]*\n(.*?)```", before, flags=re.S):
+        if re.search(r"sqrt\(|\*\*\s*\d|/\s*\w+\s*\)", code) and "**How it works" not in body:
+            out.append("a formula needs a **How it works** block, one piece per line with numbers (C38)")
+            break
+    if re.search(r"(?i)which way|reads? (high|low)|\bbend|too (high|low)|what does .{0,40}prove", after) \
+            and "**Worked chain" not in before:
+        out.append("a direction question needs a **Worked chain** earlier in the part (E12)")
     if len(re.findall(r"(?m)^- \*\*", before)) < 2:
         out.append("fewer than 2 paths spelled out as '- **...' bullets")
     questions = re.findall(r"(?m)^\d+\. ", after)
@@ -136,6 +150,12 @@ def problems(part_id, new, body, key, status):
             cross = an and not qn and an <= others              # a number printed elsewhere in the part
             if echo or cross:
                 readback.append(i + 1)
+        tags = [t for a in answers for t in re.findall(r"\[([a-z-]+)\]", a)]
+        bank = {"chain", "prove", "flip", "pair", "gap", "which-way", "wrong-step", "must-be-true"}
+        if len(tags) < len(answers):
+            out.append("tag every Key answer with its pattern, e.g. [chain] (C38)")
+        elif tags.count("warmup") > 1 or sum(t in bank for t in tags) < 3 or tags.count("broke") != 1:
+            out.append("question mix: at most 1 [warmup], 3+ from the bank, exactly 1 [broke] (C38)")
         if readback:
             out.append(f"question(s) {readback} only read back a number already in the part (C36)")
     for code in re.findall(r"```[^\n]*\n(.*?)```", body, flags=re.S):

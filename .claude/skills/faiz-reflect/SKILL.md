@@ -33,6 +33,11 @@ Two files, two jobs, never mixed:
    Then read the whole skill top to bottom and remove or rewrite anything the change contradicts.
    Cite the evidence briefly in parentheses next to the rule.
 
+4b. **Quality pass.** When he asks for better quality, or every third lesson close, run the
+   `teaching-adapter` agent (.claude/agents/) on this lesson's script and evidence, and apply the edits
+   it proposes that his evidence supports, in place. Run `teaching-researcher` first if
+   docs/research/teaching-methods.md is missing or older than 60 days.
+
 5. **Carry it into the next lesson.** Write `Carry-over from L<n>:` at the top of the next lesson's
    `projects/<lesson>/script.md` (create the file if needed): the 1-3 adjustments this lesson's evidence
    implies. The checker refuses a script from L5 on without it.

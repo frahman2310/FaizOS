@@ -26,12 +26,16 @@ docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere
 
 ## The part template (every part, including parts about the lesson file)
 Parts built this way scored 24/30; parts that skipped it scored 3/11 the same day (A12, A13).
-1. **The problem.** 4-6 sentences with the full context, so he can reason about it (09-17, C34):
-   who uses this and why it matters to them, how it works today, what changes, what goes wrong,
-   why it goes wrong (the mechanism), and what it costs. Never a bare summary of the failure (B4).
-2. **The fix:** one sentence, plain words.
+1. **The problem.** 4-6 sentences with the full context (C34, C38): who uses this and why, how it
+   works today, what goes wrong, the mechanism in physical terms (what a case, a call or a row actually
+   does), and what it costs. Turn every rate into counts once ("92% (55 of 60)"). No vague phrase that
+   hides the mechanism ("happen to", "somehow", "naturally"). Never a bare summary of the failure (B4).
+2. **The fix:** one sentence, plain words. When the new thing is a formula or a measure, follow the
+   code with **How it works**: each piece of the formula on its own numbered line, what it does, on
+   one case with real numbers, then what the result means in the problem's own terms (C38).
 3. A tiny example, 8 lines or fewer, generic names, only known pieces plus the one new thing (B1).
-4. **Picture:** one everyday picture (D2, B2).
+4. **Picture:** one everyday picture that runs on the same mechanism, plus "Where it breaks:" when the
+   mapping is not exact (D2, B2).
 5. Every path as a bullet: if it works these lines run; if it fails this line is skipped (B3).
 6. Only for a lesson-file part: the real lines, pasted in chat (see "Real lesson code").
 7. **Your turn.** 5 questions (B9).
@@ -74,23 +78,31 @@ He asked for the implications of every choice to be explained much better (C31, 
    - **Cost:** money, time, or effort.
    - **Rules out:** what this choice makes impossible.
    End with **Your pick.** Only ideas already taught. 2,000 characters or less.
-   Every decision must be a real trade-off ("decisions cannot be this obvious", 09-18, C35): no
-   option may rule out nothing, each option must win on some dimension the others lose, and the
-   sound pick must depend on a stated given, so changing that given would change the answer. The
-   `### Key` names what the winning option gives up.
-3. No prediction step: after the last pick I implement exactly his picks at once (09-22: "Idw predict,
-   just build", C37). Before scripting Decision 1, write and run the model the build uses and take
+   Every decision must be a real trade-off that feels like engineering (C35, C39): no option may rule
+   out nothing, each option must win on some dimension the others lose, and at least two of these are
+   live: an uncertain given shown as a range, a constraint from a named person or team, an effect shown
+   under a second condition (bad month, growth), shared blind spots, a choice that is hard to undo, a
+   dependence on an earlier pick (stated), or the option to measure first. The `### Key` names what the
+   winning option gives up and the one given that, if it changed, would change the pick.
+3. `BUILD-CALL`: his picks listed back, then **Your call.** he predicts the target number(s). Every
+   number the prediction needs is in that message (rates, counts, prices), so it is reasoning, not
+   guessing (09-22, C39). At least one prediction combines two of his picks (L6: $4.80 + $2.56 broke
+   $5). Every rate in a decision says where it came from (the model run, his labels, or "assumed:")
+   and carries its range when it rests on fewer than 100 cases. Before scripting Decision 1, write and run the model the build uses and take
    every given from its output, so givens in different decisions cannot clash (L6 D3 vs D4).
 4. I run it, and paste the real output and the few lines that carry each
    decision. Then the **debrief**, one line per decision: his pick, what it measurably did, and what
    the other option would have done (run it when that takes under 5 minutes, otherwise estimate and
    say so). If the target is missed, he changes one decision and it runs again.
 Decision markers: `**Decision` | `**What happens:**` | `**Effect on the target:**` | `**Cost:**` | `**Rules out:**` | `**Your pick.**`
+Call markers: `**Your call.**`
 
 ## One new thing per part
 - Count every keyword, machine (`str`, `time.sleep`) and domain word (provider, backoff) he has not
   been taught. More than one: split the part (B5).
-- Give each new word a plain one-sentence meaning the first time it appears (08-06, 09-05).
+- Give each new word a plain one-sentence meaning the first time it appears (08-06, 09-05). A new
+  measure also gets one counted case from the part's own numbers ("20 notes the person failed, the
+  judge also failed 14: catch rate 14 / 20 = 70%").
 - List every rule the questions rely on under `Relies on:` in the part's `### Key`; each must be said
   in this part or already taught (B6, E7).
 - A question asking for a saving or a difference, or which way a wrong number bends a decision, needs
@@ -105,17 +117,29 @@ Decision markers: `**Decision` | `**What happens:**` | `**Effect on the target:*
   asked as "which line, changed to what".
 
 ## Questions
-- Every question must make him USE the idea, not read the part back ("improve the quality of your
-  questions... so they improve my understanding", 09-18, C36). No answer may be a number or phrase
-  already printed in the part or the question. At least 3 of the 5 put him somewhere new: a variation
-  of the example he has not seen, a choice between two versions with what each costs, or a
-  prediction of what changes when one thing is altered. One warm-up compute is allowed.
-- Five short-answer questions: compute a business number, trace which lines run or what a sticker
-  is on, classify (caught or crash, inside or after the loop), and exactly one **Someone broke it.**
-  ending with the labels defined: "Crash (it stops), quietly wrong (runs, wrong result), or fine
-  (runs, right result)?" (B10, B11, B11b).
-- For broken code ask the one value it produces plus the label, never a table to simulate it (0/4,
-  B11). At most one table per part, only for tracing working code, 3 rows or fewer.
+- Every question must make him USE the idea, not read the part back (C36), and make him think, not
+  recall (C38): no answer may be a number or phrase already printed in the part. Five short-answer
+  questions: at most one warm-up compute (he already scores about 88% on those, B10); at least three
+  from the bank below, each needing a chain of two links or more; and exactly one **Someone broke it.**
+  asking for the label only, ending with the labels defined: "Crash (it stops), quietly wrong (runs,
+  wrong result), or fine (runs, right result)?" (B10, B11, B11b). Tag each Key answer with its
+  pattern: [warmup] [chain] [prove] [flip] [pair] [gap] [which-way] [wrong-step] [must-be-true] [broke].
+- The question bank (docs/research/adaptation.md has a worked example of each):
+  - [chain] "X is off this way. Which way does the number move, which way does the decision bend,
+    what reaches the customer?" Only after a **Worked chain** of the same shape in the part: four
+    links, wrong input, number moves, decision bends, cost. Once he gets one right cold, the next
+    lesson's chain leaves a link blank, then none is shown (E11 0/2, E12 0/3 without it).
+  - [prove] "The system reports N. Does that show A, or only the weaker B? What one measurement
+    would show A?" (two options recover him 5/7, D4).
+  - [flip] "At what value of the input does the decision change?"
+  - [pair] "Two setups differ only in one thing. Which result can you trust, and what number decides it?"
+  - [gap] "Which saves more? Give before, after and the gap for each." (E11)
+  - [which-way] "This runs without error. Is the number too high or too low, and who notices first?" (E1)
+  - [wrong-step] "A colleague reasoned 1) 2) 3). Which step is wrong, and what is right?" Only after
+    one correct example in the part.
+  - [must-be-true] "For the losing option to be right, what would have to be true?"
+- For broken code ask the label only; the direction goes in its own [which-way] question. Never a
+  table to simulate it (0/4, B11). At most one table per part, only for tracing working code, 3 rows or fewer.
 - No why-question unless the part has just shown the failure (0/4 cold, B10).
 - Nothing in the message may give away an answer: no example that answers a question, no hint about
   its shape (08-22, 09-03).
@@ -142,7 +166,8 @@ Decision markers: `**Decision` | `**What happens:**` | `**Effect on the target:*
 
 ## Words
 - Plain words: sticker, machine, slot, stuff, kind, the inside, push right, piling up; real Python
-  names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,600 characters or less (B8; raised for C34).
+  names (list, dict, return, try); no academic jargon (08-06, 09-05). A part is 2,600 characters or less, or 3,200 when it carries a **How it works** block;
+  past that, split it into two parts, each with its own questions (B8; C34, C38).
 - No em dashes (his writing-style rule, v2 execution prompt).
 - Every technical word must be taught before or explained in plain words where it first appears
   ("You need to explain the jargon you throw", 09-15, C33). `docs/glossary.md` lists what is taught

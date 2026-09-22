@@ -36,9 +36,13 @@ OIDC: proving which project a run belongs to, so it gets a pass that expires ins
 secret: a password stored in a service's settings, readable by every run
 summariser: the machine that turns a supplier email into a one-line invoice note
 judge: a second AI that marks each output pass or fail against one written rule
+catch rate: of the notes a person marked FAIL, the share the judge also marked FAIL (TPR)
+clear rate: of the notes a person marked PASS, the share the judge also marked PASS (TNR)
+wobble: how far a rate measured on a set of cases can sit from the true rate by luck alone
+true rate: the rate on every case the firm will ever see, not just the ones measured
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,
 repository, pipeline, CI, GitHub Actions, workflow, gate, API, endpoint, token, model, latency,
 throughput, summariser, assertion, assert, benchmark, baseline, held-out, dataset, credential,
-secret, OIDC, IAM, permission, role, environment variable, production, staging, branch, pull request
+secret, OIDC, IAM, permission, role, environment variable, production, staging, branch, pull request, TPR, TNR, sample, true rate
