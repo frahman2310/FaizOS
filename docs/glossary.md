@@ -34,6 +34,8 @@ baseline: the score of the version people are using today, measured on the same 
 GitHub Actions: the service that starts a fresh computer and runs the gate on every proposed change
 OIDC: proving which project a run belongs to, so it gets a pass that expires instead of a stored password
 secret: a password stored in a service's settings, readable by every run
+summariser: the machine that turns a supplier email into a one-line invoice note
+judge: a second AI that marks each output pass or fail against one written rule
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,
