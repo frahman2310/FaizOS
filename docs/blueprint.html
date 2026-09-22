@@ -1,0 +1,360 @@
+<title>FaizOS Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F3F6F5; --panel:#FFFFFF; --ink:#15201C; --muted:#56645F; --rule:#D3DBD8;
+  --accent:#1D5C78; --accent-soft:#E2EEF3; --loop:#A8671A; --loop-soft:#F6EBDC;
+  --ok:#2F7A4F; --ok-soft:#E1F0E6; --warn:#9A3D2B; --warn-soft:#F6E3DE;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --display:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1412; --panel:#151D1A; --ink:#E2E9E6; --muted:#9AA8A3; --rule:#2A3531;
+    --accent:#72B4D3; --accent-soft:#16303B; --loop:#E2A558; --loop-soft:#35291A;
+    --ok:#7CC79A; --ok-soft:#18301F; --warn:#E4907D; --warn-soft:#3A201A;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1412; --panel:#151D1A; --ink:#E2E9E6; --muted:#9AA8A3; --rule:#2A3531;
+  --accent:#72B4D3; --accent-soft:#16303B; --loop:#E2A558; --loop-soft:#35291A;
+  --ok:#7CC79A; --ok-soft:#18301F; --warn:#E4907D; --warn-soft:#3A201A;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15px/1.6 var(--sans);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1080px;margin:0 auto}
+header.top{padding-block:48px 28px;border-bottom:2px solid var(--ink);display:grid;gap:14px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(34px,6vw,58px)/1.02 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{max-width:68ch;color:var(--muted);font-size:16.5px;margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font:13px/1.4 var(--mono);color:var(--muted)}
+.facts b{color:var(--ink);font-weight:500}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;padding-block:14px;border-bottom:1px solid var(--rule);font:13px var(--mono)}
+nav.toc a{color:var(--accent);text-decoration:none}
+nav.toc a:hover,nav.toc a:focus-visible{text-decoration:underline;outline:none}
+section{padding-block:40px 8px}
+h2{font:600 28px/1.15 var(--display);margin:0 0 6px;text-wrap:balance}
+h2 .sn{font:500 13px var(--mono);color:var(--accent);margin-right:10px;vertical-align:4px}
+.sub{color:var(--muted);max-width:70ch;margin:0 0 22px}
+h3{font:600 18px/1.25 var(--display);margin:0 0 6px}
+p{margin:0 0 12px}
+code,.m{font-family:var(--mono);font-size:.88em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:var(--panel);border:1px solid var(--rule);padding:16px 18px}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+ul{margin:0 0 12px;padding-left:18px}
+li{margin-bottom:4px}
+.diagram{background:var(--panel);border:1px solid var(--rule);padding:18px;overflow-x:auto}
+.diagram pre.mermaid{margin:0;background:none;min-width:640px}
+.loop{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--loop);padding:16px 18px;display:grid;gap:10px}
+.loop-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.cadence{font:500 11.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--loop);background:var(--loop-soft);padding:5px 8px}
+.steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:13px/1.35 var(--mono)}
+.steps span{border:1px solid var(--rule);padding:4px 8px;background:var(--ground)}
+.steps i{font-style:normal;color:var(--loop)}
+.tablebox{overflow-x:auto;background:var(--panel);border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--rule)}
+th{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--ground)}
+tr:last-child td{border-bottom:0}
+td.m{white-space:nowrap}
+.part{background:var(--panel);border:1px solid var(--rule);display:grid;grid-template-columns:minmax(0,1fr)}
+.part .row{display:grid;grid-template-columns:170px minmax(0,1fr);gap:14px;padding:11px 16px;border-bottom:1px solid var(--rule)}
+.part .row:last-child{border-bottom:0}
+.part .lab{font:600 13px var(--mono);color:var(--accent)}
+.part .row.hi{background:var(--accent-soft)}
+@media (max-width:620px){.part .row{grid-template-columns:1fr;gap:2px}}
+.pill{display:inline-block;font:500 12px var(--mono);padding:2px 7px;border:1px solid var(--rule);margin:2px 4px 2px 0;background:var(--ground)}
+.pill.b{border-color:var(--accent);color:var(--accent)}
+.pill.o{border-color:var(--ok);color:var(--ok)}
+.pill.w{border-color:var(--warn);color:var(--warn)}
+.quote{border-left:3px solid var(--accent);padding:4px 0 4px 14px;color:var(--muted);font-style:italic;margin:0 0 10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.rulebox{background:var(--warn-soft);border:1px solid var(--rule);padding:14px 18px}
+.rulebox h3{color:var(--warn)}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font:13px var(--mono)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">System blueprint · as of 22 Sep 2026</div>
+  <h1>FaizOS: a teaching system that rewrites itself from one learner's answers</h1>
+  <p class="lede">Everything except the curriculum: how lessons are made, checked and delivered, where every rule lives and why, the loops that turn Faiz's answers and complaints into a better method, and the machinery (hooks, scripts, agents, an MCP server and a database) that keeps it honest.</p>
+  <div class="facts">
+    <span><b>1</b> rulebook</span><span><b>39</b> rules he stated (C1 to C39)</span><span><b>48</b> measured findings</span>
+    <span><b>34</b> taught words</span><span><b>5</b> hooks</span><span><b>5</b> scripts</span><span><b>2</b> agents</span>
+    <span><b>39</b> MCP tools</span><span><b>20</b> DB tables</span><span><b>18</b> commands</span><span><b>52</b> self-checks</span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <a href="#principles">Principles</a><a href="#map">Map</a><a href="#layers">Layers</a><a href="#lifecycle">Lesson lifecycle</a>
+  <a href="#loops">Learning loops</a><a href="#style">The style</a><a href="#questions">Questions</a><a href="#build">The build</a>
+  <a href="#enforce">Enforcement</a><a href="#machine">Machinery</a><a href="#constraints">Constraints</a>
+</nav>
+
+<section id="principles">
+  <h2><span class="sn">01</span>Design principles</h2>
+  <p class="sub">Six ideas that every other part of the system serves. Each one exists because an earlier version broke without it.</p>
+  <div class="grid g3">
+    <div class="card"><h3>One source of instructions</h3><p>All teaching rules live in one file, the faiz-teach skill. Memory notes, the insights table, commands and docs point at it and hold no rules. Seven conflicting sources caused the "inconsistent method" complaint of 14 Sep.</p></div>
+    <div class="card"><h3>Evidence and instructions never mix</h3><p><code>learning-evidence.md</code> holds only what happened (counts, quotes, the ledger). The skill holds only what to do. Every rule cites the evidence ID or date behind it.</p></div>
+    <div class="card"><h3>His words win</h3><p>A rule he states changes the rulebook in the same turn, replacing the old line in place. Research loses to his record whenever they disagree.</p></div>
+    <div class="card"><h3>Nothing unchecked reaches him</h3><p>Every teaching part is written to a script, passes a checker, and is sent word for word. A Stop hook blocks any teaching message that is not in a validated script.</p></div>
+    <div class="card"><h3>Read and judge, never write</h3><p>He reads code, predicts what it does, finds planted faults and makes engineering decisions. Claude writes and runs the code he chooses (C30, 12 Sep).</p></div>
+    <div class="card"><h3>Measured, not claimed</h3><p>Progress bars count database rows. Builds report real output. Estimates are labelled as estimates and corrected in the open when wrong.</p></div>
+  </div>
+</section>
+
+<section id="map">
+  <h2><span class="sn">02</span>System map</h2>
+  <p class="sub">What talks to what. Solid arrows run every time; dotted arrows run at lesson close or on request.</p>
+  <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  F([Faiz in chat]) -->|message| UPS[UserPromptSubmit hook<br/>teaching-rules.sh]
+  UPS -->|injects| SK[[faiz-teach skill<br/>the one rulebook]]
+  SK --> C{Claude}
+  C -->|writes part| SC[projects/lesson/script.md]
+  SC --> CK[check_lesson_script.py]
+  GL[(glossary.md)] --> CK
+  CK -->|PASS| C
+  C -->|sends verbatim| F
+  C -.->|Stop| TG[teaching-guard.py<br/>blocks unscripted parts]
+  C -.->|Stop| SS[session-stop.sh<br/>session log + commit]
+  C <-->|39 tools| MCP[faizos-core MCP server]
+  MCP <--> DB[(faiz.db SQLite<br/>20 tables)]
+  SST[SessionStart hook] -->|dashboard, reflect due,<br/>cohesion check| C
+  C -.->|lesson close| RF[faiz-reflect skill]
+  RF --> EX[extract_teaching.py]
+  RF --> EV[(learning-evidence.md)]
+  RF -->|edits in place| SK
+  RF -->|carry-over| SC
+  RF -.->|quality pass| AG1[teaching-researcher agent]
+  AG1 --> AG2[teaching-adapter agent]
+  AG2 -->|proposed edits| RF
+</pre>
+  </div>
+</section>
+
+<section id="layers">
+  <h2><span class="sn">03</span>The five layers</h2>
+  <p class="sub">Each layer has one job and one home, so no two places can disagree.</p>
+  <div class="tablebox"><table>
+    <thead><tr><th>Layer</th><th>Home</th><th>Holds</th><th>Changed by</th></tr></thead>
+    <tbody>
+      <tr><td><b>Instruction</b></td><td class="m">.claude/skills/faiz-teach/SKILL.md</td><td>Who he is, lesson shape, part template, build format, question bank, how answers are marked, words, delivery, how the file itself changes. 183 lines.</td><td>His stated rules (same turn); patterns in 2+ parts; the adapter's evidence-backed edits</td></tr>
+      <tr><td><b>Evidence</b></td><td class="m">docs/learning-evidence.md</td><td>Tables A (formats measured), B (message features that predict understanding), C (his 39 rules, with status), D (what recovers him when stuck), E (recurring weak spots), the Session ledger, and the taught list.</td><td>The reflect step only</td></tr>
+      <tr><td><b>Enforcement</b></td><td class="m">scripts/, hooks/, docs/glossary.md</td><td>The part checker, the Stop guard, the jargon gate, the system cohesion check.</td><td>Kept in step with the rulebook's marker lines</td></tr>
+      <tr><td><b>State</b></td><td class="m">faizos-core/faiz.db, notebook/, memory/</td><td>Skills and mastery, lessons, errors, builds, experiments, streak; the session log; a one-line pointer in memory.</td><td>MCP tools (additive only); session hooks</td></tr>
+      <tr><td><b>Improvement</b></td><td class="m">.claude/skills/faiz-reflect, .claude/agents/, docs/research/</td><td>The reflect procedure, the two agents, the research digest and adaptation.</td><td>Lesson close, his corrections, the quality pass</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="lifecycle">
+  <h2><span class="sn">04</span>A lesson, end to end</h2>
+  <p class="sub">Two rounds of parts, one decision build, then close. Each step is gated by the one before it.</p>
+  <div class="diagram">
+<pre class="mermaid">
+flowchart TB
+  A[Script header: goal, skills, number,<br/>Carry-over from last lesson] --> B[Write one part to script.md<br/>with New: line and Key]
+  B --> C{check_lesson_script.py}
+  C -->|FAIL: fix| B
+  C -->|PASS| D[Send the part verbatim<br/>one per message]
+  D --> E[His 5 answers]
+  E --> F{Each answer}
+  F -->|right| G[One line naming them]
+  F -->|wrong| H[Say wrong, one reframe, one hint]
+  H --> I{Second miss or he asks}
+  I -->|yes| J[Give the answer with a short reason]
+  I -->|no| E
+  G --> K{All resolved?}
+  J --> K
+  K -->|no| E
+  K -->|yes, more parts| B
+  K -->|rounds done| L[Build: one decision per message<br/>BUILD-D1..D5]
+  L --> M[BUILD-CALL: his picks plus<br/>predictions with every number given]
+  M --> N[Implement exactly his picks, run,<br/>paste real output]
+  N --> O[Debrief: each pick vs the road not taken, measured]
+  O -->|target missed| P[He changes one decision] --> N
+  O -->|target met| Q[Close: record_lesson, analyze,<br/>progress bar, reflect]
+</pre>
+  </div>
+</section>
+
+<section id="loops">
+  <h2><span class="sn">05</span>The learning loops</h2>
+  <p class="sub">Six loops at six speeds. The fast ones fix a single answer; the slow ones change the method itself. Each ends by writing somewhere the next loop reads.</p>
+  <div class="grid">
+    <div class="loop">
+      <div class="loop-head"><h3>1 · The answer loop</h3><span class="cadence">every answer · seconds</span></div>
+      <div class="steps"><span>his answer</span><i>→</i><span>mark against the Key</span><i>→</i><span>wrong: reframe + one hint</span><i>→</i><span>stuck ladder</span><i>→</i><span>resolved</span></div>
+      <p>The stuck ladder is ordered by what has worked for him: first point at his own earlier answer (10 of 12, D1), then one new everyday picture (8 of 10) or a two-option question (5 of 7). Never re-explain in longer prose (0 of 5, D6). After a second failed hint, or when he asks, give the answer with a reason. A given answer returns once, reworded, in a later part.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-head"><h3>2 · The correction loop</h3><span class="cadence">every complaint · same turn</span></div>
+      <div class="steps"><span>his words</span><i>→</i><span>new C row, quoted</span><i>→</i><span>rulebook line replaced in place</span><i>→</i><span>checker updated if mechanical</span><i>→</i><span>commit</span></div>
+      <p>Examples: "explain the jargon you throw" became the glossary gate (C33); "decisions cannot be this obvious" became the trade-off check (C35); "Idw predict, just build" (C37) was superseded the same day by C39 ("I don't mind predicting if I'm given all the data"). He never has to say a thing twice.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-head"><h3>3 · The reflect loop</h3><span class="cadence">every lesson close</span></div>
+      <div class="steps"><span>extract Q&amp;A from transcript</span><i>→</i><span>score first-try by type</span><i>→</i><span>ledger row + tables</span><i>→</i><span>rule change if 2+ parts show it</span><i>→</i><span>Carry-over into next script</span><i>→</i><span>mark reflected</span></div>
+      <p><code>extract_teaching.py</code> pairs each question message with his reply and remembers where it stopped (<code>reflect-state.json</code>). SessionStart warns "UNREFLECTED TEACHING" if a session taught without reflecting. The next lesson's script is refused by the checker until it carries a <code>Carry-over from L&lt;n&gt;:</code> line, so lessons cannot forget what the last one learned.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-head"><h3>4 · The quality pass</h3><span class="cadence">every 3rd lesson · or on request</span></div>
+      <div class="steps"><span>teaching-researcher</span><i>→</i><span>graded digest, 29 sources</span><i>→</i><span>teaching-adapter</span><i>→</i><span>"replace this line / with this"</span><i>→</i><span>apply what his evidence supports</span></div>
+      <p>The researcher reads cognitive-science research (Chi, Sweller, Mayer, Roediger, Bjork, Kapur, Schwartz, Renkl) and grades each claim strong, moderate or weak. The adapter checks it against his own numbers, keeps every rule he stated, and proposes edits plus a before-and-after rewrite of a real part. The researcher re-runs when its digest is over 60 days old.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-head"><h3>5 · The mastery loop</h3><span class="cadence">every lesson close</span></div>
+      <div class="steps"><span>first-try accuracy per skill</span><i>→</i><span>faizos_analyze</span><i>→</i><span>mastery in DB</span><i>→</i><span>progress bar</span><i>→</i><span>teach_next gap</span></div>
+      <p>Mistakes are classified into an error taxonomy (<code>errors</code> table) that the drill command targets. The progress bar counts rows, never estimates: lessons done, production skills touched, capstone rungs backed by a real metric.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-head"><h3>6 · The session loop</h3><span class="cadence">every session</span></div>
+      <div class="steps"><span>SessionStart: dashboard + reflect status + cohesion check</span><i>→</i><span>work</span><i>→</i><span>Stop: session summary from DB facts, commit</span></div>
+      <p>The session log is written deterministically, with no model involved, so it cannot be skipped or embellished.</p>
+    </div>
+  </div>
+</section>
+
+<section id="style">
+  <h2><span class="sn">06</span>The style: how a part is built</h2>
+  <p class="sub">Every teaching part, including parts about real lesson files, has this anatomy. Parts built this way scored 24 of 30; parts that skipped it scored 3 of 11 on the same day (A12, A13).</p>
+  <div class="part">
+    <div class="row hi"><div class="lab">The problem.</div><div>4 to 6 sentences: who uses this and why, how it works today, what goes wrong, the mechanism in physical terms, what it costs. Every rate also as counts ("92% (55 of 60)"). Banned: phrases that hide the mechanism ("happen to", "somehow").</div></div>
+    <div class="row"><div class="lab">The fix:</div><div>One sentence, plain words.</div></div>
+    <div class="row"><div class="lab">Tiny example</div><div>8 lines or fewer, generic names, only known pieces plus the one new thing.</div></div>
+    <div class="row"><div class="lab">How it works</div><div>Only for a formula or a measure: each piece on its own line, worked on one real case, then what it means for the business. Raises the size limit to 3,200 characters.</div></div>
+    <div class="row"><div class="lab">Picture:</div><div>One everyday picture that runs on the same mechanism, plus "Where it breaks".</div></div>
+    <div class="row"><div class="lab">Paths</div><div>Every path as a bullet: if this, these lines run; if that, this is skipped.</div></div>
+    <div class="row"><div class="lab">Worked chain</div><div>Before any "which way does it bend" question: wrong input → number moves → decision bends → cost, on another case. Faded once he gets one right cold.</div></div>
+    <div class="row hi"><div class="lab">Your turn.</div><div>Five questions (see next section).</div></div>
+    <div class="row"><div class="lab">### Key</div><div>Never sent. Each answer tagged with its question type, plus "Relies on:" listing every rule the questions use, each already taught.</div></div>
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="card"><h3>Words</h3><p>Plain vocabulary from his bootcamp: sticker (variable), machine (function), slot (parameter), kind, piling up. Real Python names are kept. Any word on the watchlist must be taught already or explained in the same sentence, or the checker fails the part.</p></div>
+    <div class="card"><h3>One new thing per part</h3><p>Count every new keyword, machine and domain word. More than one: split the part. A new measure gets one counted case from the part's own numbers.</p></div>
+    <div class="card"><h3>No repetition</h3><p>Never re-teach what he got right. "ik this" means move on now. No recaps of the plan, his progress or these rules. Full detail on new ideas, one line on known ones, nothing on mastered ones: the research explains why (expertise reversal).</p></div>
+    <div class="card"><h3>Delivery</h3><p>One part per message, then wait. Real lesson code is pasted in chat, at most 8 lines with notes; never "open the file" or "scroll to line 76" (he rejected a 300-line file unopened).</p></div>
+  </div>
+</section>
+
+<section id="questions">
+  <h2><span class="sn">07</span>Questions and marking</h2>
+  <p class="sub">Five per part: at most one warm-up, at least three from the bank (each needs two or more steps of reasoning), exactly one "Someone broke it". He scores about 88% on plain arithmetic, so it trains nothing new.</p>
+  <div class="tablebox"><table>
+    <thead><tr><th>Tag</th><th>Shape</th><th>Trains</th></tr></thead>
+    <tbody>
+      <tr><td class="m">[warmup]</td><td>One compute from the part's numbers.</td><td>Entry point only</td></tr>
+      <tr><td class="m">[chain]</td><td>X is off this way. Which way does the number move, which way does the decision bend, what reaches the customer?</td><td>E12, direction (0 of 3 in L6)</td></tr>
+      <tr><td class="m">[prove]</td><td>The system reports N. Does that show A, or only the weaker B? What one measurement would show A?</td><td>E12</td></tr>
+      <tr><td class="m">[flip]</td><td>At what value of the input does the decision change?</td><td>Thresholds, break-even</td></tr>
+      <tr><td class="m">[pair]</td><td>Two setups differ in one thing. Which can you trust, and what number decides it?</td><td>Contrasting cases (strongest single method)</td></tr>
+      <tr><td class="m">[gap]</td><td>Which saves more? Give before, after and the gap for each.</td><td>E11, one-sided savings</td></tr>
+      <tr><td class="m">[which-way]</td><td>Runs without error. Too high or too low, and who notices first?</td><td>E1, quietly wrong</td></tr>
+      <tr><td class="m">[wrong-step]</td><td>A colleague reasoned 1) 2) 3). Which step is wrong?</td><td>Misconceptions</td></tr>
+      <tr><td class="m">[must-be-true]</td><td>For the losing option to be right, what would have to be true?</td><td>Assumptions</td></tr>
+      <tr><td class="m">[broke]</td><td>A planted change. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)? Label only.</td><td>E1, reading code for faults</td></tr>
+    </tbody>
+  </table></div>
+  <div class="two" style="margin-top:14px">
+    <div class="card"><h3>Never</h3><ul><li>An answer already printed in the part (read-back check)</li><li>A why-question before the mechanism is shown (0 of 4 cold)</li><li>A table to simulate broken code (0 of 4)</li><li>Any hint about an answer's shape</li><li>Write-it-yourself or blank functions (0 of 3)</li></ul></div>
+    <div class="card"><h3>Marking</h3><ul><li>Right: one line naming them</li><li>Wrong: say so, one reframe, one hint, never partial credit plus numbers to plug in</li><li>"I don't understand": stop, rebuild the part with fewer new things</li><li>Next part only when every question is resolved</li></ul></div>
+  </div>
+</section>
+
+<section id="build">
+  <h2><span class="sn">08</span>The decision build</h2>
+  <p class="sub">Every lesson ends in something real that he builds through decisions, not code (C30). Claude implements exactly his picks, even the ones the Key disagrees with, and the debrief measures the road not taken.</p>
+  <div class="grid g2">
+    <div class="card"><h3>A decision message</h3><p>One per message, 3 to 5 per build, 2,000 characters. The situation with every given stated and its source (model run, his labels, or "assumed:"); unknowns named as unknown. Each option carries:</p>
+      <p><span class="pill b">What happens</span><span class="pill b">Effect on the target</span><span class="pill b">Cost</span><span class="pill b">Rules out</span></p>
+      <p>Ends with <b>Your pick.</b></p></div>
+    <div class="card"><h3>What makes it hard (C35, C39)</h3><p>No option rules out nothing; each wins somewhere the others lose; at least two of these are live:</p>
+      <p><span class="pill">a given shown as a range</span><span class="pill">another team's constraint</span><span class="pill">a bad-month effect</span><span class="pill">shared blind spots</span><span class="pill">hard to undo</span><span class="pill">depends on an earlier pick</span><span class="pill">measure first</span></p>
+      <p>The Key names what the winner gives up and the one given that would flip the pick.</p></div>
+    <div class="card"><h3>Prediction and run</h3><p>BUILD-CALL lists his picks and asks for predictions with every needed number printed, at least one combining two picks. The model is written and run before Decision 1 so the givens across decisions cannot clash (they did once, in L6).</p></div>
+    <div class="card"><h3>Debrief</h3><p>One line per decision: his pick, what it measurably did, what the other option would have done (run when under 5 minutes, else estimated and labelled). Target missed: he changes one decision and it runs again.</p></div>
+  </div>
+</section>
+
+<section id="enforce">
+  <h2><span class="sn">09</span>Enforcement: what is checked by machine</h2>
+  <p class="sub">A rule that only lives in prose drifts. These run before a part can be sent, when a message ends, and at every session start.</p>
+  <div class="tablebox"><table>
+    <thead><tr><th>Check</th><th>Where</th><th>Rule it enforces</th></tr></thead>
+    <tbody>
+      <tr><td>Template markers present; problem has 4+ sentences; 2+ path bullets; 4 to 6 questions; exactly one Someone broke it with labels defined</td><td class="m">check_lesson_script.py</td><td>Part template (A12, C34)</td></tr>
+      <tr><td>Size: 2,600 characters, 3,200 with How it works, 2,000 for build messages</td><td class="m">check_lesson_script.py</td><td>B8, C38</td></tr>
+      <tr><td>Every watchlist word taught or explained in its sentence</td><td class="m">check_lesson_script.py + glossary.md</td><td>C33</td></tr>
+      <tr><td>No answer that only reads back a number already in the part</td><td class="m">check_lesson_script.py</td><td>C36</td></tr>
+      <tr><td>Answers tagged; at most 1 warm-up, 3+ bank questions, 1 broke</td><td class="m">check_lesson_script.py</td><td>C38</td></tr>
+      <tr><td>A direction question needs a Worked chain; a formula needs How it works; vague phrases rejected</td><td class="m">check_lesson_script.py</td><td>E12, C38</td></tr>
+      <tr><td>Decision: all option fields twice, no "rules out nothing", an unknown or assumed figure, Key names what it gives up and an "If"</td><td class="m">check_lesson_script.py</td><td>C31, C35, C39</td></tr>
+      <tr><td>No "open the file" or "scroll to"; code blocks 10 lines or fewer; New: line lists one thing</td><td class="m">check_lesson_script.py</td><td>B7, B1, B5</td></tr>
+      <tr><td>A script from L5 on needs Carry-over from the last lesson</td><td class="m">check_lesson_script.py</td><td>Reflect loop</td></tr>
+      <tr><td>A message asking questions must match a validated script part word for word</td><td class="m">teaching-guard.py (Stop)</td><td>Delivery (C17)</td></tr>
+      <tr><td>No stale teaching method in any command, hook, skill, server file or memory note; hooks wired; every script passes</td><td class="m">check_teaching_system.py (52 checks)</td><td>One source of instructions</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="machine">
+  <h2><span class="sn">10</span>Machinery</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Hooks</h3><ul>
+      <li><code>teaching-rules.sh</code> (every prompt): injects the rulebook itself, so there is no second copy</li>
+      <li><code>teaching-guard.py</code> (Stop): blocks unscripted teaching; fails open, never blocks twice</li>
+      <li><code>session-stop.sh</code> (Stop): writes the session summary from DB facts and commits it</li>
+      <li><code>session-start.sh</code>: dashboard prompt, reflect status, silent cohesion check</li>
+      <li><code>pre-tool-guard.sh</code> (Write/Edit): the older write-from-empty guard, now off on read-and-judge tracks</li></ul></div>
+    <div class="card"><h3>Scripts</h3><ul>
+      <li><code>check_lesson_script.py</code>: the part and decision checker; reads its markers from the rulebook</li>
+      <li><code>extract_teaching.py</code>: pairs questions with replies; <code>--mark</code> records what was reflected</li>
+      <li><code>reflect_status.py</code>: counts unreflected exchanges for SessionStart</li>
+      <li><code>check_teaching_system.py</code>: the cohesion check</li>
+      <li><code>install-crons.sh</code>: venture and frontier fetches, installed only with his go</li></ul></div>
+    <div class="card"><h3>Agents</h3><ul>
+      <li><b>teaching-researcher</b>: external research, graded, cited; never edits the rulebook</li>
+      <li><b>teaching-adapter</b>: fits the research to his evidence, proposes line-for-line edits, rewrites a real part</li></ul>
+      <p>Both run on Opus; the reflect skill calls them (step 4b).</p></div>
+    <div class="card"><h3>MCP server: faizos-core (39 tools)</h3>
+      <p><span class="pill o">lesson</span> lesson_start, record_lesson, lesson_progress, analyze, record_insight, curriculum, guidance, mode, track_status</p>
+      <p><span class="pill o">build</span> start_build, spec_build, hint, unlock_build, review_code, record_review, ship, log_experiment, complete_rebuild, rebuilds_due</p>
+      <p><span class="pill o">memory</span> state, progress, list_skills, save_revision, notes, review_queue, reveal_contrast, error_report, cost_drill, config</p>
+      <p><span class="pill o">outward</span> radar_save, radar_list, oss, frontier_ingest, venture_ingest, venture_pending, venture_classify_save, venture_score, venture_activate, venture_review</p></div>
+    <div class="card"><h3>Database: faiz.db (SQLite, gitignored)</h3>
+      <p>skills · mastery (on skills) · lessons · insights · revisions · reviews · missions · journey_log · meta (streak) · builds · errors · code_reviews · experiments · systems · tracks · frontier · ventures · evidence · radar · cost_drills · oss_targets</p>
+      <p>Schema changes only through numbered, additive migrations, rehearsed on a verified backup first.</p></div>
+    <div class="card"><h3>Commands (18)</h3>
+      <p class="m" style="font-size:13px">/faiz · /faiz-learn · /faiz-build · /faiz-spec · /faiz-hint · /faiz-unlock · /faiz-review · /faiz-run · /faiz-analyze · /faiz-errors · /faiz-drill · /faiz-notes · /faiz-cost · /faiz-ship · /faiz-oss · /faiz-radar · /faiz-frontier · /faiz-venture</p>
+      <p>Each command points at the rulebook for teaching; none carries its own rules.</p></div>
+  </div>
+</section>
+
+<section id="constraints">
+  <h2><span class="sn">11</span>Hard constraints</h2>
+  <div class="rulebox">
+    <h3>Never broken, whatever the request</h3>
+    <ul>
+      <li>Never delete, drop, rename or truncate a table, column or row; never modify existing rows in skills, mastery, missions, streak, lessons, insights or revisions. All schema changes are additive.</li>
+      <li>The repo is public: <code>faiz.db</code> stays gitignored; venture evidence stays local.</li>
+      <li>Tests make no network calls. TypeScript strict, no <code>any</code>. <code>npm test</code> and the smoke test pass before a commit.</li>
+      <li>Crontab changes and anything needing his accounts (hosting, GitHub Actions, API keys) happen only with his explicit go, done by him.</li>
+      <li>Writing style: plain words, no em dashes, lead with the answer.</li>
+      <li>Teaching rules are stored only in the rulebook: never in memory, the insights table or commands.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>Sources: .claude/skills/faiz-teach, .claude/skills/faiz-reflect, docs/learning-evidence.md, docs/research/, scripts/, hooks/, faizos-core/. Regenerate this page after any quality pass.</footer>
+</div>
