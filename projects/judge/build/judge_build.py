@@ -1,7 +1,7 @@
 """The judge, built to Faiz's four decisions (lesson 6). A modelled world: no real AI calls, fixed seed.
 
   1 label 200 random notes + 200 from the complaints table     2 two rules: the total, and the due date
-  3 strong AI on 800 random notes, cheap AI on the other 3,200  4 block a change only on a fall bigger than the wobble
+  3 strong AI on 800 random notes (the rest unmarked; changed from 'cheap AI on the rest' after the first run)  4 block a change only on a fall bigger than the wobble
 """
 import math
 import random
@@ -63,11 +63,11 @@ print(f"  due-date failures  {sum(n['bad'] == 'due_date' for n in labelled)} amo
 
 # Decision 3: weekly judging.
 random.shuffle(notes)
-strong_part, cheap_part = notes[:800], notes[800:]
+strong_part, cheap_part = notes[:800], []          # decision 3, plain C
 cost = len(strong_part) * RULES * STRONG + len(cheap_part) * RULES * CHEAP
 missed = sum(1 for n in cheap_part if n["bad"] and judge(n, "cheap") == "PASS")
 print(f"  weekly cost        ${cost:.2f}  (strong ${len(strong_part) * RULES * STRONG:.2f} + cheap ${len(cheap_part) * RULES * CHEAP:.2f}), target under $5")
-print(f"  cheap AI misses    {missed} of {sum(1 for n in cheap_part if n['bad'])} bad notes in its 3,200")
+print(f"  unmarked notes     {len(notes) - len(strong_part)}, holding {sum(1 for n in notes[800:] if n['bad'])} bad ones nobody looks at")
 
 
 # Decision 4: a harmless change, gated by rule B, 1,000 times.
