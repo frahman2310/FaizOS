@@ -11,7 +11,7 @@ Also: his weakest L6 answers were complement counts (how many did NOT agree) and
 
 ## R1-A · Finding the right pages before the AI answers
 New: handing the AI only the few passages most likely to hold the answer (retrieval)
-Status: pending
+Status: done 2026-09-22
 
 # Lesson 7 · Round 1 · Part A · Finding the right pages before the AI answers
 
@@ -49,3 +49,52 @@ def answer(question):
 4. at least 1.2 a week, so 2 (400 + 4 x 1.13 = 404.52; 404.52 / 4 / 90 = 1.12) [flip]
 5. quietly wrong (search still returns 5 passages, all from before the 2025 changes) [broke]
 Relies on: cost = pages x price; the AI answers from what it is sent; a test on easy cases reads high
+
+## R1-B · Scoring a passage by the words it shares
+New: scoring passages by shared words, rare words counting more
+Status: pending
+
+# Lesson 7 · Round 1 · Part B · Scoring a passage by the words it shares
+
+**The problem.** The firm's 6,000 pages are cut into 12,000 passages of about half a page, and search must pick 5 of them for each client question. The first search counted how many of the question's words each passage contained. For "withholding rate for non-filer services", the winner was a sales tax passage that said "rate" and "services" (2 words), level with the right income tax passage that said "rate" and "non-filer" (2 words), and the sales tax one came first. "Rate" sits in 6,000 of the 12,000 passages, so matching it tells you almost nothing, while "non-filer" sits in only 120, so matching it nearly pins the answer down. Counting every word as 1 treats the useless clue and the decisive one the same, and about 1 in 4 questions got the wrong top passage.
+
+**The fix:** give each shared word a weight that grows with how rare the word is across all passages, and rank passages by the total.
+
+```python
+from math import log10
+N = 12000
+def score(question_words, passage_words, found_in):
+    total = 0
+    for w in question_words:
+        if w in passage_words:
+            total = total + log10(N / found_in[w])
+    return total
+```
+
+**How it works**, for one word:
+1. `found_in[w]` is how many of the 12,000 passages contain the word: "rate" 6,000, "services" 1,200, "non-filer" 120.
+2. `N / found_in[w]` is how rare it is: 2 for "rate", 10 for "services", 100 for "non-filer".
+3. `log10` counts the zeros: log10 of 10 is 1, of 100 is 2, of 2 is about 0.3. So a word 50 times rarer counts about 7 times more, not 50 times, and one rare word cannot drown out the rest.
+4. `if w in passage_words` checks the word is there at all; saying "rate" 40 times still earns 0.3 once.
+
+**Picture:** clues in a detective case. "Wore shoes" fits everyone in Karachi; "left-handed, Peshawari accent" fits a handful, so it carries the case. Where it breaks: the detective knows "non-filer" and "not on the active taxpayer list" mean the same person; this score does not.
+
+- **The passage holds the rare words:** its total is high and it makes the top 5.
+- **It holds only common words, many times:** each counts once, at a small weight, so it sinks.
+- **It says the same thing in other words:** that word scores 0, and the right passage can miss the top 5.
+
+**Your turn.**
+
+1. A passage contains "rate" and "non-filer"; another contains "rate" and "services". Score both.
+2. Search A counts every shared word as 1; search B uses the weights above. For the two passages in question 1, which comes first in A, which in B, and which one holds the answer?
+3. "Withholding" appears in some number of the 12,000 passages. Above how many passages does it count for less than "services" does?
+4. The firm loads 12,000 more passages of 2019 circulars, every one mentioning "non-filer". Nothing crashes. Does the weight of "non-filer" go up or down, and who is first to notice the damage, and how?
+5. **Someone broke it.** The weight line was typed as `log10(found_in[w] / N)`. Crash (it stops), quietly wrong (runs, wrong result), or fine (runs, right result)?
+
+### Key
+1. 2.3 and 1.3 [warmup]
+2. A: a tie, order decided by chance; B: the non-filer passage first, and it holds the answer [pair]
+3. more than 1,200 passages (log10(12,000 / 1,200) = 1) [flip]
+4. down, from 2 to about 0.3 (24,000 / 12,120 is about 2); the tax partner, when non-filer answers start quoting 2019 circulars [which-way]
+5. quietly wrong (every weight turns negative, so the rarest words push a passage down hardest) [broke]
+Relies on: log10 of 10 is 1, of 100 is 2, of 2 is about 0.3; a word counts once; rarer means fewer passages contain it
