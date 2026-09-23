@@ -14,7 +14,7 @@ import sys
 
 ROOT = "/Users/faizr/AI OS for Learning"
 STATE = os.path.join(ROOT, "docs", "reflect-state.json")
-ASKED = ("**Your turn", "Your turn.", "**Your pick.**", "**Your call.**", "Change one decision")
+ASKED = ("**Your turn", "Your turn.", "**Your pick.**", "**Your call.**", "Change one decision", "**Your move.**")
 
 
 def typed_text(content):

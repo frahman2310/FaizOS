@@ -1,0 +1,5 @@
+.venv/
+cache/
+lab.db
+__pycache__/
+corpus/raw/*.pdf

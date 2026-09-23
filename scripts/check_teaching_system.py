@@ -66,6 +66,12 @@ for script in glob.glob(os.path.join(ROOT, "projects/*/script.md")):
                        capture_output=True, text=True)
     check(f"{os.path.relpath(script, ROOT)} passes the checker", r.returncode == 0, r.stdout.strip().replace("\n", " | "))
 
+for case in glob.glob(os.path.join(ROOT, "projects/*/cases/case-*.md")):
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "scripts/check_case.py"), case], capture_output=True, text=True)
+    check(f"{os.path.relpath(case, ROOT)} passes the case checker", r.returncode == 0, r.stdout.strip().replace("\n", " | "))
+check("skill has 'Investigation mode'", "## Investigation mode" in open(os.path.join(ROOT, ".claude/skills/faiz-teach/SKILL.md")).read())
+check("devils-advocate agent exists", os.path.exists(os.path.join(ROOT, ".claude/agents/devils-advocate.md")))
+
 quiet = "--quiet" in sys.argv
 failed = [r for r in results if not r[1]]
 for name, ok, detail in results:

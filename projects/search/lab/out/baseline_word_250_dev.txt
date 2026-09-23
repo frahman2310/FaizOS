@@ -1,0 +1,8 @@
+
+run 1: method=word size=250 overlap=0 split=dev k=5   (1,314 passages)
+                                 n   Recall@k     MRR   top is 2023 card
+  all questions                100        45%    0.28          7 of 100
+  worded like the law           43        79%    0.53          5 of 43
+  worded like a client          57        19%    0.08          2 of 57
+  answer changed since 2023     23        35%    0.24          0 of 23
+  answer unchanged              77        48%    0.29          7 of 77

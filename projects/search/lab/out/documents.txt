@@ -1,0 +1,7 @@
+Documents in the corpus (pdfinfo, words after pdftotext -layout)
+circular_01_2025-26  pages 12  words 5161
+ordinance_2025  pages 804  words 312567
+ratecard_2023  pages 20  words 4542
+ratecard_2025  pages 14  words 5665
+Titles: Income Tax Ordinance 2001 amended upto 31.07.2025 (Circular No. 01 of 2025-26); Withholding Income Tax Rate Card updated up to June 30, 2025; 2023 rate card as per Finance Act 2023.
+Meaning model: BAAI/bge-small-en-v1.5, 384 numbers per text.
