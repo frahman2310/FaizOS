@@ -8,3 +8,4 @@ notebook/VENTURES.md
 *.db
 *.db-wal
 *.db-shm
+private/
