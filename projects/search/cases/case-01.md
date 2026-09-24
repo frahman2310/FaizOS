@@ -63,3 +63,4 @@ Recall@5: share of questions whose right passage is in the top 5. MRR: the Part 
 | 1b | Plus: a layer rewrites client questions into law wording (small AI, saw only the question) | client Recall@5 about 79% | client Recall@5 33%, MRR 0.25; law unchanged at 81% (run 4) | refuted |
 | 2 | Challenged the result: rewording should have moved the number | (none) | Lab checked: rewrite applied; client questions 9 miss→hit, 2 hit→miss, 10 hit both, 36 miss both. My brief called the law and client sets "the same kind of question": they are different questions, so 79% was never a guaranteed target | look (caught a misleading line in my brief) |
 | 3 | Show the client questions that miss (current setup, run 4) | (none) | 38 of 57 listed: the document holding the answer vs the top passage search returned | look |
+| 4 | Show all rate card passages | (none) | 23 passages of 250 words (I had said 19: wrong count, corrected) | look |
