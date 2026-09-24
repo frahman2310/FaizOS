@@ -17,8 +17,8 @@ docs/learning-evidence.md; dates are rules he stated himself. Anything elsewhere
   inside a loop (E2); one record per call vs one per try (E3); which kind of stuff a sticker holds (E4).
 
 ## Two modes
-- **Investigation mode** (pilot from 09-23, C40: "it is not utilising my cognitive abilities"): used
-  whenever a case file exists under `projects/<lesson>/cases/`. It overrides "Lesson shape", the part
+- **Investigation mode** (pilot from 09-23, C40; STOPPED 09-24, C43: "stop this crap now... makes no
+  sense"). Not used until he agrees a reframe. When restarted, it applies only to an open case file under `projects/<lesson>/cases/`. It overrides "Lesson shape", the part
   template, Questions and The build below; the rules on words, jargon, repetition and honesty still hold.
   See "Investigation mode" at the end of this file.
 - **Lesson mode**: everything else in this file, used when no case is open.

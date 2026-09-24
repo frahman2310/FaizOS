@@ -1,5 +1,7 @@
 # Case 01 · The search that cannot hear clients
 
+**Status: stopped 2026-09-24 at his request (C43); kept as a record.**
+
 **Evidence:** `../lab/out/documents.txt` `../lab/out/baseline_word_250_dev.txt` `../lab/out/baseline_meaning_250_dev.txt` `../lab/questions_README.md`
 
 **Your job.** You are the engineer called in to fix a broken search system. Find out why it fails, change it until it passes two bars set by the firm's managing partner, and then explain in a one-page memo what was wrong and what you did. You do not write code and there is no quiz: you decide what to look at, what to change and what to conclude, and I carry out each instruction and show you exactly what came back.
@@ -65,3 +67,4 @@ Recall@5: share of questions whose right passage is in the top 5. MRR: the Part 
 | 3 | Show the client questions that miss (current setup, run 4) | (none) | 38 of 57 listed: the document holding the answer vs the top passage search returned | look |
 | 4 | Show all rate card passages | (none) | 23 passages of 250 words (I had said 19: wrong count, corrected) | look |
 | 5 | Said the exercise felt unstructured and pointless | (none) | Case restructured into 6 fixed stages (C42); Stage 1 evidence laid out: 5 misses side by side (out/stage1_evidence.json) | look |
+| 6 | "i don't understand this at all" on Stage 1, then stopped the case | (none) | Case stopped | stopped |

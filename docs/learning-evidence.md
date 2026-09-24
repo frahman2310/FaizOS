@@ -109,6 +109,7 @@ S = later superseded by his own words. B = broken by Claude after he said it (co
 | C40 | 09-23 | "My issue with this project is it is not utilising my cognitive abilities. The AI is trying to teach me, but my brain works much better than the AI. I need you to suggest radical changes to this program that fully engage my cognitive thinking and utilize my brain with a fully supported system." | pilot: faiz-teach "Investigation mode", case-01 (real FBR corpus, lab, case checker, devils-advocate agent) |
 | C41 | 09-24 | On case-01: "What am I supposed to do here"; then "You need to redefine the whole problem. Rephrase the original prompt including the clear job description (commit this)" | standing; faiz-teach Investigation mode step 1, check_case.py requires the sections |
 | C42 | 09-24 | After 4 open moves in case-01: "I don't understand this exercise we're doing. seems unstructured and pointless" | standing; faiz-teach Investigation mode step 2: fixed diagnostic stages with evidence laid out |
+| C43 | 09-24 | On case-01 Stage 1 (restated twice): "i don't understand this at all"; then "stop this crap now. this is wasting my time, makes no sense. I want you to push all my completed lessons to github and then we'll reframe" | investigation pilot stopped; reframe pending |
 
 **Contradictions resolved by his most recent statement**
 1. Lesson size: small (C3) → longer (C6, C14) → hates long files (C21) → 2 big rounds (C22) → one part per message (C25). Resolved: a lesson is 2 rounds of several parts; each message carries one short part.
