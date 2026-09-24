@@ -12,7 +12,8 @@ import re
 import sys
 from pathlib import Path
 
-REQUIRED = ["**The situation.**", "**What you have.**", "**What the lab can do.**", "**Done means.**",
+REQUIRED = ["**Your job.**", "**The situation.**", "**The problem.**", "**The bar.**", "**What you have.**",
+            "**How you work.**", "**What the lab can do.**", "**How it ends.**",
             "**Evidence:**", "## Log", "**Your move.**"]
 
 

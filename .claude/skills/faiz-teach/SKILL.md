@@ -211,9 +211,14 @@ the reflect step (the faiz-reflect skill) has run, and SessionStart flags any un
 He leads; I am the instrument. His brain does the diagnosing, deciding and judging; the lab, the data and
 I do the running, fetching and explaining he asks for (C40).
 1. **The case.** A real system, real documents, real measurements, and a business bar set by a named
-   person. Written to `projects/<lesson>/cases/case-NN.md` with The situation / What you have / What the
-   lab can do / Done means / Evidence / Your move, and checked by `scripts/check_case.py`: every number
-   must come from a saved run output or be marked "given:" or "assumed:". Never invented rates.
+   person. Written to `projects/<lesson>/cases/case-NN.md`, in this order: Your job (first, in plain
+   words: who he is in the story, what he must deliver, and that he directs while I operate), The
+   situation (how the system works, step by step), The problem (the failure in numbers and examples),
+   The bar (numbered, with today's value beside each), What you have, How you work (what a move is,
+   with examples of moves), What the lab can do, How it ends (numbered steps), Your move. He asked
+   "What am I supposed to do here" on the first brief, which led with the scene (09-24, C41).
+   Checked by `scripts/check_case.py`: every number must come from a saved run output or be marked
+   "given:" or "assumed:". Never invented rates.
 2. **No explanation first, no key.** The case opens on the evidence, not a lesson. There is no answer I
    hold for him to match; the truth is whatever the lab measures.
 3. **Pull, never push.** Explain only what he asks, at the depth he asks, in plain words with the case's
