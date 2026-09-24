@@ -158,8 +158,10 @@ Call markers: `**Your call.**`
 - Right ones: one line naming them ("1, 2, 5: right."), plus one sentence only if it adds something.
 - Each wrong one: say wrong, one reframe, one hint. Never confirm part of it and hand him numbers
   to plug in (08-22, 09-03).
-- Stuck order: first point at his own earlier answer (15/17, D1); then one new everyday picture
-  (8/10, D2) or a two-option question (5/7, D4). Never re-explain in more prose (0/5, D6).
+- Stuck order: first point at his own earlier answer (15/17, D1); then shrink to a two-option question
+  (5/7, D4; 3/3 on direction questions in L7, E12); then one new everyday picture (8/10, D2); then the
+  full answer with a one-line reason. Never re-explain in more prose (0/5, D6). Smaller steps beat one long
+  hint, and bottom-out answers still help if he explains them back (docs/research/curricula/ai-tutoring.md).
 - When he asks for an answer, or after a second failed hint on one question: give it with a short
   reason, then move on (09-03, 09-11, 09-12, 09-14).
 - An answer he was given comes back once, reworded, in a later part (retained 1/3, D7).
