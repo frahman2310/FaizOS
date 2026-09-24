@@ -1,0 +1,82 @@
+[
+ {
+  "id": "q002",
+  "client": "I import finished goods to resell in my market, and they are in the third part of the 12th schedule list. How much income tax does customs take if I'm a filer?",
+  "searched": "What is the rate of withholding tax deducted at the time of import of finished goods listed in Part III of the 12th Schedule to the Income Tax Ordinance, 2001, for a person appearing in the Active Taxpayer List?",
+  "answer": "6% for ATL, 12% for non-ATL",
+  "right": [
+   "ratecard_2025",
+   1,
+   "Goods falling in Part-II, Twelfth Schedule, 3.50% 7.00% Part-II of First Schedule read with R.1 commercial importers of Tenth Schedule Goods falling in Part-III, Twelfth Schedule 5.50% 11.00% Part-II of First Schedule read with R.1 of Tenth Schedule Goods falling in Part-III, Twelfth Schedule, 6.00% 12.00% Part-II of First Schedule read with R.1 commercial importers"
+  ],
+  "top": [
+   "ordinance_2025",
+   65,
+   "from which the person is required to deduct or collect tax under Part V of Chapter X or Chapter XII, unless the person has paid or deducted and paid the tax as required by Division IV of Part V of Chapter X: Provided that disallowance in respect of purchases of raw materials and finished goods"
+  ]
+ },
+ {
+  "id": "q003",
+  "client": "We import medicines for our pharmacy chain. What income tax is charged at the import stage?",
+  "searched": "What is the rate of income tax deducted at the import stage on medicines imported under the 12th Schedule to the Income Tax Ordinance, 2001?",
+  "answer": "4% for ATL, 8% for non-ATL",
+  "right": [
+   "ratecard_2025",
+   1,
+   "Schedule read with R.1 of Tenth Schedule Goods falling in Part-III, Twelfth Schedule, 6.00% 12.00% Part-II of First Schedule read with R.1 commercial importers of Tenth Schedule Proviso 1 (a) manufacturers falling in SRO 1.00% 2.00% Part-II of First Schedule read with R.1 1125(I)/2011 of 31.12.11 of Tenth Schedule Proviso 1 (b) pharma products 4.00%"
+  ],
+  "top": [
+   "ordinance_2025",
+   615,
+   "Clause (13E) omitted by Finance Act, 2014. The omitted clause (13E) read as follows: \u201c(13E) In respect of potassic fertilizers imported in pursuance of Economic Coordination Committee of the cabinet\u2019s decision No. ECC-155/12/2004 dated the 9th December, 2004, the tax under section 148 of the Income Tax Ordinance, 2001 shall be collected at the rate"
+  ]
+ },
+ {
+  "id": "q007",
+  "client": "I bring in raw material for my own factory and it's on the second list of the 12th schedule. What's the tax at customs for a filer versus a non-filer?",
+  "searched": "What are the rates of withholding tax deducted at customs for raw material listed in Part II of the 12th Schedule for a person appearing in the Active Taxpayer List compared to a person not appearing in the Active Taxpayer List?",
+  "answer": "2% for ATL, 4% for non-ATL",
+  "right": [
+   "ratecard_2025",
+   1,
+   "Information-B ATL Rates Non-ATL Rates Late Filer Rates Reference for Rates 148 Imports Goods falling in Part-I, Twelfth Schedule 1.00% 2.00% Part-II of First Schedule read with R.1 of Tenth Schedule Goods falling in Part-II, Twelfth Schedule 2.00% 4.00% Part-II of First Schedule read with R.1 of Tenth Schedule Goods falling in Part-II, Twelfth Schedule,"
+  ],
+  "top": [
+   "ordinance_2025",
+   305,
+   "be refunded to the taxpayer in accordance with section 170. (8) This section shall not apply to a person 1[whose name was appearing in the active taxpayers\u2019 list] on the thirtieth day of June of the previous tax year.] Division II Advance Tax Paid to a Collection Agent 148. Imports.\u2014 (1) The Collector of Customs"
+  ]
+ },
+ {
+  "id": "q010",
+  "client": "My pay package is around 35 lakh a year. Which slab am I in and what do I pay?",
+  "searched": "What is the applicable tax bracket and total tax liability for income under the head Salary of Rs 35,00,000 per annum?",
+  "answer": "Rs. 346,000 + 30% of the amount exceeding Rs. 3,200,000",
+  "right": [
+   "ratecard_2025",
+   1,
+   "income exceeds Rs. 2,200,000 but Rs. 116,000 + Division-I, Part-I of First Schedule read does not exceed Rs. 3,200,000 23.00% of the with R.10(a) of Tenth Schedule amount exceeding Rs. 2,200,000 Where taxable income exceeds Rs. 3,200,000 but Rs. 346,000 + Division-I, Part-I of First Schedule read does not exceed Rs. 4,100,000 30.00% of the"
+  ],
+  "top": [
+   "ratecard_2025",
+   9,
+   "stakeholders. The original statute (Income Tax Ordinance, 2001, as amended) shall always prevail in case of any contradiction/error herein. The Card may not be produced as a legal document before any court of law / legal forum nor can it be used for any statutory proceedings. 9 Withholding Income Tax Rate Card UPDATED UP TO"
+  ]
+ },
+ {
+  "id": "q018",
+  "client": "My father still works for the company that pays his pension. How is his pension taxed?",
+  "searched": "How is income from a pension taxed for an individual who continues in employment with the pension-paying employer?",
+  "answer": "Same as salary under section 149 (normal slab rates)",
+  "right": [
+   "ratecard_2025",
+   2,
+   "Part-I of First Schedule exceed Rs. 10 million Where the amount of pension received exceeds Age below 70 years 5.00% of the Division-I of Part-I of First Schedule Rs. 10 million amount exceeding and section 4AB Rs. 10 million plus surcharge @ 10.00% Where an individual continues to work for former Same as section 149"
+  ],
+  "top": [
+   "ordinance_2025",
+   50,
+   "First Schedule where the amount received by an individual from a former employer for a tax year exceeds ten million rupees and the individual who has attained the age of seventy years shall not be charged to tax on pension income; and (ii) the pension of an individual who continues to work for former employer"
+  ]
+ }
+]

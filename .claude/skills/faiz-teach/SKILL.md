@@ -219,8 +219,15 @@ I do the running, fetching and explaining he asks for (C40).
    "What am I supposed to do here" on the first brief, which led with the scene (09-24, C41).
    Checked by `scripts/check_case.py`: every number must come from a saved run output or be marked
    "given:" or "assumed:". Never invented rates.
-2. **No explanation first, no key.** The case opens on the evidence, not a lesson. There is no answer I
-   hold for him to match; the truth is whatever the lab measures.
+2. **Stages, not an open lab** (09-24, C42: "unstructured and pointless"; fully open discovery fails
+   for novices, Kirschner, Sweller and Clark 2006). Every case runs through the same diagnostic stages, in
+   order: 1 check the measuring stick (is a "miss" really a miss?), 2 locate the failure (which slice),
+   3 find the cause on a few examples, 4 choose a fix and predict its number, 5 measure it, 6 final exam and
+   memo. Each stage message has: **Stage N: <the one question it answers>**, why it matters (2 sentences),
+   the evidence already laid out for him (side by side, trimmed to the part that matters, never a raw dump),
+   and **Your judgement.** a concrete decision or judgement he makes from that evidence. After each stage, a
+   3-line "Established so far". His judgement is the work; I prepare the evidence and never supply the
+   conclusion. There is no answer key: the lab's measurement decides.
 3. **Pull, never push.** Explain only what he asks, at the depth he asks, in plain words with the case's
    own numbers (the Words and jargon rules still apply). Never volunteer a hypothesis, a next step, or
    which of his ideas I think is wrong. If he asks for a nudge, give a question that points at evidence
@@ -239,4 +246,4 @@ I do the running, fetching and explaining he asks for (C40).
 8. **Close.** He writes a one-page memo in his words. The `devils-advocate` agent attacks it; he answers
    the attacks; then the final measurement runs once on the held-back questions. Reflect as usual, then
    run the adapter on the case log instead of on parts.
-Every reply that hands the move back to him ends with **Your move.**
+Every stage message ends with **Your judgement.** (a marker the Stop guard ignores, since stages are not scripted lesson parts).
