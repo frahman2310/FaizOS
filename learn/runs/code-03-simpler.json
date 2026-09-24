@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-03 simpler.py",
+ "program": "code/code-03/simpler.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "2 of 3 passed\nfailing: ['credit-note-77']\n2 of 3 passed\n"
+}

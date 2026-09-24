@@ -1,6 +1,8 @@
 {
  "kind": "tokens",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'How much tax do I owe on my salary?' --save llm02-tokens-english",
+ "made": "20260924-190316-254563",
  "inputs": {
   "text": "How much tax do I owe on my salary?"
  },

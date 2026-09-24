@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm04-day-cost 'round(300 * 20 * 21 // 2 * 2.00 / 1000000 * 1000)' --note '1000 such chats a day, USD'",
+ "expression": "round(300 * 20 * 21 // 2 * 2.00 / 1000000 * 1000)",
+ "value": 126,
+ "note": "1000 such chats a day, USD",
+ "made": "2026-09-24T19:09:43"
+}

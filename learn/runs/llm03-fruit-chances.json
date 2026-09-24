@@ -1,40 +1,43 @@
 {
  "kind": "next",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next '<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one fruit. Answer with one word.<|im_end|>\n<|im_start|>assistant\n' --k 6 --save llm03-fruit-chances",
+ "made": "20260924-190411-879870",
  "inputs": {
-  "prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one fruit. Answer with one word.<|im_end|>\n<|im_start|>assistant",
-  "k": 6
+  "prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one fruit. Answer with one word.<|im_end|>\n<|im_start|>assistant\n",
+  "k": 6,
+  "note": "first-piece chances only; tokens are not whole words"
  },
  "output": [
   {
    "token": "Apple",
-   "prob": 0.2332,
-   "percent": 23.3
-  },
-  {
-   "token": "Orange",
-   "prob": 0.1259,
-   "percent": 12.6
+   "prob": 0.499,
+   "percent": 49.9
   },
   {
    "token": "App",
-   "prob": 0.0883,
-   "percent": 8.8
+   "prob": 0.234,
+   "percent": 23.4
+  },
+  {
+   "token": "Orange",
+   "prob": 0.1179,
+   "percent": 11.8
   },
   {
    "token": "Ban",
-   "prob": 0.0498,
-   "percent": 5.0
-  },
-  {
-   "token": " App",
-   "prob": 0.0399,
-   "percent": 4.0
+   "prob": 0.0436,
+   "percent": 4.4
   },
   {
    "token": "Str",
-   "prob": 0.0341,
-   "percent": 3.4
+   "prob": 0.019,
+   "percent": 1.9
+  },
+  {
+   "token": "Water",
+   "prob": 0.0129,
+   "percent": 1.3
   }
  ]
 }

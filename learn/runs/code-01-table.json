@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 table.py",
+ "program": "code/code-01/table.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "ok: hi\n[{'model': 'haiku', 'ms': 300.0, 'cost': 0.0027}]\n(a) hi haiku start=T []\n(b) hi haiku start=T {'text': 'ok: hi', 'tokens_in': 1200, 'tokens_out': 300} []\n(c) hi haiku start=T {'text': 'ok: hi', 'tokens_in': 1200, 'tokens_out': 300} 300.0 []\ninside cost_of, rate = {'in': 1.0, 'out': 5.0}\n(d) hi haiku start=T {'text': 'ok: hi', 'tokens_in': 1200, 'tokens_out': 300} 300.0 0.0027 []\n(e) hi haiku start=T {'text': 'ok: hi', 'tokens_in': 1200, 'tokens_out': 300} 300.0 0.0027 [{'model': 'haiku', 'ms': 300.0, 'cost': 0.0027}]\ntext = ok: hi\n"
+}

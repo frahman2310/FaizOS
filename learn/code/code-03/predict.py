@@ -4,6 +4,5 @@ for row in log:
     if row["ok"]:
         passed = passed + 1
 print(passed)
-print(len(log))
 print(log[1])
 print(log[1]["cost"] + log[2])

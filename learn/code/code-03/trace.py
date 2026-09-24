@@ -2,7 +2,6 @@ CASES = [
     {"invoice": "scan-000", "must_include": "PKR 80,000"},
     {"invoice": "credit-note-77", "must_include": "-$310"},
     {"invoice": "typed-000", "must_include": "$100"},
-    {"invoice": "typed-001", "must_include": "$107"},
 ]
 MISSES = ["credit-note-77"]          # the fake summariser drops the total on these
 
@@ -12,17 +11,21 @@ def summarise(case):
     return "Invoice " + case["invoice"] + ", total " + case["must_include"] + "."
 
 def score(cases):
-    passed = 0                                   # (a)
-    failing = []                                 # (b)
+    # goal: count the cases whose note has the right total, and name the others
+    # 1. set start values
+    passed = 0
+    failing = []                                 # (a)
     for case in cases:
-        note = summarise(case)                   # (c)
+        # 2. score each case
+        note = summarise(case)                   # (b)
         if case["must_include"] in note:
-            passed = passed + 1                  # (d)
+            # 3. count it, or name it
+            passed = passed + 1                  # (c)
         else:
-            failing.append(case["invoice"])      # (e)
+            failing.append(case["invoice"])      # (d)
+    # 4. hand back both
     return passed, failing
 
 passed, failing = score(CASES)
 print(passed, "of", len(CASES), "passed")
 print("failing:", failing)
-print(f"pass rate {passed / len(CASES) * 100:.0f}%")

@@ -1,6 +1,8 @@
 {
  "kind": "sample",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py sample 'Name one city in Pakistan. Answer with one word.' --temps 0 0.7 1.5 --n 10 --max-new 5 --save llm03-city-temperatures",
+ "made": "20260924-190437-071075",
  "inputs": {
   "prompt": "Name one city in Pakistan. Answer with one word.",
   "temps": [
@@ -10,7 +12,9 @@
   ],
   "n": 10,
   "max_new": 5,
-  "seed": 0
+  "seed": 0,
+  "decoding": "temperature 0 = greedy (always the likeliest token), not the provider's sampler",
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one city in Pakistan. Answer with one word.<|im_end|>\n<|im_start|>assistant\n"
  },
  "output": {
   "0.0": {
@@ -45,12 +49,12 @@
   },
   "1.5": {
    "answers": [
-    "\u0634\u0647\u062f\u660e\u4eae\u5e02 roselogan",
-    "\u00dc\u5408\u4f19\u57ce\u5e02",
+    "شهد明亮市 roselogan",
+    "Ü合伙城市",
     "QuettaidueATIC quadrant",
     "Islamabad",
-    "\u304d\u3061\u3093\u3068\u3057\u305f\u5b89\u3044 Related by",
-    "Jakarta Mexico \u0627\u0644\u0623\u0645\u0645 \u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+    "きちんとした安い Related by",
+    "Jakarta Mexico الأمم العربية",
     "Islamabad",
     "Patiala.",
     "Islaman Joso Oliver",

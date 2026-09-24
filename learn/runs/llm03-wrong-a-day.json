@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm03-wrong-a-day '1000 * 5 // 100' --note 'wrong answers a day if 5% of 1000 askers use the wording whose likeliest answer is wrong'",
+ "expression": "1000 * 5 // 100",
+ "value": 50,
+ "note": "wrong answers a day if 5% of 1000 askers use the wording whose likeliest answer is wrong",
+ "made": "2026-09-24T19:09:43"
+}

@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-04 change.py",
  "program": "code/code-04/change.py",
  "args": [],
  "exit_code": 0,
- "output": "{'succeeded': 3, 'retried': 2, 'cost per success': 0.0027}\n"
+ "output": "{'worked': 2, 'retried': 1, 'failed': 1}\n"
 }

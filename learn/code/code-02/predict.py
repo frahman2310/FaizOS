@@ -1,7 +1,7 @@
-BACKOFF = [0.5, 1.0, 0.0]      # one wait per try, so three tries
+PAUSES = [0.2, 0.4, 0.0]      # one pause per try, so the count should end at 3
 
-for wait in BACKOFF:
-    attempts = 0
-    attempts = attempts + 1
+for pause in PAUSES:
+    tries = 0
+    tries = tries + 1
 
-print(attempts)
+print("tries:", tries)

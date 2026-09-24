@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-02 trace.py",
  "program": "code/code-02/trace.py",
  "args": [],
  "exit_code": 0,
- "output": "reply to: summarise this invoice\n[{'ok': True, 'attempts': 3}]\n"
+ "output": "rate: USD to PKR\n[{'done': True, 'tries': 2}]\n"
 }

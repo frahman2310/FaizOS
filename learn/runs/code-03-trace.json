@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-03 trace.py",
  "program": "code/code-03/trace.py",
  "args": [],
  "exit_code": 0,
- "output": "3 of 4 passed\nfailing: ['credit-note-77']\npass rate 75%\n"
+ "output": "2 of 3 passed\nfailing: ['credit-note-77']\n"
 }

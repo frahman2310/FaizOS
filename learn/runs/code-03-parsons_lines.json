@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-03 parsons_lines.py",
+ "program": "code/code-03/parsons_lines.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "\n        total = total + row              # A\n    return total                         # B\n    for row in log:                      # C\n        total = total + row[\"cost\"]      # D\n    total = 0.0                          # E\ndef spend(log):                          # F\n\n"
+}

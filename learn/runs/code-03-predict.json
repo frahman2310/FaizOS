@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-03 predict.py",
  "program": "code/code-03/predict.py",
  "args": [],
  "exit_code": 1,
- "output": "2\n3\n{'ok': False, 'cost': 0.0}\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/predict.py\", line 9, in <module>\n    print(log[1][\"cost\"] + log[2])\n          ~~~~~~~~~~~~~~~^~~~~~~~\nTypeError: unsupported operand type(s) for +: 'float' and 'dict'\n"
+ "output": "2\n{'ok': False, 'cost': 0.0}\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/predict.py\", line 8, in <module>\n    print(log[1][\"cost\"] + log[2])\n          ~~~~~~~~~~~~~~~^~~~~~~~\nTypeError: unsupported operand type(s) for +: 'float' and 'dict'\n"
 }

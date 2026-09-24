@@ -1,6 +1,8 @@
 {
  "kind": "tokens",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens strawberry --save llm02-tokens-strawberry",
+ "made": "20260924-190342-559730",
  "inputs": {
   "text": "strawberry"
  },

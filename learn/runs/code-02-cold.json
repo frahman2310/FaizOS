@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 cold.py",
+ "program": "code/code-02/cold.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "price 42\n[{'worked': True, 'waited': 0.0}]\n"
+}

@@ -1,23 +1,23 @@
 import time
 
-BACKOFF = [0.5, 1.0, 0.0]
-script = ["529 overloaded", "529 overloaded", "ok"]
+PAUSES = [0.2, 0.4, 0.0]                  # seconds to wait after try 1, 2, 3 fails
+outcomes = ["timeout", "ok", "ok"]        # what the fake provider does on each try
 
 def fake_provider(prompt):
-    outcome = script.pop(0)
+    outcome = outcomes.pop(0)             # take the first item out of the list
     if outcome != "ok":
         raise RuntimeError(outcome)
-    return "reply to: " + prompt
+    return "rate: " + prompt
 
-def call(prompt):
-    attempts = 0
-    for wait in BACKOFF:
-        attempts = 0
-        attempts = attempts + 1
+def fetch(prompt):
+    tries = 0
+    for pause in PAUSES:
+        tries = 0
+        tries = tries + 1
         try:
-            return fake_provider(prompt), attempts
+            return fake_provider(prompt), tries
         except RuntimeError:
-            time.sleep(wait)
-    return None, attempts
+            time.sleep(pause)
+    return None, tries
 
-print(call("hi"))
+print(fetch("hi"))

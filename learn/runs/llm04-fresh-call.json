@@ -1,9 +1,12 @@
 {
  "kind": "chat",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Earlier in this chat I told you my name and the city I live in. What are they?' --save llm04-fresh-call",
+ "made": "20260924-190511-849067",
  "inputs": {
   "prompt": "Earlier in this chat I told you my name and the city I live in. What are they?",
-  "max_new": 40
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nEarlier in this chat I told you my name and the city I live in. What are they?<|im_end|>\n<|im_start|>assistant\n"
  },
  "output": "In this chat, your name is \"Qwen\" and the city you live in is Hangzhou, Zhejiang Province, China."
 }

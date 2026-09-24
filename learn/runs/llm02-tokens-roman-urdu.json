@@ -1,6 +1,8 @@
 {
  "kind": "tokens",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Mujhe apni tankhwah par kitna tax dena hai?' --save llm02-tokens-roman-urdu",
+ "made": "20260924-190329-350817",
  "inputs": {
   "text": "Mujhe apni tankhwah par kitna tax dena hai?"
  },

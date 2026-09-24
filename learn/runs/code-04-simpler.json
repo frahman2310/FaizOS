@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 simpler.py",
+ "program": "code/code-04/simpler.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "{'worked': 2}\n"
+}

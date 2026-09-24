@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-02 test_parsons.py",
  "program": "code/code-02/test_parsons.py",
  "args": [],
  "exit_code": 0,
- "output": "('reply to: hi', 3)\nPASS\n"
+ "output": "('rate: hi', 2)\nPASS\n"
 }

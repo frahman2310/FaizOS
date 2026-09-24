@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 cold_fixed.py",
+ "program": "code/code-01/cold_fixed.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'size': 'small', 'dollars': 0.013}]\n"
+}

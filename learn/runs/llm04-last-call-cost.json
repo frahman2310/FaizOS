@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm04-last-call-cost '20 * 300 * 2.00 / 1000000' --note 'that call at Sonnet 5 input 2.00 USD per million'",
+ "expression": "20 * 300 * 2.00 / 1000000",
+ "value": 0.012,
+ "note": "that call at Sonnet 5 input 2.00 USD per million",
+ "made": "2026-09-24T19:04:37"
+}

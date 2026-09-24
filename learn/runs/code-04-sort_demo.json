@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 sort_demo.py",
+ "program": "code/code-04/sort_demo.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[1, 2, 3]\n"
+}

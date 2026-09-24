@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the capital of Australia?\nA: The capital of Australia is' --save llm01-cold-australia-question",
+ "made": "20260924-190309-635652",
+ "inputs": {
+  "prompt": "Q: What is the capital of Australia?\nA: The capital of Australia is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Canberra",
+   "prob": 0.9693,
+   "percent": 96.9
+  },
+  {
+   "token": " Melbourne",
+   "prob": 0.011,
+   "percent": 1.1
+  },
+  {
+   "token": " Sydney",
+   "prob": 0.0065,
+   "percent": 0.6
+  },
+  {
+   "token": " Darwin",
+   "prob": 0.0024,
+   "percent": 0.2
+  },
+  {
+   "token": " the",
+   "prob": 0.002,
+   "percent": 0.2
+  }
+ ]
+}

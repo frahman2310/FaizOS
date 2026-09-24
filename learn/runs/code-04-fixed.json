@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-04 fixed.py",
  "program": "code/code-04/fixed.py",
  "args": [],
  "exit_code": 0,
- "output": "the user waited (ms): 2400.0\nthe log says: [{'ok': True, 'ms': 2400.0}]\n"
+ "output": "the user waited (ms): 300.0\nthe log says: [{'ok': True, 'ms': 300.0}]\n"
 }

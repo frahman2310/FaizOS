@@ -6,27 +6,29 @@ takes it from here, never from memory. Prices change: refresh this sheet before 
 
 Sources:
 - Anthropic: https://platform.claude.com/docs/en/about-claude/pricing (read in full)
-- OpenAI: https://developers.openai.com/api/docs/pricing (read through a summarising fetch; spot-check before use)
-- Google: https://ai.google.dev/gemini-api/docs/pricing (read through a summarising fetch; spot-check before use)
+- OpenAI: https://developers.openai.com/api/docs/pricing (gpt-6 rows checked on the raw page)
+- Google: https://ai.google.dev/gemini-api/docs/pricing (Gemini 3.5 rows checked on the raw page)
+
+Rows marked unverified are never used as evidence by learn/check_unit.py.
 
 ## Prices per million tokens (standard tier, USD)
 
-| Provider | Model | Input | Cached input (read) | Output |
-|---|---|---|---|---|
-| Anthropic | Claude Fable 5.1 | 10.00 | 0.25 | 50.00 |
-| Anthropic | Claude Opus 5.5 | 4.00 | 0.20 | 20.00 |
-| Anthropic | Claude Opus 5 | 5.00 | 0.50 | 25.00 |
-| Anthropic | Claude Sonnet 5 | 2.00 | 0.20 | 10.00 |
-| Anthropic | Claude Sonnet 4.6 | 3.00 | 0.30 | 15.00 |
-| Anthropic | Claude Haiku 4.5 | 1.00 | 0.10 | 5.00 |
-| OpenAI | gpt-6-astra | 10.00 | 1.00 | 50.00 |
-| OpenAI | gpt-6-sol | 2.00 | 0.20 | 10.00 |
-| OpenAI | gpt-6-luna | 0.10 | 0.01 | 0.50 |
-| OpenAI | gpt-5-mini | 0.25 | 0.025 | 2.00 |
-| OpenAI | gpt-5-nano | 0.05 | 0.005 | 0.40 |
-| Google | Gemini 3.5 Flash | 1.50 | 0.15 | 9.00 |
-| Google | Gemini 3.5 Flash-Lite | 0.30 | n/a | 2.50 |
-| Google | Gemini 3.8 Flash (price until 2026-12-31) | 0.75 | 0.075 | 3.75 |
+| Provider | Model | Input | Cached input (read) | Output | Checked |
+|---|---|---|---|---|---|
+| Anthropic | Claude Fable 5.1 | 10.00 | 0.25 | 50.00 | 2026-09-24, official page read in full |
+| Anthropic | Claude Opus 5.5 | 4.00 | 0.20 | 20.00 | 2026-09-24, official page read in full |
+| Anthropic | Claude Opus 5 | 5.00 | 0.50 | 25.00 | 2026-09-24, official page read in full |
+| Anthropic | Claude Sonnet 5 | 2.00 | 0.20 | 10.00 | 2026-09-24, official page read in full |
+| Anthropic | Claude Sonnet 4.6 | 3.00 | 0.30 | 15.00 | 2026-09-24, official page read in full |
+| Anthropic | Claude Haiku 4.5 | 1.00 | 0.10 | 5.00 | 2026-09-24, official page read in full |
+| OpenAI | gpt-6-astra | 10.00 | 1.00 | 50.00 | 2026-09-24, raw page |
+| OpenAI | gpt-6-sol | 2.00 | 0.20 | 10.00 | 2026-09-24, raw page |
+| OpenAI | gpt-6-luna | 0.10 | 0.01 | 0.50 | 2026-09-24, raw page |
+| OpenAI | gpt-5-mini | 0.25 | 0.025 | 2.00 | unverified: not found on the raw page |
+| OpenAI | gpt-5-nano | 0.05 | 0.005 | 0.40 | unverified: not found on the raw page |
+| Google | Gemini 3.5 Flash | 1.50 | 0.15 | 9.00 | 2026-09-24, raw page |
+| Google | Gemini 3.5 Flash-Lite | 0.30 | n/a | 2.50 | 2026-09-24, raw page |
+| Google | Gemini 3.8 Flash (price until 2026-12-31) | 0.75 | 0.075 | 3.75 | unverified: promotional price not found on the raw page |
 
 Notes, Anthropic (quoted from the page):
 - Sonnet 5's $2/$10 was introductory pricing and "is now the standard price"; the planned rise to $3/$15 "will not occur".

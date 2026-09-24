@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 bug_probe.py",
+ "program": "code/code-04/bug_probe.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "the user waited (ms): 300.0\nthe log says: [{'ok': True, 'ms': 100.0}]\ntry 1 : clock started 0.0 ms after the user pressed send\ntry 2 : clock started 200.0 ms after the user pressed send\nlogged ms: 100.0\n"
+}

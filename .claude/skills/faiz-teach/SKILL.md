@@ -20,29 +20,40 @@ logged in `docs/learning-evidence.md` (C1 to C46); his latest words win.
   loop; E3 one record per call vs one per try; E4 which kind of value a variable holds.
 
 ## How a session runs
-1. In `learn/`, run `uv run engine.py today`. It says which recall cards are due, which unit(s) are
-   scheduled (start order: code and LLM behaviour week 1, production week 3, evaluation week 4, system design
-   week 6) and which 7-day cold checks are due.
-2. **Recall** (about 10 minutes): `uv run engine.py due`. One card per message: ask the question, wait for
-   his answer, show the stored answer, rate it (1 wrong, 2 right with effort, 3 right, 4 instant) and record
-   with `uv run engine.py review <card> <rating>`. Never re-teach during recall.
-3. **The unit:** send each `## Step:` of the unit file **verbatim, one step per message**, then wait. Never
-   add, reorder or improvise steps; the Stop hook blocks any step that is not in a unit passing
-   `learn/check_unit.py`. Mark his answer against the step's `### Key` (never shown to him). Follow the
-   Key's skip rule when he is already right with a right reason and high confidence.
-4. **Before the last step,** ask him to predict his score for the unit (0 to 100).
-5. **Record:** `uv run engine.py done <unit-id> <score> --predicted <p>`. The score is the share of steps
-   answered right first time, in whole percent, using the Keys. This also adds the unit's cards to the queue
-   and schedules its 7-day cold check.
-6. **7-day cold check** (when `today` lists one): he answers that unit's cards cold, then one new problem of
-   the same kind with new numbers or new code, prepared and checked before the session (never the same item
-   again, which would test recognition). Record with `uv run engine.py done <unit-id> <score> --predicted <p> --cold`.
+1. In `learn/`, run `uv run engine.py today`: today's recall, the scheduled unit(s) by id, any cold check due
+   (listed until done) and any other session (rapid round, drill, placement, Saturday whole task).
+2. **Recall** (about 10 minutes, at most 20 cards, mixed across skills): `uv run engine.py due`. One card
+   per message: ask the question, wait, show the stored answer; **he grades himself** (1 wrong, 2 right with
+   effort, 3 right, 4 easy); record with `uv run engine.py review <card> <rating>`. Never re-teach during
+   recall; a lapsed card is revisited through its unit's wrong-idea step at the next session of that skill.
+3. **The unit:** read the unit file (never show him its file name or Keys). Before its first scored step (the
+   unit's `scored:` line), ask him to predict his score 0 to 100 and record it: `uv run engine.py predict
+   <unit-id> <p>`. Send each `## Step:` **verbatim, one step per message**, with nothing after it; short
+   feedback on his previous answer may come before it. The Stop hook blocks anything else (more than one step,
+   text after a step, steps out of order, Key text). It runs after a message is shown, so if it blocks, the
+   next message corrects the error.
+4. **Mark** each answer against the step's Key and its `Score:` line (0 to 1). A step skipped by the Key's
+   skip rule counts as right. A step answered right only after a hint, or given to him, counts as 0.
+   Record per step: `uv run engine.py done <unit-id> --step "<name>=<value>" ... [--confident-wrong N]`
+   (N = scored answers he got wrong at confidence 4 or 5). The engine applies the skill's own pass rule
+   (INTEGRATED section 3), moves his level, adds the unit's cards for tomorrow and schedules the cold check.
+   His Close line: `uv run engine.py close <unit-id> "<his line>"`.
+5. **7-day cold check** (listed by `today` until done): predict first (`predict <unit-id> <p> --cold`), then
+   send the unit's `## Cold` item verbatim; mark it with its `Score:` line; record with `done <unit-id>
+   --step "Cold=<value>" --cold`. It is a new problem of the same kind, never the same item.
+6. A unit he did not pass is never served again; `today` names its parallel unit, or says one must be
+   prepared (new surface, same skill) before that skill's next slot.
+7. **Outside tasks** (a ScaleDojo lab from the brief, a new product's traces, hidden code tests):
+   `uv run engine.py outside <skill> <score> "<what>"`. Progress: `uv run engine.py dashboard`.
 
 ## Feedback
 - Right: one line naming what was right; one sentence more only if it adds something.
 - Wrong: say so, one reframe, one hint. Never confirm half and hand him numbers to plug in.
-- Stuck order: point at his own earlier answer; then two options; then one everyday picture; then the answer
-  with a one-line reason. Never re-explain in longer prose. After a given answer he says it back in one line.
+- When he asks for the answer, or after a second failed hint: give it with a one-line reason, then he says
+  it back in one line (C19, C23, C28).
+- Stuck order: (0) if he does not understand the whole step, send the step's prepared simpler version (its
+  Key's `Simpler:` block) before its question; (1) point at his own earlier answer; (2) two options; (3) one
+  everyday picture; (4) the answer with a one-line reason. Never re-explain in longer prose.
 - At most 3 feedback points per answer. Stop asking questions once he has it.
 
 ## Words and delivery
@@ -53,12 +64,15 @@ logged in `docs/learning-evidence.md` (C1 to C46); his latest words win.
 
 ## Honesty
 - Every number comes from a saved run (`learn/runs/`), the dated fact sheet (`learn/facts.md`) or a listed
-  source; the unit checker enforces it. Never write a number or an output from memory.
+  source; the unit checker (`learn/check_unit.py`) enforces it. Never write a number or an output from memory.
 - Teaching material is prepared and checked before a session, from expert sources. Claude does not invent
   the curriculum, the method or the examples.
 
 ## How this file changes
-- A rule he states: log it in `docs/learning-evidence.md` and change this file in the same turn, replacing
-  the old line, never adding a second rule on the same topic.
-- Method changes (step order, formats, bars): none for 8 weeks. After that only the items marked "trial" in
-  INTEGRATED.md section 6, and only when the 7-day cold scores on `uv run engine.py dashboard` say so.
+- A rule he states about **how things are said or delivered** (words, feedback, pacing, answers): log it in
+  `docs/learning-evidence.md` and change this file in the same turn, replacing the old line.
+- A request that changes **a format, the step order or a bar**: log it and apply it at the 8-week review,
+  with the 7-day cold scores; tell him it is logged and when it will be applied. This is the only case where
+  "his latest words win" waits (INTEGRATED 2.9).
+- Method changes otherwise: none for 8 weeks; then only the items marked "trial" in INTEGRATED.md section 6,
+  and only when the cold scores on `uv run engine.py dashboard` say so.

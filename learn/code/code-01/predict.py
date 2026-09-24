@@ -1,4 +1,4 @@
-RATES = {"haiku": {"in": 1.00, "out": 5.00}}   # dollars per million tokens
+RATES = {"haiku": {"in": 1.00, "out": 5.00}}   # dollars per 1_000_000 tokens
 
 def cost_of(model, tokens_in, tokens_out):
     rate = RATES[model]

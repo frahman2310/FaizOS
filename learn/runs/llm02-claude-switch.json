@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-claude-switch 'round(1000 * 1.3 * 2.00 / 3.00)' --note 'Sonnet 4.6 to Sonnet 5: 30% more tokens, input price 3.00 to 2.00'",
+ "expression": "round(1000 * 1.3 * 2.00 / 3.00)",
+ "value": 867,
+ "note": "Sonnet 4.6 to Sonnet 5: 30% more tokens, input price 3.00 to 2.00",
+ "made": "2026-09-24T19:04:37"
+}

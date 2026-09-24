@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-ratio-qwen '27 / 10' --note 'Urdu/English tokens, Qwen, one sentence'",
+ "expression": "27 / 10",
+ "value": 2.7,
+ "note": "Urdu/English tokens, Qwen, one sentence",
+ "made": "2026-09-24T19:10:36"
+}

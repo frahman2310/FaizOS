@@ -1,4 +1,5 @@
 {
+ "command": "python3 code/record.py code-03 test_parsons.py",
  "program": "code/code-03/test_parsons.py",
  "args": [],
  "exit_code": 0,

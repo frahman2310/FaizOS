@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm04-last-call '20 * 300' --note 'input tokens on message 20 when every earlier message (300 tokens each) is re-sent; replies not counted'",
+ "expression": "20 * 300",
+ "value": 6000,
+ "note": "input tokens on message 20 when every earlier message (300 tokens each) is re-sent; replies not counted",
+ "made": "2026-09-24T19:04:37"
+}

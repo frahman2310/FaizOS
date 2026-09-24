@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next '<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 347 x 29? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n' --k 5 --save llm03-multiply-first-digit",
+ "made": "20260924-190603-629026",
+ "inputs": {
+  "prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 347 x 29? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": "9",
+   "prob": 0.9451,
+   "percent": 94.5
+  },
+  {
+   "token": "8",
+   "prob": 0.0513,
+   "percent": 5.1
+  },
+  {
+   "token": "3",
+   "prob": 0.0015,
+   "percent": 0.2
+  },
+  {
+   "token": "1",
+   "prob": 0.0009,
+   "percent": 0.1
+  },
+  {
+   "token": "2",
+   "prob": 0.0001,
+   "percent": 0.0
+  }
+ ]
+}

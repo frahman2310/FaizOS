@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-04 predict.py",
  "program": "code/code-04/predict.py",
  "args": [],
- "exit_code": 0,
- "output": "950\n"
+ "exit_code": 1,
+ "output": "A 950\nB 200\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-04/predict.py\", line 6, in <module>\n    print(\"C\", times[5])\n               ~~~~~^^^\nIndexError: list index out of range\n"
 }

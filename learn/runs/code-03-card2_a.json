@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-03 card2_a.py",
+ "program": "code/code-03/card2_a.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/card2_a.py\", line 2, in <module>\n    total = total + {\"cost\": 3}\n            ~~~~~~^~~~~~~~~~~~~\nTypeError: unsupported operand type(s) for +: 'int' and 'dict'\n"
+}

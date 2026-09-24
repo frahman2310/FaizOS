@@ -1,28 +1,28 @@
 import time
 
-BACKOFF = [0.5, 1.0, 0.0]
-script = ["529 overloaded", "529 overloaded", "ok"]
+PAUSES = [0.1, 0.1, 0.0]
+answers = ["busy", "ok"]
 
-def fake_provider(prompt):
-    time.sleep(0.3)                    # every try takes 0.3 seconds
-    outcome = script.pop(0)
-    if outcome != "ok":
-        raise RuntimeError(outcome)
-    return "reply to: " + prompt
+def fake_provider(q):
+    time.sleep(0.1)                    # every try takes 0.1 seconds
+    a = answers.pop(0)
+    if a != "ok":
+        raise RuntimeError(a)
+    return "answer to " + q
 
-def call(prompt, log):
-    start = time.time()
-    for wait in BACKOFF:
+def ask(q, log):
+    clock = time.time()
+    for pause in PAUSES:
         try:
-            text = fake_provider(prompt)
-            ms = round((time.time() - start) * 1000, -2)
+            text = fake_provider(q)
+            ms = round((time.time() - clock) * 1000, -2)
             log.append({"ok": True, "ms": ms})
             return text
         except RuntimeError:
-            time.sleep(wait)
+            time.sleep(pause)
 
 log = []
 outside = time.time()                  # a second stopwatch, held by the user
-call("summarise this invoice", log)
+ask("tax rate", log)
 print("the user waited (ms):", round((time.time() - outside) * 1000, -2))
 print("the log says:", log)

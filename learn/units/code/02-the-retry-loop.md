@@ -1,184 +1,254 @@
 skill: code
 id: code-02
 level: 1
-title: The retry loop: try again, wait longer, write one record per call
-sources: ../private/research-base/code/research/ericson-2019-adaptive-parsons.md, ../private/research-base/code/research/xie-2019-theory-of-instruction.md
-runs: runs/code-02-predict.json, runs/code-02-trace.json, runs/code-02-parsons.json, runs/code-02-parsons_wrong.json, runs/code-02-test_parsons.json, runs/code-02-test_parsons-parsons_wrong.json, runs/code-02-bug.json
+title: Asking again after a failure
+sources: ../private/research-base/code/research/ericson-2019-adaptive-parsons.md, ../private/research-base/code/research/margulieux-2016-employing-subgoals.md
+runs: runs/code-02-predict.json, runs/code-02-trace.json, runs/code-02-table.json, runs/code-02-simpler.json, runs/code-02-parsons_lines.json, runs/code-02-parsons.json, runs/code-02-parsons_wrong.json, runs/code-02-test_parsons.json, runs/code-02-test_parsons-parsons_wrong.json, runs/code-02-bug.json, runs/code-02-bug_probe.json, runs/code-02-cold.json, runs/code-02-cold_fixed.json, runs/code-02-card1_a.json, runs/code-02-card1_b.json, runs/code-02-card2_a.json, runs/code-02-card2_b.json, runs/code-02-card3_a.json, runs/code-02-card3_b.json
 targets: E2 (a start line moved inside a loop), E3 (one record per call vs one per try)
-code: code/code-02/ (predict.py, trace.py, parsons.py, parsons_wrong.py, test_parsons.py, bug.py)
+scored: Predict, Trace, Change, Find the bug
+code: code/code-02
 
 ## Step: Predict
 
-A tiny loop. The aim is to count the tries: there is one wait per try, so the count should end at the number of waits.
+A tiny loop. The aim is to count the tries: there is one pause per try, so the count should end at the number of pauses.
 
 ```python
-BACKOFF = [0.5, 1.0, 0.0]      # one wait per try, so three tries
+PAUSES = [0.2, 0.4, 0.0]      # one pause per try, so the count should end at 3
 
-for wait in BACKOFF:
-    attempts = 0
-    attempts = attempts + 1
+for pause in PAUSES:
+    tries = 0
+    tries = tries + 1
 
-print(attempts)
+print("tries:", tries)
 ```
 
 Write exactly what it prints, and give one label:
 
-- **crash**: the program stops with an error
+- **crash**: the program stops with an error (write the error's name)
 - **quietly wrong**: it runs, but the result is wrong
 - **fine**: it runs and the result is right
 
 **Your answer.**
 
 ### Key
-Prints `1` (runs/code-02-predict.json). Label: quietly wrong. `attempts = 0` is a start line, and it sits inside the loop, so every pass wipes the count and adds 1 again: 0 then 1, three times over. The fix is to move `attempts = 0` above the `for` line; that shape counts to 3 (the correct program in Change prints `('reply to: hi', 3)`, runs/code-02-parsons.json). This is E2: a start line inside a loop runs on every pass, not once.
+Prints `tries: 1` (runs/code-02-predict.json). Label: quietly wrong. `tries = 0` is a start line, and it sits inside the loop, so every pass wipes the count and adds 1 again. Moved above the `for` line it would run once and the count would reach 3. This is E2: a start line inside a loop runs on every pass, not once.
+
+Score: 1 if both the printed line and the label are right; half if only one is.
 
 ## Step: Trace
 
-The retry loop from the meter. The fake provider follows a script: it fails, fails, then works. `script.pop(0)` takes the first item out of the list and hands it back. `raise` stops the try with an error, and `except` catches it.
+The problem: a provider sometimes times out, and one failure should not lose the request. The fix: try again after a pause, and write one record per call. Two new rules: `outcomes.pop(0)` takes the first item out of the list and hands it back (the list gets shorter), and `return` leaves the machine at once, even from inside a loop.
 
 ```python
-import time
-
-BACKOFF = [0.5, 1.0, 0.0]                             # seconds to wait after try 1, 2, 3 fails
-script = ["529 overloaded", "529 overloaded", "ok"]   # what the fake provider does on each try
+PAUSES = [0.2, 0.4, 0.0]                  # seconds to wait after try 1, 2, 3 fails
+outcomes = ["timeout", "ok", "ok"]        # what the fake provider does on each try
 
 def fake_provider(prompt):
-    outcome = script.pop(0)              # take the first item out of the list
+    outcome = outcomes.pop(0)
     if outcome != "ok":
         raise RuntimeError(outcome)
-    return "reply to: " + prompt
+    return "rate: " + prompt
 
-def call(prompt, log):
-    attempts = 0                                          # (a)
-    why = ""
-    for wait in BACKOFF:
-        attempts = attempts + 1                           # (b)
+def fetch(prompt, records):
+    # goal: get one reply, trying again after a failure, and write one record
+    # 1. set start values
+    tries = 0
+    reason = ""
+    for pause in PAUSES:
+        # 2. try
+        tries = tries + 1                                    # (a)
         try:
-            text = fake_provider(prompt)                  # (c)
-            log.append({"ok": True, "attempts": attempts})   # (d)
+            text = fake_provider(prompt)                     # (b)
+            # 3. record the success and leave
+            records.append({"done": True, "tries": tries})   # (c)
             return text
         except RuntimeError as err:
-            why = str(err)                                # (e)
-            time.sleep(wait)                              # (f)
-    log.append({"ok": False, "attempts": attempts, "why": why})
+            # 4. note why, wait, go round again
+            reason = str(err)                                # (d)
+            time.sleep(pause)
+    # 5. give up: record the failure once
+    records.append({"done": False, "tries": tries, "reason": reason})
     return None
 
-log = []
-print(call("summarise this invoice", log))
-print(log)
+records = []
+print(fetch("USD to PKR", records))
 ```
 
-1. Fill the table: what each sticker holds right after the named line, on each pass of the loop.
+1. Fill every cell, in the order the lines run (`-` for no value yet).
 
-| Pass | After | wait | attempts | why | log |
-|---|---|---|---|---|---|
-| 1 | (b) | | | | |
-| 1 | (e) | | | | |
-| 2 | (b) | | | | |
-| 2 | (e) | | | | |
-| 3 | (b) | | | | |
-| 3 | (d) | | | | |
+| Pass | After | pause | tries | outcomes | reason | text | records |
+|---|---|---|---|---|---|---|---|
+| 1 | (a) | | | | | | |
+| 1 | (d) | | | | | | |
+| 2 | (a) | | | | | | |
+| 2 | (b) | | | | | | |
+| 2 | (c) | | | | | | |
 
-2. Write the two printed lines. How many records are in `log`?
-3. In one sentence: what is `call` for?
+2. After (d), what kind of value does `err` hold, and what does `reason` hold?
+3. What does it print, and how many records are there?
+4. One sentence: what is `fetch` for?
 
 **Your answer.**
 
 ### Key
-| Pass | After | wait | attempts | why | log |
-|---|---|---|---|---|---|
-| 1 | (b) | `0.5` | 1 | `""` | `[]` |
-| 1 | (e) | `0.5` | 1 | `"529 overloaded"` | `[]` |
-| 2 | (b) | `1.0` | 2 | `"529 overloaded"` | `[]` |
-| 2 | (e) | `1.0` | 2 | `"529 overloaded"` | `[]` |
-| 3 | (b) | `0.0` | 3 | `"529 overloaded"` | `[]` |
-| 3 | (d) | `0.0` | 3 | `"529 overloaded"` | `[{'ok': True, 'attempts': 3}]` |
+From runs/code-02-table.json:
 
-Printed (runs/code-02-trace.json): `reply to: summarise this invoice`, then `[{'ok': True, 'attempts': 3}]`. One record: one call gives one record, however many tries it took (E3). The failure record after the loop never runs, because `return text` leaves the machine on pass 3. (f) sleeps 0.5 s after try 1 and 1.0 s after try 2: the wait gets longer each time (backoff).
-Purpose: "It tries the call up to three times, waiting longer after each failure, and writes one record saying whether the call worked and how many tries it took."
+| Pass | After | pause | tries | outcomes | reason | text | records |
+|---|---|---|---|---|---|---|---|
+| 1 | (a) | `0.2` | 1 | `['timeout', 'ok', 'ok']` | `''` | - | `[]` |
+| 1 | (d) | `0.2` | 1 | `['ok', 'ok']` | `'timeout'` | - | `[]` |
+| 2 | (a) | `0.4` | 2 | `['ok', 'ok']` | `'timeout'` | - | `[]` |
+| 2 | (b) | `0.4` | 2 | `['ok']` | `'timeout'` | `'rate: USD to PKR'` | `[]` |
+| 2 | (c) | `0.4` | 2 | `['ok']` | `'timeout'` | `'rate: USD to PKR'` | `[{'done': True, 'tries': 2}]` |
+
+2: `err` holds the error itself, `RuntimeError('timeout')` (its kind is RuntimeError); `reason` holds only its note, the text `'timeout'` (E4).
+3: `rate: USD to PKR`; one record, `[{'done': True, 'tries': 2}]` (runs/code-02-trace.json). One call gives one record however many tries it took (E3). Pass 3 never runs: `return text` left the machine.
+4: "It asks the provider up to three times, pausing after each failure, and writes one record saying whether the call worked and how many tries it took."
+
+Score: table cells right divided by all table cells. Questions 2 to 4 get feedback but are not in the score.
+
+Simpler: if he does not follow the whole step, send this first (one fewer idea: no error and no pause, the outcomes are just a list), from code/code-02/simpler.py:
+```python
+def fetch(prompt, records):
+    # goal: get one reply, trying again after a failure, and write one record
+    tries = 0
+    for outcome in ["timeout", "ok"]:
+        tries = tries + 1
+        if outcome == "ok":
+            records.append({"done": True, "tries": tries})
+            return "rate: " + prompt
+    return None
+```
+It prints `rate: USD to PKR` and `[{'done': True, 'tries': 2}]` (runs/code-02-simpler.json). Ask: what does `tries` hold on each pass, and why is there no pass after "ok"?
 
 ## Step: Change
 
-Put these lines in order under `def call(prompt):` to build a loop that tries up to three times and hands back the reply and the number of tries. The indentation is already right. One line does not belong: leave it out and say why.
+Put these lines in order under `def fetch(prompt):` to build a loop that tries up to three times and hands back the reply and the number of tries. The indentation is already right. One line does not belong: leave it out and say why.
 
 ```python
-        attempts = attempts + 1                    # A
-    return None, attempts                          # B
-        try:                                       # C
-    attempts = 0                                   # D
-            time.sleep(wait)                       # E
-        attempts = 0                               # F
-            return fake_provider(prompt), attempts # G
-    for wait in BACKOFF:                           # H
-        except RuntimeError:                       # I
+        tries = tries + 1                        # A
+    return None, tries                           # B
+        try:                                     # C
+    tries = 0                                    # D
+            time.sleep(pause)                    # E
+        tries = 0                                # F
+            return fake_provider(prompt), tries  # G
+    for pause in PAUSES:                         # H
+        except RuntimeError:                     # I
 ```
 
-The test (the fake provider fails twice, then works): `call("hi")` must hand back `("reply to: hi", 3)`.
+New rule: `return x, y` hands back two values together, and Python shows them in round brackets, like `('rate: hi', 2)`. The test (the fake provider times out once, then works): `fetch("hi")` must hand back `('rate: hi', 2)`.
 
 **Your answer.**
 
 ### Key
-Order: D, H, A, C, G, I, E, B. Leave out F.
+Order: D, H, A, C, G, I, E, B. Leave out F (code/code-02/parsons.py):
 ```python
-def call(prompt):
-    attempts = 0
-    for wait in BACKOFF:
-        attempts = attempts + 1
+def fetch(prompt):
+    tries = 0
+    for pause in PAUSES:
+        tries = tries + 1
         try:
-            return fake_provider(prompt), attempts
+            return fake_provider(prompt), tries
         except RuntimeError:
-            time.sleep(wait)
-    return None, attempts
+            time.sleep(pause)
+    return None, tries
 ```
-Run: prints `('reply to: hi', 3)` and the test prints `PASS` (runs/code-02-parsons.json, runs/code-02-test_parsons.json). F is D's twin moved inside the loop (E2): it resets the count on every pass. With F placed just above A, the program prints `('reply to: hi', 1)` and the test fails with `AssertionError` (runs/code-02-parsons_wrong.json, runs/code-02-test_parsons-parsons_wrong.json). Same text, different indentation, different result.
+Run: prints `('rate: hi', 2)` and the test prints `PASS` (runs/code-02-parsons.json, runs/code-02-test_parsons.json). F is D's twin moved inside the loop (E2): it resets the count on every pass. With F just above A, it prints `('rate: hi', 1)` and the test fails with `AssertionError` (runs/code-02-parsons_wrong.json, runs/code-02-test_parsons-parsons_wrong.json).
+
+Score: Change=1 only if his order passes the test (tutor builds the file and runs `test_parsons.py`) within 2 attempts; otherwise 0.
 
 ## Step: Find the bug
 
-Someone moved one line in `call`. It runs with no error. The symptom, from a real run: 1 call was made and it worked on the third try, but the log holds 3 records, and 2 of them say the call failed.
+Someone moved one line in `fetch`. It runs with no error. The symptom, counted by the program itself: `calls made: 1`, and the call worked on its second try, but `records: 2` and `records saying failed: 1`.
 
 ```python
-    for wait in BACKOFF:
-        attempts = attempts + 1
+    for pause in PAUSES:
+        tries = tries + 1
         try:
             text = fake_provider(prompt)
-            log.append({"ok": True, "attempts": attempts})
+            records.append({"done": True, "tries": tries})
             return text
         except RuntimeError as err:
-            why = str(err)
-            time.sleep(wait)
-        log.append({"ok": False, "attempts": attempts, "why": why})
+            reason = str(err)
+            time.sleep(pause)
+        records.append({"done": False, "tries": tries, "reason": reason})
 ```
 
-1. Your hypothesis: which line is wrong, and why does it give 3 records?
-2. The one line to change.
+Fill in the debug card yourself:
+
+- **Symptom** (what is wrong, in numbers):
+- **Suspect lines** (which lines could write a record):
+- **Hypothesis** (why there is an extra record):
+- **My check** (one thing to print, and what you expect it to show if you are right):
+- **Fix** (the one line, and where it moves):
+
+I will run your check and show you the output; then I run your fix.
 
 **Your answer.**
 
 ### Key
-The last line, the failure record, is indented inside the `for` loop. It runs after every failed try, so the log gets one record per try instead of one per call (E3): a failed record for try 1, a failed record for try 2, then the success record for try 3. Fix: move it out of the loop by one level of indentation, so it runs once, only after all three tries have failed:
-```python
-    log.append({"ok": False, "attempts": attempts, "why": why})
-```
-Real run of the buggy file (runs/code-02-bug.json): `records in log: 3`, `records saying failed: 2`. With the line outside the loop, the same script gives one record, `[{'ok': True, 'attempts': 3}]` (runs/code-02-trace.json). Label: quietly wrong; a report built on this log would count 3 calls and a failure rate of 2 in 3 for a call that worked.
+The failure record is indented inside the `for` loop, so it runs after every failed try: one record per try instead of one per call (E3). Fix: move `records.append({"done": False, "tries": tries, "reason": reason})` out one level, below the loop, so it runs once, only after every try has failed. His check: if he asks to print `records` after the failure line, show runs/code-02-bug_probe.json: `after the failure line: tries = 1 records = [{'done': False, 'tries': 1, 'reason': 'timeout'}]`. Any other check: add that print to a copy of `bug.py`, record it with `code/record.py`, then show it. After the fix: one record, `[{'done': True, 'tries': 2}]` (runs/code-02-trace.json). Label: quietly wrong. If his first fix fails, he undoes it before the next.
 
-Debug card:
-- Symptom: 3 records for 1 call; 2 say failed though the call worked.
-- Hypothesis: the failure record is written inside the loop, once per failed try.
-- Test: count the failed tries in the script (2) and compare with the failed records (2): they match, so the line runs per try.
-- Fix: un-indent the line to sit after the loop; rerun and see 1 record.
+Score: 1 if his card names the failure record line and his fix gives one record, within 2 hypotheses; otherwise 0.
 
 ## Step: Close
 
-Finish this line in your own words: "Next time I see a start line or a log line near a loop, I will ..."
+Finish this line in your own words: "Next time I see a start line or a record line near a loop, I will ..."
 
 **Your answer.**
 
 ### Key
-Something like: "... ask whether it should run once per call (outside the loop) or once per try (inside it), and count how many times it runs with three tries." His line goes into the recall queue.
+Something like: "... ask whether it should run once per call (outside the loop) or once per try (inside it), and count how many times it runs." Record his line with `engine.py close`.
+
+## Cold
+
+A new retry loop. Read it, then answer.
+
+```python
+DELAYS = [0.1, 0.3, 0.0]
+replies = ["busy", "busy", "ok"]
+
+def ask():
+    r = replies.pop(0)
+    if r != "ok":
+        raise RuntimeError(r)
+    return "price 42"
+
+def get(history):
+    for delay in DELAYS:
+        waited = 0.0
+        try:
+            value = ask()
+            history.append({"worked": True, "waited": waited})
+            return value
+        except RuntimeError:
+            time.sleep(delay)
+            waited = waited + delay
+
+history = []
+print(get(history))
+print(history)
+```
+
+`waited` is meant to be the total time spent pausing.
+
+1. What does the last line print?
+2. Label it: crash, quietly wrong, or fine.
+3. If it is not fine, which line moves, and to where?
+
+**Your answer.**
+
+### Key
+1. `[{'worked': True, 'waited': 0.0}]` (runs/code-02-cold.json).
+2. Quietly wrong: `waited = 0.0` is a start line inside the loop, so the total is wiped on every pass (E2).
+3. Move `waited = 0.0` above the `for` line. Then it prints `[{'worked': True, 'waited': 0.4}]` (runs/code-02-cold_fixed.json).
+
+Score: parts right divided by 3.
 
 ## Cards
-- Q: A start line such as `attempts = 0` sits inside the loop. What happens? | A: It resets on every pass, so only the last pass counts. Quietly wrong, no crash.
-- Q: A call fails twice and works on the third try. How many records should the log get? | A: One. One record per call, not per try.
-- Q: The failure `log.append(...)` is indented inside the retry loop. What does the log show for fail, fail, ok? | A: Three records: two failed and one ok, for a single call that worked.
-- Q: What does `BACKOFF = [0.5, 1.0, 0.0]` do in the retry loop? | A: It sets how long to wait after each failed try, getting longer each time; the loop also runs once per item, so it sets the number of tries.
-- Q: Why does the loop stop after the try that works? | A: `return text` leaves the machine at once, so no more passes run and the failure record is skipped.
+- Q: `for x in [5, 6, 7]:` with `n = 0` and then `n = n + 1` inside it, then `print(n)`, to count the items. What prints, and which label? | A: `1`, quietly wrong: the start line is inside the loop, so it resets on every pass. || Q: `for p in [2, 3, 4]:` with `total = 0` and then `total = total + p` inside it, then `print(total)`, to add the items. What prints, and which label? | A: `4`, quietly wrong: the start line resets the total on every pass, so only the last item counts.
+- Q: One call is logged with `for result in ["fail", "fail", "ok"]:` and `records.append(result)` inside the loop. How many records, and is that right? | A: `3`, quietly wrong: one record per try, but it should be one per call. || Q: One call is logged with `for result in ["fail", "ok"]:` and `records.append(result)` inside the loop. How many records, and is that right? | A: `2`, quietly wrong: one record per try, but it should be one per call.
+- Q: How many tries does `for pause in [0.1, 0.2, 0.0]:` allow? | A: 3: the loop runs once per item in the list. || Q: How many tries does `for pause in [0.2, 0.0]:` allow? | A: 2: the loop runs once per item in the list.
+- Q: Why is the last wait in a backoff list zero? | A: After the last try there is no next try to wait for.
+- Q: In a retry loop, why do no more tries run after the one that works? | A: The return line leaves the machine at once, so the rest of the loop and the failure record are skipped.

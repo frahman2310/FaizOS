@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-02 bug.py",
  "program": "code/code-02/bug.py",
  "args": [],
  "exit_code": 0,
- "output": "calls made: 1\nrecords in log: 3\nrecords saying failed: 2\n"
+ "output": "calls made: 1\nrecords: 2\nrecords saying failed: 1\n"
 }

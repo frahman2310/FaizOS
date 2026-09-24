@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 table.py",
+ "program": "code/code-02/table.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "rate: USD to PKR\n[{'done': True, 'tries': 2}]\nafter (a) {'pause': 0.2, 'tries': 1, 'outcomes': ['timeout', 'ok', 'ok'], 'reason': '', 'text': '-', 'records': []}\nafter (d) {'pause': 0.2, 'tries': 1, 'outcomes': ['ok', 'ok'], 'reason': 'timeout', 'text': '-', 'records': []}\nerr is RuntimeError('timeout') and its kind is RuntimeError\nafter (a) {'pause': 0.4, 'tries': 2, 'outcomes': ['ok', 'ok'], 'reason': 'timeout', 'text': '-', 'records': []}\nafter (b) {'pause': 0.4, 'tries': 2, 'outcomes': ['ok'], 'reason': 'timeout', 'text': 'rate: USD to PKR', 'records': []}\nafter (c) {'pause': 0.4, 'tries': 2, 'outcomes': ['ok'], 'reason': 'timeout', 'text': 'rate: USD to PKR', 'records': [{'done': True, 'tries': 2}]}\n"
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 bug_probe.py",
+ "program": "code/code-02/bug_probe.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after the failure line: tries = 1 records = [{'done': False, 'tries': 1, 'reason': 'timeout'}]\nafter the success line: tries = 2 records = [{'done': False, 'tries': 1, 'reason': 'timeout'}, {'done': True, 'tries': 2}]\n"
+}

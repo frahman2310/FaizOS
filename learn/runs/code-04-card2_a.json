@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 card2_a.py",
+ "program": "code/code-04/card2_a.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "1\n"
+}

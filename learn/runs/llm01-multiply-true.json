@@ -1,1 +1,8 @@
-{"kind": "check", "computed_by": "python3", "347*29": 10063}
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-multiply-true '347 * 29' --note 'true product for the New case'",
+ "expression": "347 * 29",
+ "value": 10063,
+ "note": "true product for the New case",
+ "made": "2026-09-24T19:04:37"
+}

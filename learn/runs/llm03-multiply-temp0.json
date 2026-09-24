@@ -1,6 +1,8 @@
 {
  "kind": "sample",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py sample 'What is 347 x 29? Reply with the number only.' --temps 0 --n 5 --max-new 8 --save llm03-multiply-temp0",
+ "made": "20260924-190445-541330",
  "inputs": {
   "prompt": "What is 347 x 29? Reply with the number only.",
   "temps": [
@@ -8,7 +10,9 @@
   ],
   "n": 5,
   "max_new": 8,
-  "seed": 0
+  "seed": 0,
+  "decoding": "temperature 0 = greedy (always the likeliest token), not the provider's sampler",
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 347 x 29? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n"
  },
  "output": {
   "0.0": {

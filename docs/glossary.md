@@ -49,4 +49,4 @@ prompt: all the text sent to the model in one call, including any earlier conver
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,
 repository, pipeline, CI, GitHub Actions, workflow, gate, API, endpoint, token, model, latency,
 throughput, summariser, assertion, assert, benchmark, baseline, held-out, dataset, credential,
-secret, OIDC, IAM, permission, role, environment variable, production, staging, branch, pull request, TPR, TNR, sample, true rate
+secret, OIDC, IAM, permission, role, environment variable, production, staging, branch, pull request, TPR, TNR, sample, true rate, kappa, tokenizer, temperature, p50, median, fsrs, sampling, logprob, softmax, context window, greedy, parsons, trace table, regex

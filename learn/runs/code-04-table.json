@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 table.py",
+ "program": "code/code-04/table.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "{'worked': 2, 'retried': 1}\nafter (a): row -  oks []\nafter (b): row {'ok': True, 'tries': 1}  oks [{'ok': True, 'tries': 1}]\nafter (b): row {'ok': True, 'tries': 2}  oks [{'ok': True, 'tries': 1}, {'ok': True, 'tries': 2}]\nafter (c): row {'ok': True, 'tries': 2}  oks [{'ok': True, 'tries': 1}, {'ok': True, 'tries': 2}]  retried 0\nafter (d): row {'ok': True, 'tries': 2}  oks [{'ok': True, 'tries': 1}, {'ok': True, 'tries': 2}]  retried 1\n{'worked': 2, 'retried': 1}\n"
+}

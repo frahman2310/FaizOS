@@ -1,8 +1,9 @@
 {
+ "command": "python3 code/record.py code-04 test_change.py trace",
  "program": "code/code-04/test_change.py",
  "args": [
   "trace"
  ],
  "exit_code": 1,
- "output": "{'succeeded': 3, 'retried': 3, 'cost per success': 0.0027}\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-04/test_change.py\", line 6, in <module>\n    assert summary[\"retried\"] == 2\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+ "output": "{'worked': 2, 'retried': 1}\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-04/test_change.py\", line 7, in <module>\n    assert summary[\"failed\"] == 1\n           ~~~~~~~^^^^^^^^^^\nKeyError: 'failed'\n"
 }

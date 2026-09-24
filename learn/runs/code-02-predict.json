@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-02 predict.py",
  "program": "code/code-02/predict.py",
  "args": [],
  "exit_code": 0,
- "output": "1\n"
+ "output": "tries: 1\n"
 }

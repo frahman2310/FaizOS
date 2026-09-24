@@ -1,9 +1,12 @@
 {
  "kind": "next",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The capital of Pakistan is' --save llm01-capital-plain",
+ "made": "20260924-190235-127408",
  "inputs": {
   "prompt": "The capital of Pakistan is",
-  "k": 5
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
  },
  "output": [
   {

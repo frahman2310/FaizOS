@@ -1,6 +1,8 @@
 {
  "kind": "tokens",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'withholding tax on non-filers' --save llm02-tokens-withholding",
+ "made": "20260924-190356-385652",
  "inputs": {
   "text": "withholding tax on non-filers"
  },

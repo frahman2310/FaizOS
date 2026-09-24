@@ -14,7 +14,8 @@ done = subprocess.run([sys.executable, program, *args], cwd=LEARN / "code" / uni
                       capture_output=True, text=True)
 name = "-".join([unit, Path(program).stem, *args])
 out = LEARN / "runs" / (name + ".json")
-out.write_text(json.dumps({"program": f"code/{unit}/{program}", "args": args,
+out.write_text(json.dumps({"command": " ".join(["python3 code/record.py", unit, program, *args]),
+                           "program": f"code/{unit}/{program}", "args": args,
                            "exit_code": done.returncode, "output": done.stdout + done.stderr}, indent=1) + "\n")
 print(out.name, "exit", done.returncode)
 print(done.stdout + done.stderr)

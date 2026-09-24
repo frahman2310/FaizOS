@@ -1,8 +1,9 @@
 {
+ "command": "python3 code/record.py code-02 test_parsons.py parsons_wrong",
  "program": "code/code-02/test_parsons.py",
  "args": [
   "parsons_wrong"
  ],
  "exit_code": 1,
- "output": "('reply to: hi', 1)\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/test_parsons.py\", line 5, in <module>\n    assert program.call(\"hi\") == (\"reply to: hi\", 3)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+ "output": "('rate: hi', 1)\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/test_parsons.py\", line 5, in <module>\n    assert program.fetch(\"hi\") == (\"rate: hi\", 2)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
 }

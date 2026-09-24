@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-urdu-bill-qwen '1000 * 27 // 10' --note 'same, Qwen ratio from one sentence'",
+ "expression": "1000 * 27 // 10",
+ "value": 2700,
+ "note": "same, Qwen ratio from one sentence",
+ "made": "2026-09-24T19:09:43"
+}

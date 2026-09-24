@@ -1,6 +1,7 @@
 {
+ "command": "python3 code/record.py code-03 bug.py",
  "program": "code/code-03/bug.py",
  "args": [],
  "exit_code": 0,
- "output": "0 of 4 passed\nfailing: ['scan-000', 'credit-note-77', 'typed-000', 'typed-001']\npass rate 0%\n"
+ "output": "0 of 3 passed\nfailing: ['scan-000', 'credit-note-77', 'typed-000']\n"
 }

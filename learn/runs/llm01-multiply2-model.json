@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'What is 683 x 47? Reply with the number only.' --save llm01-multiply2-model",
+ "made": "20260924-190710-527348",
+ "inputs": {
+  "prompt": "What is 683 x 47? Reply with the number only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 683 x 47? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "32519"
+}

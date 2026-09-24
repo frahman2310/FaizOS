@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The capital of Australia is' --save llm01-cold-australia-plain",
+ "made": "20260924-190303-011178",
+ "inputs": {
+  "prompt": "The capital of Australia is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " ______",
+   "prob": 0.2048,
+   "percent": 20.5
+  },
+  {
+   "token": " Canberra",
+   "prob": 0.1041,
+   "percent": 10.4
+  },
+  {
+   "token": " __",
+   "prob": 0.0861,
+   "percent": 8.6
+  },
+  {
+   "token": " the",
+   "prob": 0.0649,
+   "percent": 6.5
+  },
+  {
+   "token": " located",
+   "prob": 0.0579,
+   "percent": 5.8
+  }
+ ]
+}

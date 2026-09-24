@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm04-chat-total '300 * 20 * 21 // 2' --note 'input tokens over a 20-message chat re-sending all earlier messages: 300 x (1+2+...+20)'",
+ "expression": "300 * 20 * 21 // 2",
+ "value": 63000,
+ "note": "input tokens over a 20-message chat re-sending all earlier messages: 300 x (1+2+...+20)",
+ "made": "2026-09-24T19:04:44"
+}

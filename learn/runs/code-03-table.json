@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-03 table.py",
+ "program": "code/code-03/table.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "2 of 3 passed\nfailing: ['credit-note-77']\nafter (a): case -  note -  passed 0  failing []\nafter (b): case {'invoice': 'scan-000', 'must_include': 'PKR 80,000'}  note 'Invoice scan-000, total PKR 80,000.'  passed 0  failing []\nafter (c): case scan-000  note 'Invoice scan-000, total PKR 80,000.'  passed 1  failing []\nafter (b): case {'invoice': 'credit-note-77', 'must_include': '-$310'}  note 'Invoice credit-note-77, due on receipt.'  passed 1  failing []\nafter (d): case credit-note-77  note 'Invoice credit-note-77, due on receipt.'  passed 1  failing ['credit-note-77']\nafter (b): case {'invoice': 'typed-000', 'must_include': '$100'}  note 'Invoice typed-000, total $100.'  passed 1  failing ['credit-note-77']\nafter (c): case typed-000  note 'Invoice typed-000, total $100.'  passed 2  failing ['credit-note-77']\n(2, ['credit-note-77'])\n"
+}

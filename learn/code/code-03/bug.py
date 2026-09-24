@@ -2,7 +2,6 @@ CASES = [
     {"invoice": "scan-000", "must_include": "PKR 80,000"},
     {"invoice": "credit-note-77", "must_include": "-$310"},
     {"invoice": "typed-000", "must_include": "$100"},
-    {"invoice": "typed-001", "must_include": "$107"},
 ]
 MISSES = ["credit-note-77"]          # the fake summariser drops the total on these
 
@@ -25,4 +24,3 @@ def score(cases):
 passed, failing = score(CASES)
 print(passed, "of", len(CASES), "passed")
 print("failing:", failing)
-print(f"pass rate {passed / len(CASES) * 100:.0f}%")

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 parsons_lines.py",
+ "program": "code/code-02/parsons_lines.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "\n        tries = tries + 1                        # A\n    return None, tries                           # B\n        try:                                     # C\n    tries = 0                                    # D\n            time.sleep(pause)                    # E\n        tries = 0                                # F\n            return fake_provider(prompt), tries  # G\n    for pause in PAUSES:                         # H\n        except RuntimeError:                     # I\n\n"
+}

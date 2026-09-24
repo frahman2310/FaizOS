@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-urdu-bill '1000 * 15 // 10' --note 'English bill scaled by the Urdu/English o200k token ratio from one sentence, same price per token'",
+ "expression": "1000 * 15 // 10",
+ "value": 1500,
+ "note": "English bill scaled by the Urdu/English o200k token ratio from one sentence, same price per token",
+ "made": "2026-09-24T19:09:43"
+}

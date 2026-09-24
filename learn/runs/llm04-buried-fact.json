@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Notes for the tax office visit.\nMy name is Faiz and I live in Lahore.\nAli lives in Karachi and files in March.\nSara lives in Quetta and asked about zakat.\nBilal lives in Multan and owes a late fee.\nHina lives in Peshawar and has two salaries.\nUsman lives in Sialkot and runs a shop.\nAyesha lives in Hyderabad and rents a flat.\nKamran lives in Faisalabad and sells cloth.\nZara lives in Islamabad and works from home.\nOmar lives in Gujranwala and has a car loan.\nNadia lives in Rawalpindi and teaches.\nQuestion: what is my name, and which city do I live in?' --save llm04-buried-fact",
+ "made": "20260924-190556-816737",
+ "inputs": {
+  "prompt": "Notes for the tax office visit.\nMy name is Faiz and I live in Lahore.\nAli lives in Karachi and files in March.\nSara lives in Quetta and asked about zakat.\nBilal lives in Multan and owes a late fee.\nHina lives in Peshawar and has two salaries.\nUsman lives in Sialkot and runs a shop.\nAyesha lives in Hyderabad and rents a flat.\nKamran lives in Faisalabad and sells cloth.\nZara lives in Islamabad and works from home.\nOmar lives in Gujranwala and has a car loan.\nNadia lives in Rawalpindi and teaches.\nQuestion: what is my name, and which city do I live in?",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nNotes for the tax office visit.\nMy name is Faiz and I live in Lahore.\nAli lives in Karachi and files in March.\nSara lives in Quetta and asked about zakat.\nBilal lives in Multan and owes a late fee.\nHina lives in Peshawar and has two salaries.\nUsman lives in Sialkot and runs a shop.\nAyesha lives in Hyderabad and rents a flat.\nKamran lives in Faisalabad and sells cloth.\nZara lives in Islamabad and works from home.\nOmar lives in Gujranwala and has a car loan.\nNadia lives in Rawalpindi and teaches.\nQuestion: what is my name, and which city do I live in?<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "Your name is Faiz, and you live in Lahore."
+}

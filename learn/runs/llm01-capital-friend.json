@@ -1,9 +1,12 @@
 {
  "kind": "next",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'My friend asked me where Pakistan'\"'\"'s government sits, and I told her the capital of Pakistan is' --save llm01-capital-friend",
+ "made": "20260924-190249-603045",
  "inputs": {
   "prompt": "My friend asked me where Pakistan's government sits, and I told her the capital of Pakistan is",
-  "k": 5
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
  },
  "output": [
   {

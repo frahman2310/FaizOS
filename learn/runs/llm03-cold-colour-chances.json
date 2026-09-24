@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next '<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one colour. Answer with one word.<|im_end|>\n<|im_start|>assistant\n' --k 5 --save llm03-cold-colour-chances",
+ "made": "20260924-190452-278584",
+ "inputs": {
+  "prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one colour. Answer with one word.<|im_end|>\n<|im_start|>assistant\n",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": "Red",
+   "prob": 0.8883,
+   "percent": 88.8
+  },
+  {
+   "token": "Blue",
+   "prob": 0.0844,
+   "percent": 8.4
+  },
+  {
+   "token": "Yellow",
+   "prob": 0.0119,
+   "percent": 1.2
+  },
+  {
+   "token": "Green",
+   "prob": 0.0044,
+   "percent": 0.4
+  },
+  {
+   "token": "Purple",
+   "prob": 0.0028,
+   "percent": 0.3
+  }
+ ]
+}

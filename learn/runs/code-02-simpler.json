@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 simpler.py",
+ "program": "code/code-02/simpler.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "rate: USD to PKR\n[{'done': True, 'tries': 2}]\n"
+}

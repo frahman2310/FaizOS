@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm04-card-last-call '10 * 500' --note 'card variant: message 10 of a chat re-sending earlier 500-token messages'",
+ "expression": "10 * 500",
+ "value": 5000,
+ "note": "card variant: message 10 of a chat re-sending earlier 500-token messages",
+ "made": "2026-09-24T19:08:48"
+}

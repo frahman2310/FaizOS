@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-03 bug_probe.py",
+ "program": "code/code-03/bug_probe.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "0 of 3 passed\nfailing: ['scan-000', 'credit-note-77', 'typed-000']\nnote = 'Invoice scan-000, total PKR 80,000.'\ncase = {'invoice': 'scan-000', 'must_include': 'PKR 80,000'}\nlabels of case = ['invoice', 'must_include']\ncase[\"must_include\"] in note -> True\ncase[\"must_include\"] in case -> False\n"
+}

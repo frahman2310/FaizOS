@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 bug_probe.py",
+ "program": "code/code-01/bug_probe.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "ok: hi\n[{'model': 'haiku', 'ms': 300.0, 'cost': 0.0063}]\nanswer = {'text': 'ok: hi', 'tokens_in': 1200, 'tokens_out': 300}\ncost_of got tokens_in = 300 and tokens_out = 1200\ncost = 0.0063\n"
+}

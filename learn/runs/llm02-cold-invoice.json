@@ -1,0 +1,34 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Invoice 88317702' --save llm02-cold-invoice",
+ "made": "20260924-190404-369027",
+ "inputs": {
+  "text": "Invoice 88317702"
+ },
+ "output": {
+  "characters": 16,
+  "words": 2,
+  "openai_o200k": [
+   "Invoice",
+   " ",
+   "883",
+   "177",
+   "02"
+  ],
+  "qwen": [
+   "Invoice",
+   " ",
+   "8",
+   "8",
+   "3",
+   "1",
+   "7",
+   "7",
+   "0",
+   "2"
+  ],
+  "openai_o200k_count": 5,
+  "qwen_count": 10
+ }
+}

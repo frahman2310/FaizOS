@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-ratio-openai '15 / 10' --note 'Urdu/English tokens, OpenAI o200k, one sentence'",
+ "expression": "15 / 10",
+ "value": 1.5,
+ "note": "Urdu/English tokens, OpenAI o200k, one sentence",
+ "made": "2026-09-24T19:10:36"
+}

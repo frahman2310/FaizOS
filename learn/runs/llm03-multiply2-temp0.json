@@ -1,0 +1,29 @@
+{
+ "kind": "sample",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py sample 'What is 256 x 34? Reply with the number only.' --temps 0 --n 5 --max-new 8 --save llm03-multiply2-temp0",
+ "made": "20260924-190718-475952",
+ "inputs": {
+  "prompt": "What is 256 x 34? Reply with the number only.",
+  "temps": [
+   0.0
+  ],
+  "n": 5,
+  "max_new": 8,
+  "seed": 0,
+  "decoding": "temperature 0 = greedy (always the likeliest token), not the provider's sampler",
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 256 x 34? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": {
+  "0.0": {
+   "answers": [
+    "8160",
+    "8160",
+    "8160",
+    "8160",
+    "8160"
+   ],
+   "distinct": 1
+  }
+ }
+}

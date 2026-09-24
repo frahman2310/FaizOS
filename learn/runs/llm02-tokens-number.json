@@ -1,6 +1,8 @@
 {
  "kind": "tokens",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 1234567 --save llm02-tokens-number",
+ "made": "20260924-190335-974328",
  "inputs": {
   "text": "1234567"
  },

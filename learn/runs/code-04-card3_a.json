@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 card3_a.py",
+ "program": "code/code-04/card3_a.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-04/card3_a.py\", line 1, in <module>\n    print([4, 5, 6][3])\n          ~~~~~~~~~^^^\nIndexError: list index out of range\n"
+}

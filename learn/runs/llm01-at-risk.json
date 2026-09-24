@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-at-risk '1000 // 5' --note 'questions a day at risk if 1 in 5 is worded like row 1'",
+ "expression": "1000 // 5",
+ "value": 200,
+ "note": "questions a day at risk if 1 in 5 is worded like row 1",
+ "made": "2026-09-24T19:09:43"
+}

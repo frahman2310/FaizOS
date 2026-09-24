@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm03-apple-total 'round(49.9 + 23.4, 1)' --note 'first pieces that start the answer Apple: Apple + App'",
+ "expression": "round(49.9 + 23.4, 1)",
+ "value": 73.3,
+ "note": "first pieces that start the answer Apple: Apple + App",
+ "made": "2026-09-24T19:08:48"
+}

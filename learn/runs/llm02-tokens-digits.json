@@ -1,0 +1,37 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens '1000000 2024' --save llm02-tokens-digits",
+ "made": "20260924-190203-747399",
+ "inputs": {
+  "text": "1000000 2024"
+ },
+ "output": {
+  "characters": 12,
+  "words": 2,
+  "openai_o200k": [
+   "100",
+   "000",
+   "0",
+   " ",
+   "202",
+   "4"
+  ],
+  "qwen": [
+   "1",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   " ",
+   "2",
+   "0",
+   "2",
+   "4"
+  ],
+  "openai_o200k_count": 6,
+  "qwen_count": 12
+ }
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 work.py",
+ "program": "code/code-01/work.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "one million: 1000000\nright way: 2700 then 0.0027\nswapped: 6300 then 0.0063\n"
+}

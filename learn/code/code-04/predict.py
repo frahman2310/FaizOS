@@ -1,5 +1,6 @@
-times = [210, 180, 950, 200, 190]      # milliseconds for five calls
-
+times = [210, 180, 950, 200, 190]      # ms for five calls; the aim is the middle time
 times.sort
-middle = times[len(times) // 2]        # the middle one: the p50
-print(middle)
+print("A", times[2])
+times.sort()
+print("B", times[2])
+print("C", times[5])

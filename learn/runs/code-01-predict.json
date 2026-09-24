@@ -1,4 +1,5 @@
 {
+ "command": "python3 code/record.py code-01 predict.py",
  "program": "code/code-01/predict.py",
  "args": [],
  "exit_code": 1,

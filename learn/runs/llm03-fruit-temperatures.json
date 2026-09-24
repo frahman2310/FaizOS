@@ -1,6 +1,8 @@
 {
  "kind": "sample",
  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py sample 'Name one fruit. Answer with one word.' --temps 0 0.7 1.5 --n 10 --max-new 5 --save llm03-fruit-temperatures",
+ "made": "20260924-190424-272906",
  "inputs": {
   "prompt": "Name one fruit. Answer with one word.",
   "temps": [
@@ -10,7 +12,9 @@
   ],
   "n": 10,
   "max_new": 5,
-  "seed": 0
+  "seed": 0,
+  "decoding": "temperature 0 = greedy (always the likeliest token), not the provider's sampler",
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one fruit. Answer with one word.<|im_end|>\n<|im_start|>assistant\n"
  },
  "output": {
   "0.0": {

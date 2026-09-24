@@ -1,29 +1,35 @@
 import time
 
-BACKOFF = [0.5, 1.0, 0.0]                             # seconds to wait after try 1, 2, 3 fails
-script = ["529 overloaded", "529 overloaded", "ok"]   # what the fake provider does on each try
+PAUSES = [0.2, 0.4, 0.0]                  # seconds to wait after try 1, 2, 3 fails
+outcomes = ["timeout", "ok", "ok"]        # what the fake provider does on each try
 
 def fake_provider(prompt):
-    outcome = script.pop(0)              # take the first item out of the list
+    outcome = outcomes.pop(0)
     if outcome != "ok":
         raise RuntimeError(outcome)
-    return "reply to: " + prompt
+    return "rate: " + prompt
 
-def call(prompt, log):
-    attempts = 0                                          # (a)
-    why = ""
-    for wait in BACKOFF:
-        attempts = attempts + 1                           # (b)
+def fetch(prompt, records):
+    # goal: get one reply, trying again after a failure, and write one record
+    # 1. set start values
+    tries = 0
+    reason = ""
+    for pause in PAUSES:
+        # 2. try
+        tries = tries + 1                                    # (a)
         try:
-            text = fake_provider(prompt)                  # (c)
-            log.append({"ok": True, "attempts": attempts})   # (d)
+            text = fake_provider(prompt)                     # (b)
+            # 3. record the success and leave
+            records.append({"done": True, "tries": tries})   # (c)
             return text
         except RuntimeError as err:
-            why = str(err)                                # (e)
-            time.sleep(wait)                              # (f)
-    log.append({"ok": False, "attempts": attempts, "why": why})
+            # 4. note why, wait, go round again
+            reason = str(err)                                # (d)
+            time.sleep(pause)
+    # 5. give up: record the failure once
+    records.append({"done": False, "tries": tries, "reason": reason})
     return None
 
-log = []
-print(call("summarise this invoice", log))
-print(log)
+records = []
+print(fetch("USD to PKR", records))
+print(records)

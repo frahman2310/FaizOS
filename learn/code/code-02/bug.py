@@ -1,31 +1,37 @@
 import time
 
-BACKOFF = [0.5, 1.0, 0.0]
-script = ["529 overloaded", "529 overloaded", "ok"]
+PAUSES = [0.2, 0.4, 0.0]                  # seconds to wait after try 1, 2, 3 fails
+outcomes = ["timeout", "ok", "ok"]        # what the fake provider does on each try
 
 def fake_provider(prompt):
-    outcome = script.pop(0)
+    outcome = outcomes.pop(0)             # take the first item out of the list
     if outcome != "ok":
         raise RuntimeError(outcome)
-    return "reply to: " + prompt
+    return "rate: " + prompt
 
-def call(prompt, log):
-    attempts = 0
-    why = ""
-    for wait in BACKOFF:
-        attempts = attempts + 1
+def fetch(prompt, records):
+    tries = 0
+    reason = ""
+    for pause in PAUSES:
+        tries = tries + 1
         try:
             text = fake_provider(prompt)
-            log.append({"ok": True, "attempts": attempts})
+            records.append({"done": True, "tries": tries})
             return text
         except RuntimeError as err:
-            why = str(err)
-            time.sleep(wait)
-        log.append({"ok": False, "attempts": attempts, "why": why})
+            reason = str(err)
+            time.sleep(pause)
+        records.append({"done": False, "tries": tries, "reason": reason})
     return None
 
-log = []
-call("summarise this invoice", log)
-print("calls made:", 1)
-print("records in log:", len(log))
-print("records saying failed:", len([row for row in log if not row["ok"]]))
+records = []
+calls = 0
+fetch("USD to PKR", records)
+calls = calls + 1
+failed = 0
+for r in records:
+    if not r["done"]:
+        failed = failed + 1
+print("calls made:", calls)
+print("records:", len(records))
+print("records saying failed:", failed)

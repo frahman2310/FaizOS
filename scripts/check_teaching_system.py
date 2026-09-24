@@ -75,6 +75,12 @@ for unit in units:
     r = subprocess.run([sys.executable, os.path.join(ROOT, "learn/check_unit.py"), unit], capture_output=True, text=True)
     check(f"{os.path.relpath(unit, ROOT)} passes check_unit", r.returncode == 0, r.stdout.strip().replace("\n", " | "))
 check("fact sheet exists", os.path.exists(os.path.join(ROOT, "learn/facts.md")))
+r = subprocess.run([sys.executable, os.path.join(ROOT, "learn/selftest.py")], capture_output=True, text=True)
+check("checker, guard and engine catch every planted attack (learn/selftest.py)", r.returncode == 0,
+      " | ".join(l for l in r.stdout.splitlines() if l.startswith(("FAIL", "SKIP"))) or r.stderr[-300:])
+for name in ("faiz-drill", "faiz-hint", "faiz-learn", "faiz-build"):     # only faiz-teach defines teaching
+    f = os.path.join(ROOT, f".claude/commands/{name}.md")
+    check(f"/{name} is retired, defines no recall or hints", not os.path.exists(f) or "Retired" in open(f).read())
 check("devils-advocate agent exists", os.path.exists(os.path.join(ROOT, ".claude/agents/devils-advocate.md")))
 
 quiet = "--quiet" in sys.argv

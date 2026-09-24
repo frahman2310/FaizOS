@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-04 cold_fixed.py",
+ "program": "code/code-04/cold_fixed.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "slowest good call: 300\n"
+}
