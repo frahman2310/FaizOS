@@ -1,5 +1,8 @@
 # Learning structure: how LLMs behave
 
+> **Amended 2026-09-24:** the independent review (`review.md`) kept this structure with changes. Where this file disagrees with `INTEGRATED.md` (plain step names, shared recall queue, one mastery rule, start order, the week), `INTEGRATED.md` wins.
+
+
 Written 2026-09-24. One skill: tokens, sampling and temperature, context windows, hallucination, pricing,
 and how models are pretrained and post-trained, at the level of concepts and facts to remember.
 Builds on `../recommended-method.md`, `../postmortem.md` and `../curricula/` (method-effectiveness,

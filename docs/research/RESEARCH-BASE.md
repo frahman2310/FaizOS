@@ -7,6 +7,9 @@ Completed 2026-09-24. Two layers: **findings** (committed here, in `docs/researc
 
 | File | Question it answers |
 |---|---|
+| `structures/INTEGRATED.md` | **The final specification: five skill structures, one shared layer, start order, the week** |
+| `structures/{code,llm-behaviour,production,evaluation,system-design}.md` | One structure per kind of learning, each from its own experts |
+| `structures/review.md` | The independent review that tested the five for optimality |
 | `recommended-method.md` | **The answer: the most effective combination of methods, per skill, with sources and measures** |
 | `postmortem.md` | What went wrong with FaizOS's teaching system, and why, against all of the research below |
 | `curricula/method-effectiveness.md` | Every teaching component ranked by evidence (effect sizes, independent vs researcher-made tests); platforms decomposed |

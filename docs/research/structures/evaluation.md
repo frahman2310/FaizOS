@@ -1,5 +1,8 @@
 # Evaluation and error analysis: the learning structure for "logic + understanding + methods"
 
+> **Amended 2026-09-24:** the independent review (`review.md`) kept this structure with changes. Where this file disagrees with `INTEGRATED.md` (plain step names, shared recall queue, one mastery rule, start order, the week), `INTEGRATED.md` wins.
+
+
 Written 2026-09-24. The skill: read real outputs, label pass or fail with a reason, group failures into
 types, count them, build and validate LLM judges, and measure whether a fix worked.
 Builds on, does not repeat: `../recommended-method.md` (the 10-step unit, the four proven parts),

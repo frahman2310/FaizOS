@@ -1,5 +1,8 @@
 # Production: the learning structure for "small maths + quality control, applied"
 
+> **Amended 2026-09-24:** the independent review (`review.md`) kept this structure with changes. Where this file disagrees with `INTEGRATED.md` (plain step names, shared recall queue, one mastery rule, start order, the week), `INTEGRATED.md` wins.
+
+
 Written 2026-09-24. The skill: cost per call and per user, capacity and latency estimates, error budgets
 and SLOs, caching economics, monitoring and drift, and choosing which lever moves a number.
 Builds on, does not repeat: `../recommended-method.md` (the 10-step unit, the four proven parts),

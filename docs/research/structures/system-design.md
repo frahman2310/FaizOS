@@ -1,5 +1,8 @@
 # Learning structure: System design of AI/LLM products
 
+> **Amended 2026-09-24:** the independent review (`review.md`) kept this structure with changes. Where this file disagrees with `INTEGRATED.md` (plain step names, shared recall queue, one mastery rule, start order, the week), `INTEGRATED.md` wins.
+
+
 Written 2026-09-24. The skill: choose and connect components (retrieval, tools, agents, memory, guardrails,
 serving) for a brief with a budget, a latency target and a quality bar, and defend each choice against the
 alternatives. His words: "logic build-up + cognitive development". His own reasoning must grow, so every

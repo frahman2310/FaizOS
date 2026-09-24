@@ -1,5 +1,8 @@
 # Learning structure: Code
 
+> **Amended 2026-09-24:** the independent review (`review.md`) kept this structure with changes. Where this file disagrees with `INTEGRATED.md` (plain step names, shared recall queue, one mastery rule, start order, the week), `INTEGRATED.md` wins.
+
+
 Written 2026-09-24. Builds on `recommended-method.md`, `postmortem.md` and `curricula/skill-methods.md` C5
 (read those for the general method). This file only covers what is special to code, and where the new
 experts change or challenge the earlier plan.
