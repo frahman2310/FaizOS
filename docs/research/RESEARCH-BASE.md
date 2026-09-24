@@ -7,7 +7,11 @@ Completed 2026-09-24. Two layers: **findings** (committed here, in `docs/researc
 
 | File | Question it answers |
 |---|---|
+| `recommended-method.md` | **The answer: the most effective combination of methods, per skill, with sources and measures** |
 | `postmortem.md` | What went wrong with FaizOS's teaching system, and why, against all of the research below |
+| `curricula/method-effectiveness.md` | Every teaching component ranked by evidence (effect sizes, independent vs researcher-made tests); platforms decomposed |
+| `curricula/scaledojo-method-analysis.md` | ScaleDojo measured from its own content: chapters, 1,085 quiz items, 358 answer pairs, labs; adopt, change or skip |
+| `curricula/teaching-craft.md` | 28 craft techniques from Khan Academy, 3Blue1Brown, CS50, Karpathy, Alammar and others; a 20-item explanation standard |
 | `curricula/curriculum-design.md` | What to teach, in what order, to what level; prerequisite graph of 40 concepts; levels and milestones per skill; job data |
 | `curricula/skill-methods.md` | The proven method for each of the five skills, the worked-example ladder, fading rules, the week |
 | `curricula/judgement-training.md` | How professions train judgement (medicine, business, law, design, aviation, chess, software) and 35-minute session designs for system design and evaluation |
@@ -28,7 +32,7 @@ Completed 2026-09-24. Two layers: **findings** (committed here, in `docs/researc
 | `private/research-base/code/` | 1,044 + 1 repo | 726,562 | CS50P (all weeks and 40 problem sets), code-reading and debugging research, steering AI assistants (Prompt Problems, CS1-LLM), Exercism. Index with "How code is taught" |
 | `private/research-base/system-design/` | 321 + 5 repos | 306,668 | system-design-primer, Anthropic cookbook agent patterns, Microsoft courses, 12-factor-agents; reference notes on Hello Interview, ByteByteGo, Huyen, Yan, Fowler. Index with "the frames experts use" |
 | `private/research-base/production-and-llm-behaviour/` | 64 | 266,595 | Google SRE book and workbook, inference and cost guides, HF LLM Course ch. 1-2, three Karpathy transcripts |
-| `private/research-base/learning-methods/` | 42 | 466,333 | The Math Academy Way, Khan Academy research, and the primary papers (worked examples, fading, productive failure, comparison, retrieval, spacing, interleaving, 4C/ID, deliberate practice) |
+| `private/research-base/learning-methods/` | 43 | 474,000 | The Math Academy Way, Khan Academy research, and the primary papers (worked examples, fading, productive failure, comparison, retrieval, spacing, interleaving, 4C/ID, deliberate practice) |
 
 About 2.5 million words of primary material, every file headed with its source URL and fetch date.
 
