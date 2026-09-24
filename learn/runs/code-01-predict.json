@@ -1,0 +1,6 @@
+{
+ "program": "code/code-01/predict.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "0.0027\nTraceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-01/predict.py\", line 8, in <module>\n    print(cost_of(\"sonnet\", 1200, 300))\n          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-01/predict.py\", line 4, in cost_of\n    rate = RATES[model]\n           ~~~~~^^^^^^^\nKeyError: 'sonnet'\n"
+}

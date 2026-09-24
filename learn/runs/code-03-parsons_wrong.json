@@ -1,0 +1,6 @@
+{
+ "program": "code/code-03/parsons_wrong.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/parsons_wrong.py\", line 9, in <module>\n    print(spend(log))\n          ~~~~~^^^^^\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/parsons_wrong.py\", line 6, in spend\n    total = total + row\n            ~~~~~~^~~~~\nTypeError: unsupported operand type(s) for +: 'float' and 'dict'\n"
+}

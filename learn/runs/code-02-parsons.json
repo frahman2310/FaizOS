@@ -1,0 +1,6 @@
+{
+ "program": "code/code-02/parsons.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "('reply to: hi', 3)\n"
+}

@@ -1,0 +1,6 @@
+{
+ "program": "code/code-04/bug.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "the user waited (ms): 2400.0\nthe log says: [{'ok': True, 'ms': 300.0}]\n"
+}

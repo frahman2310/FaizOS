@@ -1,0 +1,6 @@
+{
+ "program": "code/code-01/trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "reply to: summarise this invoice\n[{'model': 'haiku', 'ms': 300.0, 'cost': 0.0027}]\n"
+}

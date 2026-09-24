@@ -1,0 +1,6 @@
+{
+ "program": "code/code-02/bug.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "calls made: 1\nrecords in log: 3\nrecords saying failed: 2\n"
+}

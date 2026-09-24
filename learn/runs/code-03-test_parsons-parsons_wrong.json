@@ -1,0 +1,8 @@
+{
+ "program": "code/code-03/test_parsons.py",
+ "args": [
+  "parsons_wrong"
+ ],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/test_parsons.py\", line 2, in <module>\n    program = __import__(sys.argv[1] if len(sys.argv) > 1 else \"parsons\")   # which file to test\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/parsons_wrong.py\", line 9, in <module>\n    print(spend(log))\n          ~~~~~^^^^^\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-03/parsons_wrong.py\", line 6, in spend\n    total = total + row\n            ~~~~~~^~~~~\nTypeError: unsupported operand type(s) for +: 'float' and 'dict'\n"
+}

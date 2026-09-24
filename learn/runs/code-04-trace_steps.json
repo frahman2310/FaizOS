@@ -1,0 +1,6 @@
+{
+ "program": "code/code-04/trace_steps.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "{'succeeded': 3, 'retried': 3, 'cost per success': 0.0027}\n0.0027\n0.0054\n0.0054\n0.0081\n"
+}

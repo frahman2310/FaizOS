@@ -1,0 +1,6 @@
+{
+ "program": "code/code-02/trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "reply to: summarise this invoice\n[{'ok': True, 'attempts': 3}]\n"
+}
