@@ -5,3 +5,6 @@ faizos-core/data/
 __pycache__/
 *.pyc
 notebook/VENTURES.md
+*.db
+*.db-wal
+*.db-shm
