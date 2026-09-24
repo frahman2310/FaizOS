@@ -34,6 +34,9 @@ logged in `docs/learning-evidence.md` (C1 to C46); his latest words win.
 5. **Record:** `uv run engine.py done <unit-id> <score> --predicted <p>`. The score is the share of steps
    answered right first time, in whole percent, using the Keys. This also adds the unit's cards to the queue
    and schedules its 7-day cold check.
+6. **7-day cold check** (when `today` lists one): he answers that unit's cards cold, then one new problem of
+   the same kind with new numbers or new code, prepared and checked before the session (never the same item
+   again, which would test recognition). Record with `uv run engine.py done <unit-id> <score> --predicted <p> --cold`.
 
 ## Feedback
 - Right: one line naming what was right; one sentence more only if it adds something.
