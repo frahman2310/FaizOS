@@ -1,0 +1,9 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "What is 347 x 29? Reply with the number only.",
+  "max_new": 40
+ },
+ "output": "9503"
+}

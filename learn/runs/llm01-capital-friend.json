@@ -1,0 +1,35 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "My friend asked me where Pakistan's government sits, and I told her the capital of Pakistan is",
+  "k": 5
+ },
+ "output": [
+  {
+   "token": " Islamabad",
+   "prob": 0.4497,
+   "percent": 45.0
+  },
+  {
+   "token": " Karachi",
+   "prob": 0.1252,
+   "percent": 12.5
+  },
+  {
+   "token": " in",
+   "prob": 0.0782,
+   "percent": 7.8
+  },
+  {
+   "token": " Lahore",
+   "prob": 0.0514,
+   "percent": 5.1
+  },
+  {
+   "token": "____",
+   "prob": 0.0177,
+   "percent": 1.8
+  }
+ ]
+}

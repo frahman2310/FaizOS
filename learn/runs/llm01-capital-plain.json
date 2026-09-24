@@ -1,0 +1,35 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "The capital of Pakistan is",
+  "k": 5
+ },
+ "output": [
+  {
+   "token": " located",
+   "prob": 0.2189,
+   "percent": 21.9
+  },
+  {
+   "token": " Lahore",
+   "prob": 0.0813,
+   "percent": 8.1
+  },
+  {
+   "token": " ______",
+   "prob": 0.06,
+   "percent": 6.0
+  },
+  {
+   "token": " Karachi",
+   "prob": 0.0555,
+   "percent": 5.6
+  },
+  {
+   "token": " the",
+   "prob": 0.0546,
+   "percent": 5.5
+  }
+ ]
+}

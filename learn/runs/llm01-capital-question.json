@@ -1,0 +1,35 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "Q: What is the capital of Pakistan?\nA: The capital of Pakistan is",
+  "k": 5
+ },
+ "output": [
+  {
+   "token": " Islamabad",
+   "prob": 0.8194,
+   "percent": 81.9
+  },
+  {
+   "token": " Karachi",
+   "prob": 0.1034,
+   "percent": 10.3
+  },
+  {
+   "token": " Lahore",
+   "prob": 0.0157,
+   "percent": 1.6
+  },
+  {
+   "token": " Dh",
+   "prob": 0.0069,
+   "percent": 0.7
+  },
+  {
+   "token": " capital",
+   "prob": 0.0068,
+   "percent": 0.7
+  }
+ ]
+}

@@ -44,6 +44,8 @@ def main():
         return
     from check_lesson_script import parts, problems, START_MARKERS, ASK_MARKERS
     text = last_assistant_text(data["transcript_path"])
+    if "**Your answer.**" in text:
+        return unit_step(text)
     if not any(a in text for a in ASK_MARKERS):
         return
     starts = [text.index(m) for m in START_MARKERS if m in text]
@@ -68,6 +70,23 @@ def main():
         "reason": reason + " Write or fix the part in the lesson script, run "
                   "scripts/check_lesson_script.py until it passes, then send the part verbatim.",
     }))
+
+
+def unit_step(text):
+    """A unit step (learn/units) may only be sent if it is a step of a unit that passes learn/check_unit.py."""
+    sys.path.insert(0, os.path.join(ROOT, "learn"))
+    from check_unit import steps, problems as unit_problems
+    sent = norm(text)
+    reason = "This step does not come from a checked unit file (learn/units/<skill>/*.md)."
+    for path in glob.glob(os.path.join(ROOT, "learn", "units", "*", "*.md")):
+        for name, body, key in steps(open(path).read()):
+            if norm(body) and norm(body) in sent:
+                errs = unit_problems(path)
+                if not errs:
+                    return
+                reason = f"Unit {os.path.basename(path)} fails its check: " + "; ".join(errs[:3])
+    print(json.dumps({"decision": "block", "reason": reason + " Fix the unit, run learn/check_unit.py until it "
+                      "passes, then send the step verbatim, one step per message."}))
 
 
 try:

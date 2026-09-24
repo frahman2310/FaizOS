@@ -5,6 +5,8 @@ description: Learn from Faiz's answers. Reads a session's teaching exchanges, lo
 
 # Reflect: turn his answers into a better method
 
+**v2 note (2026-09-24):** teaching now runs on `docs/research/structures/INTEGRATED.md` and `learn/`. Evidence of learning is the engine's results (`uv run engine.py dashboard`: main score, 7-day cold score, prediction gap), not first-try counts on parts. The method itself does not change for 8 weeks (faiz-teach, "How this file changes"); until then, reflect only logs his stated rules and the ledger, and fixes units that proved unclear.
+
 Two files, two jobs, never mixed:
 - `docs/learning-evidence.md` holds EVIDENCE only (counts, quotes, the session ledger).
 - `.claude/skills/faiz-teach/SKILL.md` holds INSTRUCTIONS only. It is the single source.

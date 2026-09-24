@@ -41,7 +41,7 @@ for path in SURFACES:
 
 skill = open(SKILL).read() if os.path.exists(SKILL) else ""
 check("faiz-teach skill exists", bool(skill))
-for label in ("Template markers:", "Decision markers:", "Call markers:", "## The build", "## How this file changes", "Carry-over from L"):
+for label in ("## How a session runs", "## How this file changes", "INTEGRATED.md", "check_unit.py", "engine.py"):
     check(f"skill has '{label}'", label in skill)
 
 teaching_notes = [p for p in glob.glob(os.path.join(MEMORY, "*.md"))
@@ -69,7 +69,12 @@ for script in glob.glob(os.path.join(ROOT, "projects/*/script.md")):
 for case in glob.glob(os.path.join(ROOT, "projects/*/cases/case-*.md")):
     r = subprocess.run([sys.executable, os.path.join(ROOT, "scripts/check_case.py"), case], capture_output=True, text=True)
     check(f"{os.path.relpath(case, ROOT)} passes the case checker", r.returncode == 0, r.stdout.strip().replace("\n", " | "))
-check("skill has 'Investigation mode'", "## Investigation mode" in open(os.path.join(ROOT, ".claude/skills/faiz-teach/SKILL.md")).read())
+units = glob.glob(os.path.join(ROOT, "learn/units/*/*.md"))
+check("at least one unit prepared", bool(units))
+for unit in units:
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "learn/check_unit.py"), unit], capture_output=True, text=True)
+    check(f"{os.path.relpath(unit, ROOT)} passes check_unit", r.returncode == 0, r.stdout.strip().replace("\n", " | "))
+check("fact sheet exists", os.path.exists(os.path.join(ROOT, "learn/facts.md")))
 check("devils-advocate agent exists", os.path.exists(os.path.join(ROOT, ".claude/agents/devils-advocate.md")))
 
 quiet = "--quiet" in sys.argv

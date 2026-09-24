@@ -1,6 +1,6 @@
 # Case 01 · The search that cannot hear clients
 
-**Status: stopped 2026-09-24 at his request (C43); kept as a record.**
+**Status: stopped `2026-09-24` at his request (C43); kept as a record.**
 
 **Evidence:** `../lab/out/documents.txt` `../lab/out/baseline_word_250_dev.txt` `../lab/out/baseline_meaning_250_dev.txt` `../lab/questions_README.md`
 

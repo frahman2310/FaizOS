@@ -41,6 +41,8 @@ clear rate: of the notes a person marked PASS, the share the judge also marked P
 wobble: how far a rate measured on a set of cases can sit from the true rate by luck alone
 true rate: the rate on every case the firm will ever see, not just the ones measured
 
+model: the AI program that produces the answers, e.g. Claude or the small Qwen model on this Mac
+
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,
 repository, pipeline, CI, GitHub Actions, workflow, gate, API, endpoint, token, model, latency,

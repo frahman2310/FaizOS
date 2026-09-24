@@ -1,0 +1,31 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "text": "withholding tax on non-filers"
+ },
+ "output": {
+  "characters": 29,
+  "words": 4,
+  "openai_o200k": [
+   "with",
+   "holding",
+   " tax",
+   " on",
+   " non",
+   "-f",
+   "ilers"
+  ],
+  "qwen": [
+   "with",
+   "holding",
+   " tax",
+   " on",
+   " non",
+   "-f",
+   "ilers"
+  ],
+  "openai_o200k_count": 7,
+  "qwen_count": 7
+ }
+}

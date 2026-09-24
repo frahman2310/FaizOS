@@ -4,12 +4,10 @@
 "/Users/faizr/AI OS for Learning/faizos-core/node_modules/.bin/tsx" \
   "/Users/faizr/AI OS for Learning/faizos-core/src/session-log.ts" --start >/dev/null 2>&1 || true
 cat <<'EOF'
-FaizOS is open — this is Faiz's build-and-ship home screen. Before anything else this session,
-call the `faizos_state` tool and render the dashboard: a warm one-line greeting with his 🔥 streak
-and last ship, his 2–3 weakest must-know skills as tiny bars, and ONE clear next step (continue a
-build / start one / review). Show the menu: build · ship · analyze · review · notes · radar. If he
-chooses to build or learn, load the `faiz-teach` skill and teach ONLY from the lesson's validated
-script (see the skill). Keep the dashboard ~5 seconds to read. Never lecture.
+FaizOS is open. If Faiz wants to learn today, load the `faiz-teach` skill and follow "How a session runs":
+run `uv run engine.py today` in learn/, do the recall cards, then send the scheduled unit's steps verbatim,
+one per message, from learn/units (checked by learn/check_unit.py). If he asks for his progress, show
+`uv run engine.py dashboard`. Otherwise help with whatever he asks. Keep it short; never lecture.
 EOF
 
 # Backstop for the feedback loop: flag teaching the method has not learned from yet.
