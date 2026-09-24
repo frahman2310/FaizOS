@@ -1,4 +1,4 @@
-# The curriculum map: borrowed structure, borrowed order
+# The curriculum map: borrowed structure, borrowed order (v2)
 
 Written 2026-09-24. This replaces invention with what experts already use. Every element below names
 its source; the evidence sits in the four research files beside this one:
@@ -11,48 +11,49 @@ ScaleDojo's Instagram captions were analysed on 2026-09-01 (`../../project-reaso
 
 ---
 
-## Part 1 · How every unit is taught (the structure)
+## Part 1 · How it is taught: five skills, five methods (revised 2026-09-24)
 
-One template, never changed between units (every framework course keeps one frame, teaching-structure A6).
+The first version of this map used one unit template for everything. Faiz's own analysis (C44, handwritten
+notes) showed that is the mistake the whole project kept making: the five skills are different kinds of
+knowledge and each needs its own method. The evidence for each method is in `skill-methods.md`.
 
-**Size:** 20 to 25 minutes: 3 segments of 4 to 6 minutes (Ng, the 6.9-million-session edX study, ScaleDojo's
-2 to 4 minute chapters). **Ratio:** about 1 part reading to 2 parts doing (CMU: doing gave 6 times the
-learning of reading). No more than 250 words before he answers something.
+**The shared backbone for the three applied skills** (code, evaluation, system design), which is what he
+asked for (C45: worked examples and detailed workings as the reference point):
+**1 study a worked example → 2 completion problem (he writes the last steps) → 3 faded example (he writes
+most steps) → 4 independent problem → 5 novel variation.** At every blank he writes his step and one line
+of why before the expert step is shown. Worked examples come first because he is a novice in these
+(van Gog 2011); his own attempt comes first once he has two worked examples of that problem type, and it is
+always followed by a side-by-side comparison with an expert answer (Kapur 2014; Loibl and Rummel 2014).
+That comparison is what the failed open investigation lacked, and the attempt-first step is what the old
+explain-then-quiz lessons lacked.
 
-| Step | Time | What happens | Borrowed from |
-|---|---|---|---|
-| 0 Recall | 2 min | 3 questions from earlier units: his mistakes queue, spaced at 1, 3, 7, 21 days | Duolingo mistakes review, Khan mastery challenges |
-| 1 Goal card | 30 s | Three lines: "You will decide X." "Done when: 4/5 on the check and the lab target." "Case: [company]." | ScaleDojo opening problem, HF unit goals |
-| 2 The failure | 1 min | One real case going wrong, with numbers | ScaleDojo chapter openings |
-| 3 Segments x3 | 4-6 min each | a) predict or pick first; b) under 250 words with one worked example on named data; c) one check question, every option explained | Brilliant pretest, Hello Interview "try it first", HF quiz feedback, Ng in-video quiz |
-| 4 Judge practice | 5-8 min | One of the five practice types below, always with a numeric target | ScaleDojo lab, Hello Interview, Hamel homework |
-| 5 Check | 3 min | 5 questions, pass 4/5. A miss is "not yet": reread the segment, 5 new questions | Ng mastery quizzes, Khan, Launch School, ScaleDojo 70% |
-| 6 Close | 30 s | One-line takeaway: the decision, when to choose it, the number that decides it | ScaleDojo takeaway table, Huyen chapter summaries |
+| Skill (his label) | Kind of knowledge | Method | One worked example looks like | His own reasoning comes in | Checked against |
+|---|---|---|---|---|---|
+| **Evaluation** (core: logic + understanding + methods) | method + judgement | full ladder, slow | goal, givens, read and note 6 traces, group into failure types, count × cost, turn one into a pass/fail check, measure the checker, did the fix move the number, common wrong turns (Hamel's field guide in CFA layout) | labels traces before seeing the expert's labels; every blank step | expert labels (agreement computed), then the measured failure rate |
+| **LLM behaviour** (understanding, "all learning") | facts + concepts | predict, run, explain; spaced recall. Few worked examples (for simple facts, answering first beats examples) | claim, predict, real run with numbers, why, cost or risk, where it breaks, recall question | the prediction before every run | the measured run |
+| **System design** (core: logic build-up + cognitive development) | judgement | 2 worked examples per problem type, then he designs first and compares section by section; then the same brief with one number changed | brief with numbers, requirements, capabilities, pipeline, estimate, deep dive as Bad/Good/Great, cross-cutting layer, check against the brief, wrong turns, what a senior answer adds (Hello Interview + ScaleDojo) | every design from the third on, written before any reveal; one line per section "mine vs expert, which is better for this brief" | the expert design, the 100-point rubric, the brief's numbers |
+| **Production** (small maths + quality control, applied) | procedure + applied maths | CFA-style worked numeric solution per new formula, faded fast (his strength); the real skill is "which input flips the decision" | exhibit, question, formula, substitution with units, answer and meaning, sensitivity, wrong turns (CFA + Google SRE) | the sensitivity and lever questions | the exact number, then the expert's lever |
+| **Code** (core: understand, steer, write; "code needs to be learnt") | procedure, built by repetition | read and trace before explain, explain before write: predict output, Parsons problem (put given lines in order), fill 1 to 3 lines, find the bug with a fixed process, small edit, prompt problem (a spec that makes an AI assistant produce code passing given tests), review an AI diff | goal with one input and output, code with labelled blocks, trace table, why each block, the test, wrong turns, the spec he would give an AI | prediction before each run, hypothesis before each debug step, spec before each AI request | tests passing, then the expert solution |
 
-**The five practice types** (he judges, never writes code; rotated, never added to mid-course):
-1. **Pick the design:** 2 or 3 options with cost, latency and quality numbers; choose and name the deciding number (Hello Interview Bad/Good/Great).
-2. **Set the knobs:** fixed components, he sets 2 to 4 values to hit a target, scored by rubric (ScaleDojo lab).
-3. **Find the fault:** a trace, log or 10 to 20 lines of Python or SQL with one planted error; name the line and its cost (fast.ai notebooks, erroneous-example research).
-4. **Label the outputs:** 8 to 12 real model outputs, pass or fail plus failure type; his agreement is computed (Hamel error analysis).
-5. **Walk the frame:** a short brief, filled in the fixed steps: requirements with numbers, components, one deep dive, one trade-off (Alex Xu's 4 steps, Hello Interview).
+**Moving from worked examples to independent work** (skill-methods.md D2, Math Academy's stated rules):
+- Each unit opens with a 90-second first-step test on a new problem. Right step and right reason twice → skip the worked example.
+- Climb one rung after 2 correct in a row with a correct reason; 2 misses in a row → back one rung and a prerequisite review.
+- A harder problem type restarts at a worked example. A worked example is retired once he passes a new variation cold.
+- Production fades fastest, system design slowest; LLM behaviour barely uses worked examples.
 
-**Module capstone** (every 4 to 6 units): one client case carried through the module, scored on ScaleDojo's
-100-point rubric (completeness 20, configuration 20, fit 20, cost 15, latency 15, safety 10); pass 70,
-otherwise "not yet" and one retry a week later (Launch School).
-**Final capstone:** a public artifact scored against an outside benchmark (HF's GAIA test, pass above 30%),
-plus a one-page design memo in the fixed frame.
-**Rhythm:** fixed days, a fixed number of units a week, a module end date he sets once (Coursera dated
-sessions, about 60% more completion; Duolingo streaks). He learns alone, so the rhythm replaces a cohort.
+**The week** (5 units of 20 to 25 minutes plus 3 minutes a day; the core three take about 70%):
+| Daily | Mon | Tue | Wed | Thu | Fri | Sat (optional) |
+|---|---|---|---|---|---|---|
+| 3-minute recall (LLM-behaviour cards, missed items at 1, 3, 7, 21 days) | Evaluation | Code | System design | Code + one predict-and-run | Production, mixed set | one cold item from each track |
 
-**Why this fits his own record** (docs/learning-evidence.md): short questions in one steady rhythm is what
-the bootcamp did ("exactly what I needed"); decisions with numbers is what the builds did ("I liked the
-build part"); a plainly stated goal answers "what am I supposed to do here" (C41); fixed stages answer
-"unstructured and pointless" (C42); one unchanging format answers "the method is inconsistent" (09-14).
+**What stays from the first version:** short segments with a check after each; more doing than reading;
+"not yet" with new questions instead of a fail; a scored module capstone every 4 to 6 weeks (ScaleDojo's
+100-point rubric, pass 70); a final public capstone; a fixed rhythm; one unchanging format *per skill*.
 
-**What not to do** (teaching-structure Part C): long text or video with no check; read-only units;
-self-paced with no dates; open research tasks for a novice (the stopped case-01 was exactly this);
-no visible end; complexity before a simple working design; build-from-scratch coding; changing the
-format between units; points as the goal; trusting a platform's own marketing numbers.
+**What not to do** (teaching-structure Part C and skill-methods Part E): one format for every skill;
+open research tasks without a frame and an expert answer; the expert design shown before his attempt
+(after the first two); AI-written code before he has specified it; generic metrics before reading traces;
+long text with no check; self-paced with no dates; changing a skill's format mid-course.
 
 ---
 
@@ -90,23 +91,22 @@ plus capstones. HF estimates its Agents and MCP steps at 3 to 4 hours a week for
 
 ---
 
-## Part 3 · Who does what
+## Part 3 · Who does what, and where the material comes from
 
-- **The sources explain.** The "Read" column is the source's own short chapter (ScaleDojo chapters are 2 to
-  4 minutes; HF units are short sections). Claude does not rewrite them. This is the core change: the
-  explaining is done by material refined on many learners, not invented per lesson.
-- **Claude runs everything around the reading:** recall (step 0), goal card (1), the three predict-and-check
-  segments built on that chapter (3), judge practice (4), the check with "not yet" (5), the close (6),
-  the mistakes queue and spacing, and scoring capstones on the rubric. It explains extra only when asked.
-- **ScaleDojo's lab is the practice ground** for "pick the design" and "set the knobs"; HF supplies
-  certificates and real agent tests; Huyen supplies depth where a module needs it.
-- **FaizOS becomes the tracker**: units done, check scores, mistakes queue, capstone scores, streak. The
-  teaching rulebook stops growing: the template above is fixed and only his stated preferences change it.
+- **Worked examples come from experts, not from Claude**, wherever one exists:
+  - system design: ScaleDojo's worked-example chapters (HLD: URL shortener, chat, news feed, video, ad clicks; GenAI capstone: enterprise RAG, developer tools, search and tutoring, agents, AI OS; LLD: parking lot to chess), Hello Interview and ByteByteGo write-ups;
+  - evaluation: Hamel Husain's field guide and the HF Cookbook eval recipes;
+  - production: Google SRE worked numbers, CFA-format problems;
+  - code: CS50, Exercism and ScaleDojo's Forge chapters (Python from variables to decorators, 84 chapters);
+  - checks: ScaleDojo's quiz bank (every chapter has a quiz with the correct answer and an explanation) and its weak-vs-strong "interview signal" answers, which are ready-made contrast pairs.
+  All ScaleDojo material is saved for his personal study in `private/scaledojo/` (git-ignored, never published).
+- **Claude builds only the rungs the sources lack**: completion and faded versions of an expert example, variations with one number changed, first-step tests, and the scoring. Each generated item names the expert example it was cut from.
+- **ScaleDojo's labs are the practice ground for design** (drag, connect, stress-test, AI critique); GenAI lab levels unlock in order as he completes them.
+- **FaizOS tracks** rung per skill, first-step results, the mistakes queue and capstone scores. The teaching rulebook is replaced by this map; only his stated preferences change it.
 
 ## Part 4 · Decisions only he can make
 
-1. **ScaleDojo Pro** (listed at ₹4,999, or ₹3,499 billed yearly; roughly US$40 to $57 a year; 7-day refund; check the exact terms on scaledojo.dev/pricing before paying): unlocks GenAI lab levels beyond the free
-   primers and the quizzes. Without it, the "Practice" column falls back to Claude-built practice of the same five types.
+1. ~~ScaleDojo plan~~: done, he bought Architect (2026-09-24).
 2. **Huyen's book** (paid; price not verified): the depth layer for M3, M9-M11. Optional; the SD and HF
    material covers every module without it.
 3. **Rhythm:** which days, and how many units a week (5 is the default above).
