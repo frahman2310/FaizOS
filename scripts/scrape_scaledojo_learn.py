@@ -6,6 +6,7 @@ ScaleDojo's and must not be published. One request every 1.5 s; pages already sa
 
     python3 scripts/scrape_scaledojo_learn.py            # all five courses
     python3 scripts/scrape_scaledojo_learn.py genai      # one course
+    python3 scripts/scrape_scaledojo_learn.py --public   # every other sitemap page (wiki, blogs, papers...)
 """
 import html
 import re
@@ -69,7 +70,29 @@ class Main(HTMLParser):
         return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
 
 
+def public():
+    urls = [u for u in re.findall(r"<loc>([^<]+)</loc>", get("https://scaledojo.dev/sitemap.xml")) if "/learn/" not in u]
+    done = 0
+    for url in urls:
+        path = url.split("scaledojo.dev", 1)[1].strip("/") or "home"
+        out = ROOT.parent / "pages" / f"{path}.md"
+        if out.exists():
+            continue
+        try:
+            page = Main()
+            page.feed(get(url))
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(f"<!-- source: {url} -->\n\n" + page.markdown())
+            done += 1
+        except Exception as e:
+            print(f"FAILED {url}: {e}", file=sys.stderr)
+        time.sleep(1.5)
+    print(f"saved {done} of {len(urls)} public pages")
+
+
 def main(tracks):
+    if tracks == ["--public"]:
+        return public()
     sitemap = get("https://scaledojo.dev/sitemap.xml")
     urls = [u for u in re.findall(r"<loc>([^<]+)</loc>", sitemap) if "/learn/" in u]
     urls = [u for u in urls if u.split("/")[3] in tracks] if tracks else urls
