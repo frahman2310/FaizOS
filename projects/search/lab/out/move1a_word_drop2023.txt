@@ -1,0 +1,8 @@
+
+run 3: method=word size=250 overlap=0 split=dev k=5 drop=ratecard_2023   (1,295 passages)
+                                 n   Recall@k     MRR   top is 2023 card
+  all questions                100        47%    0.30          0 of 100
+  worded like the law           43        81%    0.58          0 of 43
+  worded like a client          57        21%    0.10          0 of 57
+  answer changed since 2023     23        35%    0.24          0 of 23
+  answer unchanged              77        51%    0.32          0 of 77

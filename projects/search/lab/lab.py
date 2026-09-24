@@ -31,10 +31,12 @@ def norm(text):
     return re.sub(r"\s+", " ", text.lower()).strip()
 
 
-def cut(size, overlap):
-    """Cut every document into passages of `size` words; each starts `size - overlap` words after the last."""
+def cut(size, overlap, drop=()):
+    """Cut every document (except those in `drop`) into passages of `size` words; each starts `size - overlap` words after the last."""
     passages = []
     for doc, year in DOCS.items():
+        if doc in drop:
+            continue
         pages = (RAW / f"{doc}.txt").read_text(errors="ignore").split("\f")
         words = [(w, p + 1) for p, page in enumerate(pages) for w in page.split()]
         step = max(1, size - overlap)
@@ -80,12 +82,12 @@ class MeaningSearch:
     graphics chip and cached per cut. Numbers are scaled to length 1, so closeness is the Part A multiply-and-add."""
     PREFIX = "Represent this sentence for searching relevant passages: "
 
-    def __init__(self, passages, size, overlap):
+    def __init__(self, passages, size, overlap, drop=()):
         import numpy as np
         import torch
         from sentence_transformers import SentenceTransformer
         self.model = SentenceTransformer("BAAI/bge-small-en-v1.5", device="mps" if torch.backends.mps.is_available() else "cpu")
-        cache = HERE / "cache" / f"meaning_{size}_{overlap}.npy"
+        cache = HERE / "cache" / f"meaning_{size}_{overlap}{'_no_' + '_'.join(sorted(drop)) if drop else ''}.npy"
         if cache.exists():
             self.vecs = np.load(cache)
         else:
@@ -98,9 +100,9 @@ class MeaningSearch:
         return list(self.vecs @ q)
 
 
-def build(method, size, overlap):
-    passages = cut(size, overlap)
-    engine = WordSearch(passages) if method == "word" else MeaningSearch(passages, size, overlap)
+def build(method, size, overlap, drop=()):
+    passages = cut(size, overlap, drop)
+    engine = WordSearch(passages) if method == "word" else MeaningSearch(passages, size, overlap, drop)
     return passages, engine
 
 
@@ -116,7 +118,7 @@ def hit(passage, q):
 
 
 def ask(a):
-    passages, engine = build(a.method, a.size, a.overlap)
+    passages, engine = build(a.method, a.size, a.overlap, a.drop)
     for rank, (p, s) in enumerate(top(passages, engine, a.question, a.k), 1):
         print(f"\n#{rank}  score {s:.3f}   {p['doc']}  (law as of {p['year']}), page {p['page']}, passage {p['id']}")
         print("    " + p["text"][:420] + ("..." if len(p["text"]) > 420 else ""))
@@ -126,16 +128,18 @@ def evaluate(a):
     questions = [json.loads(l) for l in (HERE / "questions.jsonl").read_text().splitlines() if l.strip()]
     if a.split != "all":
         questions = [q for q in questions if q["split"] == a.split]
-    passages, engine = build(a.method, a.size, a.overlap)
+    rewrites = json.loads((HERE / a.rewrites).read_text()) if a.rewrites else {}
+    passages, engine = build(a.method, a.size, a.overlap, a.drop)
     db = connect()
     config = f"method={a.method} size={a.size} overlap={a.overlap} split={a.split} k={a.k}"
+    config += "".join(f" drop={d}" for d in a.drop) + (f" rewrites={a.rewrites}" if a.rewrites else "")
     run = db.execute("INSERT INTO runs (config, method, size, overlap, split, k, passages) VALUES (?,?,?,?,?,?,?)",
                      (config, a.method, a.size, a.overlap, a.split, a.k, len(passages))).lastrowid
     db.executemany("INSERT OR IGNORE INTO passages VALUES (?,?,?,?,?,?,?)",
                    [(p["id"], a.size, a.overlap, p["doc"], p["year"], p["page"], p["text"]) for p in passages])
     rows = []
     for q in questions:
-        ranked = top(passages, engine, q["question"], a.k)
+        ranked = top(passages, engine, rewrites.get(q["id"], q["question"]), a.k)
         rank = next((i for i, (p, _) in enumerate(ranked, 1) if hit(p, q)), 0)
         first = ranked[0][0]
         rows.append((run, q["id"], rank, first["doc"], first["year"], first["id"],
@@ -205,8 +209,10 @@ if __name__ == "__main__":
         p.add_argument("--size", type=int, default=250)
         p.add_argument("--overlap", type=int, default=0)
         p.add_argument("--k", type=int, default=5)
+        p.add_argument("--drop", action="append", default=[], choices=list(DOCS), help="leave a document out")
         if name == "eval":
             p.add_argument("--split", default="dev", choices=["dev", "holdout", "all"])
+            p.add_argument("--rewrites", help="JSON file mapping question id to the text search receives instead")
     sub.add_parser("sql").add_argument("query")
     a = ap.parse_args()
     {"ask": ask, "eval": evaluate, "sql": sql}[a.cmd](a)

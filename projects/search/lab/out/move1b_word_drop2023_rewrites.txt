@@ -1,0 +1,8 @@
+
+run 4: method=word size=250 overlap=0 split=dev k=5 drop=ratecard_2023 rewrites=rewrites/law_wording_v1.json   (1,295 passages)
+                                 n   Recall@k     MRR   top is 2023 card
+  all questions                100        54%    0.39          0 of 100
+  worded like the law           43        81%    0.58          0 of 43
+  worded like a client          57        33%    0.25          0 of 57
+  answer changed since 2023     23        43%    0.30          0 of 23
+  answer unchanged              77        57%    0.42          0 of 77
