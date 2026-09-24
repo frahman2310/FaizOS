@@ -1,0 +1,9 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "Earlier in this chat I told you my name and the city I live in. What are they?",
+  "max_new": 40
+ },
+ "output": "In this chat, your name is \"Qwen\" and the city you live in is Hangzhou, Zhejiang Province, China."
+}

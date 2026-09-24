@@ -1,0 +1,27 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "text": "1234567"
+ },
+ "output": {
+  "characters": 7,
+  "words": 1,
+  "openai_o200k": [
+   "123",
+   "456",
+   "7"
+  ],
+  "qwen": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7"
+  ],
+  "openai_o200k_count": 3,
+  "qwen_count": 7
+ }
+}

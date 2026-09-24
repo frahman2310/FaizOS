@@ -1,0 +1,9 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "Earlier in this chat I said: my name is Faiz and I live in Lahore. What is my name, and which city did I say I live in?",
+  "max_new": 40
+ },
+ "output": "Your name is Faiz, and you live in Lahore. The city you mentioned earlier was Lahore."
+}

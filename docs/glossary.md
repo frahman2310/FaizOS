@@ -42,6 +42,8 @@ wobble: how far a rate measured on a set of cases can sit from the true rate by 
 true rate: the rate on every case the firm will ever see, not just the ones measured
 
 model: the AI program that produces the answers, e.g. Claude or the small Qwen model on this Mac
+token: one piece of text the model reads or writes, often part of a word; you pay per token
+prompt: all the text sent to the model in one call, including any earlier conversation
 
 ## Watchlist
 prompt, ship, deploy, eval, eval set, test case, pass rate, regression, merge, commit, repo,

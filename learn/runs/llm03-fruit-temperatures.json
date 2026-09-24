@@ -1,0 +1,62 @@
+{
+ "kind": "sample",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "Name one fruit. Answer with one word.",
+  "temps": [
+   0.0,
+   0.7,
+   1.5
+  ],
+  "n": 10,
+  "max_new": 5,
+  "seed": 0
+ },
+ "output": {
+  "0.0": {
+   "answers": [
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple",
+    "Apple"
+   ],
+   "distinct": 1
+  },
+  "0.7": {
+   "answers": [
+    "Apple",
+    "Apple.",
+    "Apple",
+    "Apple",
+    "Orange",
+    "Apple",
+    "Apple.",
+    "Apple",
+    "Apples.",
+    "Apple."
+   ],
+   "distinct": 4
+  },
+  "1.5": {
+   "answers": [
+    "Apple",
+    "roselogan.smile",
+    "apple",
+    "PearidueATIC_ES Compilation",
+    "Grapes.",
+    "Itinerary",
+    "(apple) Hello there",
+    "Banana",
+    "Grapes. Quint",
+    "anise."
+   ],
+   "distinct": 10
+  }
+ }
+}

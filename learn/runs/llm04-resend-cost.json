@@ -1,0 +1,18 @@
+{
+ "kind": "check",
+ "computed_by": "python3",
+ "inputs": {
+  "turns_given": 20,
+  "tokens_per_exchange_given": 300,
+  "sonnet5_input_usd_per_million": 2.0,
+  "chats_per_day_given": 1000
+ },
+ "input_tokens_resending_history": 63000,
+ "input_tokens_if_only_new_message": 6000,
+ "times_more": 10.5,
+ "cost_per_chat_resending_usd": 0.126,
+ "cost_per_chat_only_new_usd": 0.012,
+ "cost_per_day_resending_usd": 126,
+ "cost_per_day_only_new_usd": 12,
+ "last_turn_input_tokens": 6000
+}

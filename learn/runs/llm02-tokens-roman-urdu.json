@@ -1,0 +1,49 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "text": "Mujhe apni tankhwah par kitna tax dena hai?"
+ },
+ "output": {
+  "characters": 43,
+  "words": 8,
+  "openai_o200k": [
+   "M",
+   "uj",
+   "he",
+   " ap",
+   "ni",
+   " tank",
+   "hw",
+   "ah",
+   " par",
+   " kit",
+   "na",
+   " tax",
+   " den",
+   "a",
+   " hai",
+   "?"
+  ],
+  "qwen": [
+   "M",
+   "uj",
+   "he",
+   " ap",
+   "ni",
+   " tank",
+   "hw",
+   "ah",
+   " par",
+   " kit",
+   "na",
+   " tax",
+   " den",
+   "a",
+   " hai",
+   "?"
+  ],
+  "openai_o200k_count": 16,
+  "qwen_count": 16
+ }
+}

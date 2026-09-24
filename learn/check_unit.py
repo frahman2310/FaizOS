@@ -6,8 +6,8 @@
 What it enforces (docs/research/structures/INTEGRATED.md):
 - the skill's own steps, in its own order, one '## Step: <name>' per message, each ending '**Your answer.**'
   and followed by a '### Key' the learner never sees;
-- every number in a step's text comes from a saved run, the fact sheet or a listed source, or sits on a line
-  marked 'given:'  (the tutor never invents numbers);
+- every number in a step's text comes from a saved run or the fact sheet; a number from a listed source is
+  accepted only on a line that quotes it; scenario facts sit on a line marked 'given:' (no invented numbers);
 - listed sources and runs exist; no step longer than 2,000 characters; watchlist jargon explained where used.
 """
 import re
@@ -70,15 +70,18 @@ def problems(path):
     allowed = [s for s in STEPS[skill] if s in found]
     if found != allowed or [s for s in expected if s not in found]:
         out.append(f"steps must be, in order: {expected}; found {found}")
-    evidence = ""
-    for rel in h["sources"] + h["runs"]:
-        f = (ROOT / rel) if not (HERE / rel).exists() else HERE / rel
-        if not f.exists():
-            out.append(f"listed file not found: {rel}")
-        else:
-            evidence += f.read_text(errors="ignore")
-    evidence += (HERE / "facts.md").read_text()
-    known = numbers(evidence)
+    measured, quoted = "", ""                        # runs and the fact sheet vs long sources
+    for kind in ("runs", "sources"):
+        for rel in h[kind]:
+            f = HERE / rel if (HERE / rel).exists() else ROOT / rel
+            if not f.exists():
+                out.append(f"listed file not found: {rel}")
+            elif kind == "runs":
+                measured += f.read_text(errors="ignore")
+            else:
+                quoted += f.read_text(errors="ignore")
+    known = numbers(measured + (HERE / "facts.md").read_text())
+    from_sources = numbers(quoted)                   # accepted only on a line that quotes the source
     try:
         from check_lesson_script import jargon_problems
     except Exception:
@@ -95,8 +98,11 @@ def problems(path):
         for line in prose.splitlines():
             if re.search(r"(?i)\bgiven:", line):
                 continue
+            quoting = '"' in line or "\u201c" in line
             for n in numbers(re.sub(r"`[^`]*`", "", line)):
-                if n not in known and not re.fullmatch(r"\d|10|20\d\d", n):
+                if n in known or (quoting and n in from_sources):
+                    continue
+                if not re.fullmatch(r"\d|10|20\d\d", n):
                     out.append(f"step '{name}': number {n} is not in a listed run, source or facts.md "
                                f"(mark the line 'given:' if it is a scenario fact)")
     if "## Cards" not in text:

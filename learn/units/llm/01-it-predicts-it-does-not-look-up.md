@@ -84,7 +84,7 @@ Row 2 looks like a question followed by an answer, and in text like that the nex
 
 **The right idea:** the model gives a chance to every possible next word, based on how text like this usually continued. The answer you get depends on the wording you give.
 
-**What it costs:** a support assistant that answers 1,000 customer questions a day works out what to say from the wording of each question. Two customers asking the same thing in different words can get different answers. Where in a real product would that matter most?
+**What it costs** (given: a support assistant that answers 1,000 customer questions a day): it works out what to say from the wording of each question. Two customers asking the same thing in different words can get different answers. Where in a real product would that matter most?
 
 **Your answer.**
 

@@ -1,0 +1,25 @@
+{
+ "kind": "sample",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "What is 347 x 29? Reply with the number only.",
+  "temps": [
+   0.0
+  ],
+  "n": 5,
+  "max_new": 8,
+  "seed": 0
+ },
+ "output": {
+  "0.0": {
+   "answers": [
+    "9503",
+    "9503",
+    "9503",
+    "9503",
+    "9503"
+   ],
+   "distinct": 1
+  }
+ }
+}

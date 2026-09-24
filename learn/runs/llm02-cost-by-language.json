@@ -1,0 +1,20 @@
+{
+ "kind": "check",
+ "computed_by": "python3",
+ "inputs": {
+  "english_o200k": 10,
+  "urdu_o200k": 15,
+  "urdu_qwen": 27,
+  "roman_o200k": 16,
+  "english_bill_usd_given": 1000,
+  "claude_newer_tokenizer_extra": 0.3
+ },
+ "urdu_vs_english_o200k_ratio": 1.5,
+ "urdu_vs_english_qwen_ratio": 2.7,
+ "urdu_extra_percent_o200k": 50,
+ "urdu_extra_percent_qwen": 170,
+ "roman_extra_percent_o200k": 60,
+ "urdu_bill_o200k_usd": 1500,
+ "urdu_bill_qwen_usd": 2700,
+ "english_bill_after_30pct_usd": 1300
+}

@@ -1,0 +1,37 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "text": "How much tax do I owe on my salary?"
+ },
+ "output": {
+  "characters": 35,
+  "words": 9,
+  "openai_o200k": [
+   "How",
+   " much",
+   " tax",
+   " do",
+   " I",
+   " owe",
+   " on",
+   " my",
+   " salary",
+   "?"
+  ],
+  "qwen": [
+   "How",
+   " much",
+   " tax",
+   " do",
+   " I",
+   " owe",
+   " on",
+   " my",
+   " salary",
+   "?"
+  ],
+  "openai_o200k_count": 10,
+  "qwen_count": 10
+ }
+}

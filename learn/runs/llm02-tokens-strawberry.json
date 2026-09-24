@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "text": "strawberry"
+ },
+ "output": {
+  "characters": 10,
+  "words": 1,
+  "openai_o200k": [
+   "st",
+   "raw",
+   "berry"
+  ],
+  "qwen": [
+   "str",
+   "aw",
+   "berry"
+  ],
+  "openai_o200k_count": 3,
+  "qwen_count": 3
+ }
+}

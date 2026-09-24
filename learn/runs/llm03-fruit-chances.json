@@ -1,0 +1,40 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "inputs": {
+  "prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nName one fruit. Answer with one word.<|im_end|>\n<|im_start|>assistant",
+  "k": 6
+ },
+ "output": [
+  {
+   "token": "Apple",
+   "prob": 0.2332,
+   "percent": 23.3
+  },
+  {
+   "token": "Orange",
+   "prob": 0.1259,
+   "percent": 12.6
+  },
+  {
+   "token": "App",
+   "prob": 0.0883,
+   "percent": 8.8
+  },
+  {
+   "token": "Ban",
+   "prob": 0.0498,
+   "percent": 5.0
+  },
+  {
+   "token": " App",
+   "prob": 0.0399,
+   "percent": 4.0
+  },
+  {
+   "token": "Str",
+   "prob": 0.0341,
+   "percent": 3.4
+  }
+ ]
+}
