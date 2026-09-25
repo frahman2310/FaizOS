@@ -1,0 +1,26 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Faisalabad --save llm02-tokens-faisalabad",
+ "made": "20260925-164417-746657",
+ "inputs": {
+  "text": "Faisalabad"
+ },
+ "output": {
+  "characters": 10,
+  "words": 1,
+  "openai_o200k": [
+   "F",
+   "ais",
+   "al",
+   "abad"
+  ],
+  "qwen": [
+   "F",
+   "aisal",
+   "abad"
+  ],
+  "openai_o200k_count": 4,
+  "qwen_count": 3
+ }
+}

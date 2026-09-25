@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-cold-add-true '1234 + 5678 + 91'",
+ "expression": "1234 + 5678 + 91",
+ "value": 7003,
+ "note": "",
+ "made": "2026-09-25T16:43:20"
+}

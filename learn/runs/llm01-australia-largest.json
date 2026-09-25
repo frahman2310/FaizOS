@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the largest city in Australia?\nA: The largest city in Australia is' --save llm01-australia-largest",
+ "made": "20260925-164144-442548",
+ "inputs": {
+  "prompt": "Q: What is the largest city in Australia?\nA: The largest city in Australia is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Sydney",
+   "prob": 0.3502,
+   "percent": 35.0
+  },
+  {
+   "token": " Melbourne",
+   "prob": 0.2257,
+   "percent": 22.6
+  },
+  {
+   "token": " Canberra",
+   "prob": 0.2238,
+   "percent": 22.4
+  },
+  {
+   "token": " Adelaide",
+   "prob": 0.0464,
+   "percent": 4.6
+  },
+  {
+   "token": " Perth",
+   "prob": 0.0312,
+   "percent": 3.1
+  }
+ ]
+}

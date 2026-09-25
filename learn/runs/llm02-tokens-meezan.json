@@ -1,0 +1,24 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Meezan --save llm02-tokens-meezan",
+ "made": "20260925-164444-486951",
+ "inputs": {
+  "text": "Meezan"
+ },
+ "output": {
+  "characters": 6,
+  "words": 1,
+  "openai_o200k": [
+   "Mee",
+   "zan"
+  ],
+  "qwen": [
+   "M",
+   "ee",
+   "zan"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 3
+ }
+}

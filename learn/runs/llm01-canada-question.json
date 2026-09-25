@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the capital of Canada?\nA: The capital of Canada is' --save llm01-canada-question",
+ "made": "20260925-164217-593296",
+ "inputs": {
+  "prompt": "Q: What is the capital of Canada?\nA: The capital of Canada is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Ottawa",
+   "prob": 0.9662,
+   "percent": 96.6
+  },
+  {
+   "token": " Toronto",
+   "prob": 0.0221,
+   "percent": 2.2
+  },
+  {
+   "token": "渥",
+   "prob": 0.0017,
+   "percent": 0.2
+  },
+  {
+   "token": " the",
+   "prob": 0.001,
+   "percent": 0.1
+  },
+  {
+   "token": "____",
+   "prob": 0.0006,
+   "percent": 0.1
+  }
+ ]
+}

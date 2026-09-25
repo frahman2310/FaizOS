@@ -50,12 +50,11 @@ The first three are what is new here. The fourth plays to his strength (finance,
 ### 1c. Challenges to the existing research
 1. **"80% agreement with expert labels"** (recommended-method.md section 6) is raw agreement. In HW3's
    101 labelled traces (75 pass, 26 fail), a labeller who passes everything scores 74% (run) with kappa 0.
-   Replace with kappa plus catch rate (section 5).
+   First units therefore score the expert's FAILs twice and add a catch floor (section 5b); kappa plus catch
+   rate replaces raw agreement once kappa is taught (INTEGRATED section 3).
 2. **SCT items in 8d** are borrowed from medicine and untested for traces. The saved material has a better
    tool built for this skill: close negatives (Cartwheel HW4). They replace SCT.
-3. **"Full ladder, slow"** (skill-methods.md C1) ignores that he has done L5 and L6. Worked examples are for
-   each new task class; inside a class he enters where the first-step test puts him.
-4. **Volume.** 8d labels 15 traces a session; perceptual learning needs hundreds of varied cases. The rapid
+3. **Volume.** 8d labels 15 traces a session; perceptual learning needs hundreds of varied cases. The rapid
    round supplies them in 8 minutes.
 
 ---
@@ -77,40 +76,63 @@ One message per step, in this order, each ending **Your answer.**:
 
 | # | Step | Kind | What it does | Research | Hard rules |
 |---|---|---|---|---|---|
-| 1 | **The job and the rule** | show | The problem with context (the product, who is hurt by a miss, the decision the labels feed); the rule quoted from the source; the source's own pass and fail examples; one everyday picture; the paths; a short check | FOR dimensions (Woehr and Huffcutt; Roch); C34; A12 | At most 3 new ideas; every rule a later question uses is stated here (B6) |
+| 1 | **The job and the rule** | show | The problem with context (the product, who is hurt by a miss, the decision the labels feed); the rule quoted from the source; the source's own pass and fail examples; one everyday picture; a short check | FOR dimensions (Woehr and Huffcutt; Roch); C34; A12 | At most 3 new ideas; every word in the source's examples explained where it appears |
+| 1b | **What counts** | show | The paths: optional and "X or Y" lines count, the bot's own claims do not, a product sold as free of X is, the request never changes the diet on record | FOR dimensions | Every rule a later question uses is stated here or in step 1 (B6) |
 | 2 | **Worked example 1** | show | One trace, the expert's moves numbered: rule first, what to set aside, the deciding line, what it means under the rule, the label with the key's reason, one dead end; one question on the key move | Renkl and Atkinson; Collins, Brown and Newman (modelling); CTA | Moves come only from the source rule and the key's written reason |
 | 3 | **Worked example 2** | show | A close negative of example 1: looks alike, opposite label, same moves | Cartwheel close negatives; contrasting cases | Same layout as example 1 |
-| 4 | **Finish the expert's work** | try | Moves 1 to 3 done; he writes what the lines mean and the label | backward fading (Renkl 2002) | Feedback at once; the key reason opens the next step |
+| 3b | **Food facts you need** | show | Every everyday fact a later label rests on (which foods are grains, meat, fish, seafood, dairy, legumes, sugar), in one reference message | E-M3 of the rebuild review | No label anywhere in the unit may need a fact that is not here or in an earlier show step; a trace that would is replaced |
+| 4 | **Finish the expert's work** | try | Moves 1 to 3 done; he writes what the lines mean and the label | backward fading (Renkl 2002) | Feedback at once; the key reason opens the next step; any correct breaking line counts |
 | 5-10 | **Warm-up label 1 to 6** | try | One trace per message: label, deciding line, sure or not sure. Message n+1 opens with the expert's label and reason for trace n | FOR; ETS calibration; Kulkarni | About 3 pass and 3 fail; the first repeats the worked cue on a new surface; clear to subtle; aimed at about 80% right |
-| 11 | **Warm-up result** | try | The reason for trace 6; he counts his matches; gate (5 of 6, no expert FAIL passed; trial); he predicts his batch score with his warm-up count in hand | ETS gate; C39 | The gate result is a count, not a statistic |
+| 11 | **Warm-up result** | try | The reason for trace 6; he counts his matches; gate (5 of 6, no expert FAIL passed; trial); he is told exactly how the batch is scored, then predicts his score with his warm-up count in hand | ETS gate; C39 | The gate result is a count, not a statistic; first tries recorded with `engine.py tries` |
 | 12+ | **Label the batch 1 to n** | scored | At most 4 excerpts per message, blind, no feedback until the end | blind labelling | At most 2,600 characters per message including excerpts |
-| next | **Compare: your numbers** | try | The expert's labels listed; he counts: matches, expert FAILs he also failed, expert PASSes he also passed; for each difference he says whose label is right and which line, before any reason | Gigerenzer (counts first); Earley (explain first) | Counts only until kappa is taught (eval-02) |
+| next | **Fails caught** | scored | The expert's labels listed; he counts: matches, expert FAILs he also failed, expert PASSes he also passed; for each difference he says whose label is right and which line, before any reason. Scored from his batch labels: the expert's FAILs he also failed, divided by their number | Gigerenzer (counts first); Earley (explain first); Yan (fails are what matter) | Counts only until kappa is taught (eval-02); the unit declares `floor: Fails caught=0.66` (at least 2 of 3) |
 | next | **Compare: the expert's reasons** | show | The key's deciding sentence for each trace; he names the move that would have caught each miss, or argues the key with a line | negotiated agreement; FOR discussion | Reasons are shown text, not answer-key text |
 | (node) | **Use the labels** | depends | The node's own task (group, count and decide, check a judge); absent until that node | Hamel's order | Never on a one-criterion product |
 | last | **Close** | close | Predicted vs actual (his count), then "next time I see X, I do Y" | after-action review | Two short answers |
 
 Outside the order: `## Help: <step>` blocks (a second worked example on a new surface) for the first tries
-and every scored step, sent when he is stuck or after a miss; `## Retry` (new traces, same rule) and
-`## Cold` (7 days later, new traces), both scored.
+and every scored step, sent when he is stuck or after a miss (batch Help blocks only after the whole batch is
+marked, because they reveal a label); `## Retry` (new traces, same rule) and `## Cold` (7 days later, new
+traces), both scored. Each is about 10 traces with the batch's mix (eval-01: 3 FAIL and 7 PASS), split into
+`## Retry 2`, `## Retry 3` ... blocks of at most 4 excerpts; the first block asks only for his prediction, so he
+predicts before seeing any trace. Score: matches divided by the count, recorded as 0 if he passed more than one
+expert FAIL (the engine passes Retry and Cold on that one number, so the floor is applied when it is written).
+
+**Stuck order in every try and scored Key.** A `Two options:` line (for a label: two readings of the line he is
+stuck on, or "rule line first, or title first", never PASS or FAIL again, F19) and a `Worked answer:` line. On a
+scored item the worked answer scores that item 0.
 
 **Excerpts.** Request, diet on record, rule, dish name and the lines the label depends on, word for word
 from the source; cut parts marked in square brackets ("checked, nothing in them changes the label"). Only
 HIGH-confidence traces whose label follows directly from the quoted rule and that a person has read in full.
 Kept out of scored sets: the audit's disputed list (9_25, 35_15, 48_3), plus 1_35 and 1_37, whose "granola
 (preferably vegan)" line is an "X or Y" choice by the unit's own path rule, and 47_30, whose "or your
-preferred bread" line is the same. Each unit lists a run that checks every excerpt line and quoted reason
+preferred bread" line is the same. Also kept out after the 2026-09-25 pool read: 48_34 (its FAIL rests only on
+the bot's word "gluten-light"; no line breaks the rule, so the unit's own claim rule says PASS); 17_6 and 17_35
+(optional honey under paleo's "refined sugar": the key's PASS needs a judgement the rule does not state);
+21_16 (the "cocoa powder" option under raw vegan); 58_15 (canned tomatoes under "processed foods"); 29_24,
+29_38 and 49_29 (an unnamed sauce, bread or naan under vegan); and the four low-carb FAILs (42_1, 42_28, 42_29,
+42_37), which need carbohydrate amounts, not a rule line.
+
+**The clean pool after eval-01 (counted 2026-09-25).** HW3 has 21 HIGH-confidence FAILs; eval-01 uses 16 of them
+(10 in teaching and Help, 6 in Retry and Cold). The 5 left are the four low-carb ones and 48_34, all kept out above, so **no further
+evaluation unit, parallel unit or larger cold set can take FAILs from HW3**. Before eval-02 or a parallel eval-01
+is written, a person labels more traces against the quoted rule (HW3 `raw_traces.jsonl`) or the next unit moves to
+HW5 (class 3). Count the clean pool before writing. Each unit lists a run that checks every excerpt line and quoted reason
 against the source (eval-01: `learn/code/eval-01/traces.py`, run as `runs/eval-01-traces.json`).
 
 **Feedback words.** Until kappa is taught, every result is a count ("you matched 10 of 12; the expert failed
 3 and you also failed 2"). Rates on a judge use one pair of plain names everywhere: **catch rate** (of the
 traces a person marked FAIL, the share the judge also marked FAIL) and **clear rate** (of the traces a person
-marked PASS, the share the judge also marked PASS), as in `docs/glossary.md`. "Fail recall" is not used. When
+marked PASS, the share the judge also marked PASS), as in `docs/glossary.md`. "Fail recall" is not used, and "TPR" or "TNR" never appear without the
+conversion line that follows. When
 HW3 or `judgy` material is shown, one line converts it: HW3 calls the clear rate TPR and the catch rate TNR,
 because it treats PASS as the positive class.
 
 **Other formats** run outside the unit: the 8-minute rapid round (4a), from the second evaluation sitting,
 only on categories already taught and only from keyed items; and, every 4 to 6 weeks, a full error analysis
-on 100 traces as a capstone (4h).
+on 100 traces as a capstone (4h). The engine lists a rapid round, a placement check or a drill only once its
+checked material exists in `learn/sessions/`; until then none is run, and the tutor never writes one on the day.
 
 ### Why this differs from the other four skills
 | Skill | Its centre | Evaluation's centre instead |
@@ -143,14 +165,20 @@ validate judge → measure a fix (curriculum-design.md edge E2 → E4 → E5 →
 ### 3b. Levels and milestones
 | Level | He can, observed | Threshold |
 |---|---|---|
-| Novice | labels a class-1 batch after calibration; writes an open code naming the first failure; computes catch and clear rates from a table | kappa ≥ 0.60 vs expert; catch rate ≥ 0.75 |
+| Novice (first units, before kappa is taught) | labels a class-1 batch after calibration | 80% of points on the scored steps (one per matching label, one more per expert FAIL also failed) and at least 2 of 3 expert FAILs caught (the unit's `floor:`), on 2 units in a row, then the same bar cold at 7 days (INTEGRATED sections 2.5 and 3; `engine.py` BAR 80) |
+| Novice, after kappa (eval-02 on) | writes an open code naming the first failure; computes catch and clear rates from a table | kappa ≥ 0.70 with no missed failure over 24 or more traces (INTEGRATED section 3) |
 | Competent | builds a codebook of 4 to 10 types from 50 to 100 traces with counts x cost; writes and validates a judge; corrects a pass rate | kappa ≥ 0.70; catch rate ≥ 0.85; self-agreement at 7 days ≥ 0.80; judge catch and clear rates ≥ 0.85 on held-out data |
 | Proficient | on a new product with no expert labels: sizes the sample for the decision, labels, codes, and his codebook survives an expert check; spots a biased metric | first cold batch kappa ≥ 0.60 on a new product; ship/no-ship call matches the expert on 4 of 5 cases |
 
 ### 3c. The fading rule
-1. **Placement:** first-step test at the start of a node: one trace, 90 seconds, pass/fail plus open code. Right label and a usable code twice → skip the worked example.
+1. **Placement:** none for eval-01. The premise that he "already did L5 and L6" was wrong (gap audit F15), and every
+   node's first unit opens with its worked examples. A placement item is used only if it is written and checked
+   as a session file in `learn/sessions/`; it never skips the worked examples of a node's first unit.
 2. **Rungs within a class:** expert notes shown → completion (notes hidden after 6) → blind batch with calibration → blind batch, expert taxonomy shown only after his codebook → new product, no taxonomy.
-3. **Up** one rung after 2 units at the level's threshold; **down** one after 2 units below it; a new class restarts at rung 1 (4C/ID saw-tooth).
+3. **Up** one rung after 2 units at the level's threshold; **down** one after 2 units below the floor (the bar minus 20, INTEGRATED section 2.5); a new class restarts at rung 1 (4C/ID saw-tooth).
+   **From level 2** (look-alikes, eval-03 on), every trace he marks "not sure" gets a reflection table before the
+   reveal: evidence for FAIL, evidence against, and what he would expect to see but does not (judgement-training.md
+   8d; Mamede; gap audit F11). Not in level 1: modelled reflection did not help novices before worked examples.
 4. **Calibration fades** from every unit to the first unit on each product once he passes 3 gates in a row (GRE day-1 calibration held for 5 days [M]).
 5. **Rapid-round items** retire after 3 correct answers under the time limit on 3 spaced presentations (ARTS [S]).
 
@@ -162,18 +190,19 @@ validate judge → measure a fix (curriculum-design.md edge E2 → E4 → E5 →
 25 to 30 short excerpts, each shown for up to 20 seconds: choose "pass" or one failure type from the
 current codebook. Right answer and the cue shown after each. Types mixed, products mixed, look-alikes
 included. No explanation beyond the cue (concepts come from the main unit).
-- **Example:** HW2 `query_response.jsonl` excerpts against the HW2 taxonomy. "Quick salmon dinner ideas"
-  answered with a 10 to 15 minute marinade: *Inconsistent Time Estimates*; "2 salmon fillets" with no
-  number of servings: *Missing Serving Size*; a plain recipe that meets the request: *pass*. Class 3
-  variant: HW5 traces, choose the first failing step (in the set: GetRecipes 32, GenRecipeArgs 20,
-  GetCustomerProfile 13, run).
+- **Needs a keyed bank.** Every item has a label a person checked against a written rule before it is shown. HW2
+  `query_response.jsonl` has the taxonomy but no labels on its rows, so it cannot be a rapid-round source until a
+  person labels them; HW3's clean FAILs are used up by eval-01 (section 2). The class 3 variant, HW5 traces with
+  `first_failure_state` recorded (choose the first failing step; in the set: GetRecipes 32, GenRecipeArgs 20,
+  GetCustomerProfile 13, run), is the first keyed source, and only after the class 3 unit is taught.
 
 ### 4b. Calibration set with expert labels (frame-of-reference)
 6 traces from the product, balanced about 3 fail and 3 pass even though the product is not balanced,
 each with the expert's reason revealed after his label.
 - **Example:** HW3 dietary adherence, `labeled_traces.jsonl` (75 PASS, 26 FAIL, each with `reasoning`).
-  "Gluten-light recipe, I'm not celiac" answered with a quinoa salad: he labels, names the cue, then reads
-  the key's reason. Note: the course treats these labels as ground truth; who made them is not stated,
+  "Dairy-free but cheese is okay sometimes" answered with a pasta that uses nutritional yeast (47_8, PASS): he
+  labels, names the cue, then reads the key's reason. (The "gluten-light" quinoa salad once used here, 48_3, is
+  MEDIUM confidence and disputed, so it is never used.) Note: the course treats these labels as ground truth; who made them is not stated,
   so disagreements are argued on evidence, not settled by authority.
 
 ### 4c. Close-negative pairs (contrasting cases)
@@ -235,7 +264,8 @@ patches, walkthroughs) and the curriculum rubric.
 | What | Pass | Why this number |
 |---|---|---|
 | Calibration gate | 5 of 6 exact; no expert-fail labelled pass | GRE uses 6 of 10 with no 2-point miss [M]; binary labels allow a stricter bar |
-| Blind labelling vs expert | kappa ≥ 0.70 and catch rate ≥ 0.85, on 2 units | ETS kappa 0.70 [S]; fails are what matter (Yan [S]) |
+| Blind labelling vs expert, first units | 80% of points (one per matching label, one more per expert FAIL also failed) and the unit's catch floor (eval-01: at least 2 of 3), on 2 units | INTEGRATED section 3 and the engine; always-PASS scores 60% and 0 caught, so it cannot pass (rebuild review E-M1) |
+| Blind labelling vs expert, after kappa is taught | kappa ≥ 0.70 with no missed failure over 24 or more traces, on 2 units | ETS kappa 0.70 [S]; fails are what matter (Yan [S]); INTEGRATED section 3 |
 | Rapid round | ≥ 90% on new excerpts, median ≤ 20 s | PLM accuracy plus fluency; ECG PALM 15 s [S] |
 | Codebook | self-agreement kappa ≥ 0.80 at 7 days on 20%; ≤ 10 types | Hruschka 0.8 [M]; code caps [S] |
 | Judge | catch and clear rates ≥ 0.85 on held-out test, interval reported | Hamel: above 80%, ideally 90% (saved talk) [S] |
@@ -247,7 +277,7 @@ A node is mastered at these bars on two units, plus the 7-day recheck (recommend
 | When | What | Pass |
 |---|---|---|
 | 1, 3, 7, 21 days | cue → label rules and codebook definitions in the daily recall | recall the rule and one example |
-| 7 days | 10 unseen traces from the same product, cold | kappa within 0.10 of the last unit |
+| 7 days | 10 unseen traces from the same product, cold (eval-01: 3 FAIL, 7 PASS) | the same bar as the unit (INTEGRATED 2.5; `engine.py`: Cold ≥ 80%): at least 8 of 10 matching and no more than one expert FAIL passed. A miss re-teaches from the Help blocks |
 | about 6 weeks | refresher rapid round on retired items (histology first-years declined by 6 to 7 weeks [M]) | ≥ 85% |
 | monthly | a new product, first batch cold, no calibration | kappa ≥ 0.60 |
 
@@ -257,8 +287,8 @@ A node is mastered at these bars on two units, plus the 7-day recheck (recommend
 
 | Slot | Length | Content |
 |---|---|---|
-| Main unit (Monday, skill-methods.md D1) | 25 min | section 2 |
-| Rapid rounds (Wednesday, Friday) | 8 min each | 4a, after that day's unit |
+| Main unit (the week's first sitting, INTEGRATED section 5 and `engine.py`) | not yet measured: eval-01 is 20 teaching messages plus the warm-up feedback, well over the 25 minutes first planned; time its first sitting and record it | section 2 |
+| Rapid rounds (the engine's sittings 1, 4 and 7) | 8 min each | 4a, only once a keyed bank exists (4a) |
 | Daily recall | about 1 min of the 3-minute block | 1 evaluation item |
 | Every 4 to 6 weeks | 60 to 90 min, replaces the main unit | capstone 4h |
 | **Total** | **about 45 to 50 min a week** | the largest single-skill share, matching evaluation in 60% of postings |

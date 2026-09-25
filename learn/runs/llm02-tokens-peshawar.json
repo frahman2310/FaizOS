@@ -1,0 +1,26 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Peshawar --save llm02-tokens-peshawar",
+ "made": "20260925-164437-253776",
+ "inputs": {
+  "text": "Peshawar"
+ },
+ "output": {
+  "characters": 8,
+  "words": 1,
+  "openai_o200k": [
+   "P",
+   "esh",
+   "awar"
+  ],
+  "qwen": [
+   "P",
+   "esh",
+   "aw",
+   "ar"
+  ],
+  "openai_o200k_count": 3,
+  "qwen_count": 4
+ }
+}

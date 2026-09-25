@@ -76,8 +76,8 @@ Bars apply only to scored (independent) steps, the Retry item and the 7-day cold
 |---|---|---|
 | 1 | **Code** and **LLM behaviour** | code is his most familiar format; LLM concepts (tokens, sampling) are prerequisites for three other tracks |
 | 3 | **Production** | needs tokens and pricing from weeks 1-2; his strength; supplies the cost and latency numbers design needs |
-| 4 | **Evaluation**, after a placement check (he already did L5 and L6) | needs code reading and SQL (he has them) and repeatable-output concepts (week 2); agreement statistics taught first |
-| 6 | **System design**, "guess the architect's move" first | needs production's cost and latency classes |
+| 4 | **Evaluation**, starting with eval-01 (labels against one rule; counts only, no placement check: L5 and L6 never had him label real outputs) | needs code reading (weeks 1-2); agreement statistics (kappa) are taught in a later unit before they are used |
+| 6 | **System design**, starting at rung 1 (toolbox, worked example per decision, then guess the move) | needs tokens and the no-memory idea (design-01 re-teaches both) and production's cost per call |
 | 7-8 | all five running; design stays on study rungs (worked examples, guess the move) until it passes them | the design ladder, `system-design.md` section 2 |
 
 This order rests on the prerequisite graph and 4C/ID, and on his record that about 8 new things at once got

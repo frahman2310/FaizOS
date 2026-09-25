@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the largest city in Nigeria?\nA: The largest city in Nigeria is' --save llm01-nigeria-largest",
+ "made": "20260925-164204-470259",
+ "inputs": {
+  "prompt": "Q: What is the largest city in Nigeria?\nA: The largest city in Nigeria is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Lagos",
+   "prob": 0.4633,
+   "percent": 46.3
+  },
+  {
+   "token": " Abu",
+   "prob": 0.4583,
+   "percent": 45.8
+  },
+  {
+   "token": " I",
+   "prob": 0.0157,
+   "percent": 1.6
+  },
+  {
+   "token": " Ab",
+   "prob": 0.0063,
+   "percent": 0.6
+  },
+  {
+   "token": " L",
+   "prob": 0.0052,
+   "percent": 0.5
+  }
+ ]
+}

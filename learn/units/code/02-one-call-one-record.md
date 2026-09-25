@@ -115,6 +115,8 @@ Unscored; aim: right first time. From runs/code-02-try1_trace.json:
 1. Row 4: the same two dicts, plus `{'item': 'chai', 'price': 60}` at the end; items `3`.
 2. A, `3`.
 Wrong options: B = thinks a list merges equal items; C = counting mixed up with adding; D = E4 (the list vs its count).
+Two options: after line 4, does `sales` hold 2 items (the second chai replaced the first) or 3 items (every append adds one)?
+Worked answer: line 1 makes an empty list. Each `append` adds one item at the end and changes nothing already there (Show 1). Lines 2, 3 and 4 are three appends, so after line 4 `sales` holds the same two dicts plus `{'item': 'chai', 'price': 60}` at the end: 3 items, even though two look the same. `len` counts items, it does not add prices, so line 5 prints `3`: option A.
 Wrong twice: stuck order, then Help: Try with me 1.
 
 ## Step: Show 2
@@ -189,6 +191,8 @@ Unscored; aim: right first time. From runs/code-02-try2_trace.json:
 1. `[{'text': 'Due Friday', 'tokens_in': 15}]` (a list with the one record in it; exact quotes do not matter).
 2. `15`.
 Slips: the record without the list brackets (E4: the list vs the item in it); `3` (the output count, the wrong key).
+Two options: after line 4, does `log` hold the record `{'text': 'Due Friday', 'tokens_in': 15}` by itself, or a list with that record inside it?
+Worked answer: line 3 makes `log` an empty list, `[]`. Line 4 appends the record, so `log` is a list with one item: `[{'text': 'Due Friday', 'tokens_in': 15}]`, square brackets outside, curly inside (Show 2, last row). Line 5: `log[0]` takes the first item, the record; `["tokens_in"]` looks up one key in it and hands back `15`. So it prints `15`. (`3` is the output count, under a key the record never copied.)
 Wrong twice: stuck order, then Help: Try with me 2.
 
 ## Step: Show 3
@@ -222,21 +226,21 @@ Done
 - `log = []` runs once, before any call (step 1).
 - `first = ask("pay rent", log)` runs `ask`. Its four lines are steps 2 to 4: call and keep; build one record; append it; return the text. Order matters: each line uses a name the line above made. `return` goes last because it ends the function; a line under it would never run.
 - Inside `ask`, `log` is another name for the same list, not a copy, so the appended record is still there after `ask` returns. Picture handing your ledger to a clerk: he writes one line in it and hands you back an answer.
-- The second call does the same: one more record. `second` holds only the text.
+- The second call does the same: one more record. `first` and `second` each hold only the text (this program prints only `second`).
 
 | After | `first` / `second` | Records in `log` |
 |---|---|---|
 | first call | `first` holds `'Done'` | 1 |
 | second call | `second` holds `'Done'` | 2 |
 
-**One line from you:** what does `ask` hand back, and where does the record go?
+**One line from you:** `ask` hands back only the text, never the log. Why does `log` still hold both records at the end?
 
 **Your answer.**
 
 ### Key
 Kind: show
 New: a function with two arguments, the same list passed in (not a copy), return ends the function so it goes last
-Unscored. Like: it hands back the text; the record goes into the log it was given (runs/code-02-show3.json, runs/code-02-show3_trace.json).
+Unscored. Like: inside `ask`, `log` is the same list, not a copy, so each append lands in the one log made at the top (runs/code-02-show3.json, runs/code-02-show3_trace.json).
 
 ## Step: Try with me 3
 
@@ -284,6 +288,8 @@ Kind: try
 Unscored; aim: right first time. From runs/code-02-try3.json: R, S, P, Q prints `Booked` then `[{'question': 'book a table', 'tokens_in': 8}]`.
 T is extra: it appends the whole reply, not the record. It still runs (runs/code-02-try3_wrong.json shows the log holding `{'text': 'Booked', 'usage': {'input_tokens': 8, 'output_tokens': 3}}`), so it is quietly wrong (E4).
 Slips: Q before P (the append would never run); S before R (`reply` not made yet).
+Two options: which comes first inside `note`, R (makes `reply`) or S (reads `reply` to build `record`)?
+Worked answer: order each line by what it needs. S looks inside `reply`, so R, which makes `reply`, must come before it: R, then S. P appends `record`, so it comes after S. Q is `return`, which ends the function, so it goes last; a line under it would never run (Show 3). Order: R, S, P, Q. T appends `reply`, the whole reply, not the small record: the program still runs and the log fills up, but with the wrong thing, so it is quietly wrong.
 Wrong twice: stuck order, then Help: Try with me 3.
 
 ## Step: Your turn
@@ -336,6 +342,8 @@ From runs/code-02-turn_a.json, turn_b.json, turn_c.json:
 2. B shows `KeyError: 'input_tokens'` (on the first call, before any print); crash; fix: put back `reply["usage"]["input_tokens"]` (3 parts).
 3. C: `print(second)` shows `{'question': 'check refund', 'tokens_in': 9}`; quietly wrong (E4: the record, not the text; the log is still right); fix `return reply["text"]` (3 parts).
 Exact quotes and spacing do not matter; the value and the kind (list, dict, number, text) do.
+Two options: for the part he is stuck on, is the value a list, a dict or the text? For B and C: does it stop with an error, or run and miss its aim?
+Worked answer: 1. After the first call `log` holds one record, so `print(log)` shows `[{'question': 'file tax return', 'tokens_in': 9}]`. The second call returns the text, so `print(second)` shows `Filed`. Two calls, two records: `len(log)` is `2`. `log[1]` is the second record, and its `question` is `check refund`. 2. B asks `reply` for `input_tokens`, but that key sits inside `usage`; the first call stops with `KeyError: 'input_tokens'` before any print runs: crash; fix `reply["usage"]["input_tokens"]`. 3. C returns `record`, so `second` holds `{'question': 'check refund', 'tokens_in': 9}` instead of the text: it runs, quietly wrong; fix `return reply["text"]`.
 Score: 10 parts; right parts over 10.
 
 ## Step: Close
@@ -374,14 +382,14 @@ print(fees[0])
 | 2 | `[{'month': 'Jan', 'paid': 3000}]` | 1 |
 | 3 | `[{'month': 'Jan', 'paid': 3000}, {'month': 'Feb', 'paid': 3000}]` | 2 |
 
-Now back to Try with me 1: how many appends were there, so what does `len(sales)` print?
+**One line from you:** two of the dicts in a list look almost the same. Does `len` count them once or twice, and why?
 
 **Your answer.**
 
 ### Key
 Kind: show
 New: -
-From runs/code-02-help_try1_trace.json. His answer: three appends, prints `3`, option A (runs/code-02-try1_trace.json).
+Like: twice: each `append` adds one item, even a near copy (runs/code-02-help_try1_trace.json).
 
 ## Help: Try with me 2
 
@@ -400,29 +408,36 @@ Refund sent
 
 **How this code works.** Line 2 builds the record `{'text': 'Refund sent', 'tokens_out': 4}`. Line 3 makes an empty list and line 4 appends the record, so `done` holds a list with one dict in it: `[{'text': 'Refund sent', 'tokens_out': 4}]`. Line 5 goes one step at a time: `done[0]` is that first dict, and `["text"]` looks up one key in it.
 
-Now back to Try with me 2: after line 4, what does `log` hold, and what does line 5 print?
+**One line from you:** why does line 5 need `[0]` before `["text"]`?
 
 **Your answer.**
 
 ### Key
 Kind: show
 New: -
-From runs/code-02-help_try2_trace.json. His answer: `[{'text': 'Due Friday', 'tokens_in': 15}]`, prints `15` (runs/code-02-try2_trace.json).
+Like: `done` is a list; `[0]` takes the record out of it, and only a dict has the key `text` (runs/code-02-help_try2_trace.json, runs/code-02-help_try2.json).
 
 ## Help: Try with me 3
 
 **Help for Try with me 3: one more worked example**
 
-The same job in the right order, on a new function:
+The same job in the right order, on a new function, with the whole program:
 
 ```python
+def fake_model(prompt):
+    return {"text": "Sent", "usage": {"input_tokens": 7, "output_tokens": 2}}
+
 def remind(name, book):
     reply = fake_model(name)
     record = {"name": name, "tokens_out": reply["usage"]["output_tokens"]}
     book.append(record)
     return reply["text"]
+
+book = []
+print(remind("Ali", book))
+print(book)
 ```
-With a stand-in that returns the text `Sent`, one call prints:
+It prints:
 ```output
 Sent
 [{'name': 'Ali', 'tokens_out': 2}]
@@ -430,14 +445,14 @@ Sent
 
 **How this code works.** Read it by what each line needs. `reply` must exist before the record can look inside it, so the call comes first. `record` must exist before it can be appended. `return` ends the function, so it comes last. The log gets the record, the small dict you built, and not the reply.
 
-Now back to Try with me 3: which letter makes `reply`, which makes `record`, and which one appends the wrong thing?
+**One line from you:** why must the `reply = ...` line come before the `record = ...` line?
 
 **Your answer.**
 
 ### Key
 Kind: show
 New: -
-From runs/code-02-help_try3.json. His answer: R, S, P, Q; T is extra (runs/code-02-try3.json).
+Like: the record line looks inside `reply`, so `reply` must exist first (runs/code-02-help_try3.json).
 
 ## Help: Your turn
 
@@ -470,14 +485,14 @@ INV-1
 
 **How this code works.** After the first call, `book` holds one record. The second call adds one more, and `two` holds only the text, because the function returns `reply["text"]`. Two calls, two records. If the last line of `check` were `return reply`, the program would still run, but `print(two)` would show the whole reply dict instead of `Checked`: quietly wrong. A lookup of a key the dict does not have would stop it with a `KeyError`: a crash.
 
-Now back to Your turn: take the part you were stuck on and answer it.
+**One line from you:** suppose the record line inside `check` used `reply["output_tokens"]` instead. Crash, quietly wrong or fine, and why?
 
 **Your answer.**
 
 ### Key
 Kind: show
 New: -
-From runs/code-02-help_turn.json and help_turn_b.json. A right answer on a Your turn part after this block scores half.
+Like: crash, `KeyError`: `output_tokens` is not a key of `reply`, it sits inside `usage`, so the first call stops (runs/code-02-help_turn.json, help_turn_b.json). A right answer on a Your turn part after this block scores half.
 
 ## Retry
 
@@ -529,7 +544,9 @@ From runs/code-02-retry_a.json, retry_b.json, retry_c.json:
 1. `[{'message': 'remind Ali', 'tokens_out': 5}, {'message': 'remind Sara', 'tokens_out': 5}]`; `Sent`; `3`; `remind Ali` (4 parts).
 2. B: `KeyError: 'output_tokens'`; crash; fix `reply["usage"]["output_tokens"]` (3 parts).
 3. C: `{'text': 'Sent', 'usage': {'input_tokens': 12, 'output_tokens': 5}}`; quietly wrong; fix `return reply["text"]` (3 parts).
-Score: 10 parts; right parts over 10.
+Score: 10 parts; right parts over 10. Record as Retry = right parts over 10.
+Two options: for the part he is stuck on, is the value a list, a dict or the text? For B and C: does it stop with an error, or run and miss its aim?
+Worked answer: two calls before `print(calls)`, so it shows two records; the third call returns `Sent`; three calls, three records; `calls[0]` is the first record, `remind Ali`. B skips `usage`, so the first call stops with a `KeyError`: crash. C returns the whole reply dict, so it runs but `print(c)` shows the dict, not the text: quietly wrong.
 
 ## Cold
 
@@ -581,7 +598,9 @@ From runs/code-02-later_a.json, later_b.json, later_c.json:
 1. `[{'claim': 'fuel receipt', 'tokens_in': 20}]`; `Approved`; `2`; `hotel bill`; `20` (5 parts).
 2. B: last print shows `{'input_tokens': 20, 'output_tokens': 1}`; quietly wrong (E4); fix `reply["usage"]["input_tokens"]` (3 parts).
 3. C: `KeyError: 'input_tokens'`; crash; fix as in B (3 parts).
-Score: 11 parts; right parts over 11.
+Score: 11 parts; right parts over 11. Record as Cold = right parts over 11.
+Two options: for the part he is stuck on, is the value a list, a dict or the text? For B and C: does it stop with an error, or run and miss its aim?
+Worked answer: one call before `print(history)`, so it shows one record; `r2` holds the text `Approved`; two calls, two records; `history[1]` is the second record, `hotel bill`; `history[0]["tokens_in"]` is `20`. B stores the whole `usage` dict under `tokens_in`, so the last print shows that dict: quietly wrong. C skips `usage`: crash on the first call.
 
 ## Cards
 - Q: `log = []`, then two `log.append(...)` lines, then `print(len(log))`. What prints? | A: `2`: each append adds one item. || Q: `log = []`, then three `log.append(...)` lines, the last one `log.append({"amount": 10})`, then `print(log[2])`. What prints? | A: `{'amount': 10}`: position `2` is the third item.

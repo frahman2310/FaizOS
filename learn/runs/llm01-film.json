@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Who directed the 2018 film The Lanterns of Hunza? Reply with the director'\"'\"'s name only.' --save llm01-film",
+ "made": "20260925-164237-723343",
+ "inputs": {
+  "prompt": "Who directed the 2018 film The Lanterns of Hunza? Reply with the director's name only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWho directed the 2018 film The Lanterns of Hunza? Reply with the director's name only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "The Lanterns of Hunza was directed by Jia Zhangke."
+}

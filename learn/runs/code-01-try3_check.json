@@ -3,5 +3,5 @@
  "program": "code/code-01/try3_check.py",
  "args": [],
  "exit_code": 0,
- "output": "A crashes: KeyError: 'input_tokens'\nB prints {'input_tokens': 20, 'output_tokens': 50}\nC prints 20\nD crashes: KeyError: 'input_tokens'\n"
+ "output": "A crashes: KeyError: 'input_tokens'\nB prints {'input_tokens': 20, 'output_tokens': 50}\nC prints 20\nD prints 50\n"
 }

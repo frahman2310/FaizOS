@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-retry-ratio '17 / 8'",
+ "expression": "17 / 8",
+ "value": 2.125,
+ "note": "",
+ "made": "2026-09-25T16:45:38"
+}

@@ -1,0 +1,44 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'میرا بجلی کا بل کتنا ہے؟' --save llm02-cold-urdu-bill",
+ "made": "20260925-164503-702186",
+ "inputs": {
+  "text": "میرا بجلی کا بل کتنا ہے؟"
+ },
+ "output": {
+  "characters": 24,
+  "words": 6,
+  "openai_o200k": [
+   "می",
+   "را",
+   " بج",
+   "لی",
+   " کا",
+   " بل",
+   " ک",
+   "تنا",
+   " ہے",
+   "؟"
+  ],
+  "qwen": [
+   "م",
+   "یر",
+   "ا",
+   " ب",
+   "جل",
+   "ی",
+   " ک",
+   "ا",
+   " بل",
+   " ک",
+   "تنا",
+   " ",
+   "ہ",
+   "ے",
+   "؟"
+  ],
+  "openai_o200k_count": 10,
+  "qwen_count": 15
+ }
+}

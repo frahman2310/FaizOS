@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 try4_check.py",
+ "program": "code/code-01/try4_check.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "A crashes: KeyError: 'text'\nB prints {'type': 'text', 'text': 'Karachi'}\nC prints Karachi\nD prints [{'type': 'text', 'text': 'Karachi'}]\n"
+}

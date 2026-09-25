@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the largest city in New Zealand?\nA: The largest city in New Zealand is' --save llm01-newzealand-largest",
+ "made": "20260925-164640-288463",
+ "inputs": {
+  "prompt": "Q: What is the largest city in New Zealand?\nA: The largest city in New Zealand is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Auckland",
+   "prob": 0.8226,
+   "percent": 82.3
+  },
+  {
+   "token": " Wellington",
+   "prob": 0.144,
+   "percent": 14.4
+  },
+  {
+   "token": " Christ",
+   "prob": 0.0181,
+   "percent": 1.8
+  },
+  {
+   "token": " the",
+   "prob": 0.0017,
+   "percent": 0.2
+  },
+  {
+   "token": " Palmer",
+   "prob": 0.0015,
+   "percent": 0.1
+  }
+ ]
+}

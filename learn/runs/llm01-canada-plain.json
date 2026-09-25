@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The capital of Canada is' --save llm01-canada-plain",
+ "made": "20260925-164211-146787",
+ "inputs": {
+  "prompt": "The capital of Canada is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " located",
+   "prob": 0.1172,
+   "percent": 11.7
+  },
+  {
+   "token": ":\n",
+   "prob": 0.0793,
+   "percent": 7.9
+  },
+  {
+   "token": " ____",
+   "prob": 0.0791,
+   "percent": 7.9
+  },
+  {
+   "token": " __",
+   "prob": 0.0768,
+   "percent": 7.7
+  },
+  {
+   "token": ":\n\n",
+   "prob": 0.0625,
+   "percent": 6.3
+  }
+ ]
+}

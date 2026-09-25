@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Karachi --save llm02-tokens-karachi",
+ "made": "20260925-164351-363523",
+ "inputs": {
+  "text": "Karachi"
+ },
+ "output": {
+  "characters": 7,
+  "words": 1,
+  "openai_o200k": [
+   "Kar",
+   "achi"
+  ],
+  "qwen": [
+   "Kar",
+   "achi"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

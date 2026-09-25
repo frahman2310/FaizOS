@@ -1,0 +1,25 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Foodpanda --save llm02-tokens-foodpanda",
+ "made": "20260925-164345-095486",
+ "inputs": {
+  "text": "Foodpanda"
+ },
+ "output": {
+  "characters": 9,
+  "words": 1,
+  "openai_o200k": [
+   "Food",
+   "p",
+   "anda"
+  ],
+  "qwen": [
+   "Food",
+   "p",
+   "anda"
+  ],
+  "openai_o200k_count": 3,
+  "qwen_count": 3
+ }
+}

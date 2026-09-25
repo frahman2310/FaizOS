@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Who painted the 1998 mural The Tea Sellers of Quetta? Reply with the name only.' --save llm01-mural",
+ "made": "20260925-164251-438784",
+ "inputs": {
+  "prompt": "Who painted the 1998 mural The Tea Sellers of Quetta? Reply with the name only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWho painted the 1998 mural The Tea Sellers of Quetta? Reply with the name only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "Rahul Thapa"
+}

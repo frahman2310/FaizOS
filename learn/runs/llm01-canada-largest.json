@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the largest city in Canada?\nA: The largest city in Canada is' --save llm01-canada-largest",
+ "made": "20260925-164157-806055",
+ "inputs": {
+  "prompt": "Q: What is the largest city in Canada?\nA: The largest city in Canada is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Toronto",
+   "prob": 0.6632,
+   "percent": 66.3
+  },
+  {
+   "token": " Ottawa",
+   "prob": 0.2249,
+   "percent": 22.5
+  },
+  {
+   "token": " Vancouver",
+   "prob": 0.0363,
+   "percent": 3.6
+  },
+  {
+   "token": " Edmonton",
+   "prob": 0.0225,
+   "percent": 2.3
+  },
+  {
+   "token": " Montreal",
+   "prob": 0.0174,
+   "percent": 1.7
+  }
+ ]
+}

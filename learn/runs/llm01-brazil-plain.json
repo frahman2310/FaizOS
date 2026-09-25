@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The capital of Brazil is' --save llm01-brazil-plain",
+ "made": "20260925-164223-844466",
+ "inputs": {
+  "prompt": "The capital of Brazil is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " located",
+   "prob": 0.1521,
+   "percent": 15.2
+  },
+  {
+   "token": " Bras",
+   "prob": 0.1054,
+   "percent": 10.5
+  },
+  {
+   "token": " ______",
+   "prob": 0.0925,
+   "percent": 9.2
+  },
+  {
+   "token": " ____",
+   "prob": 0.0912,
+   "percent": 9.1
+  },
+  {
+   "token": " __",
+   "prob": 0.0638,
+   "percent": 6.4
+  }
+ ]
+}

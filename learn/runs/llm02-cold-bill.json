@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-cold-bill '600 * 10 // 6' --note 'English question bill scaled by Urdu/English tokens, OpenAI o200k'",
+ "expression": "600 * 10 // 6",
+ "value": 1000,
+ "note": "English question bill scaled by Urdu/English tokens, OpenAI o200k",
+ "made": "2026-09-25T16:50:46"
+}

@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Daraz --save llm02-tokens-daraz",
+ "made": "20260925-164430-768673",
+ "inputs": {
+  "text": "Daraz"
+ },
+ "output": {
+  "characters": 5,
+  "words": 1,
+  "openai_o200k": [
+   "Dar",
+   "az"
+  ],
+  "qwen": [
+   "Dar",
+   "az"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

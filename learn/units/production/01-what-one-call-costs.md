@@ -6,7 +6,7 @@ level: 1
 title: What one AI call costs
 scored: Quick set 1, Quick set 2
 sources: facts.md
-runs: runs/production-01-c1a.json, runs/production-01-c1b.json, runs/production-01-c1c.json, runs/production-01-c1d.json, runs/production-01-c2a.json, runs/production-01-c2b.json, runs/production-01-c2c.json, runs/production-01-c2d.json, runs/production-01-c4a.json, runs/production-01-c4b.json, runs/production-01-c4c.json, runs/production-01-c4d.json, runs/production-01-co-all.json, runs/production-01-co-call.json, runs/production-01-co-calls.json, runs/production-01-co-cap-out.json, runs/production-01-co-cap-save.json, runs/production-01-co-cut-call.json, runs/production-01-co-cut-in.json, runs/production-01-co-cut-save.json, runs/production-01-co-day.json, runs/production-01-co-haiku.json, runs/production-01-co-in.json, runs/production-01-co-inpart.json, runs/production-01-co-instr.json, runs/production-01-co-month.json, runs/production-01-co-outpart.json, runs/production-01-co-share.json, runs/production-01-h1-call.json, runs/production-01-h1-in.json, runs/production-01-h1-inpart.json, runs/production-01-h1-outpart.json, runs/production-01-h2-calls.json, runs/production-01-h2-month.json, runs/production-01-h2-rough.json, runs/production-01-h2-share.json, runs/production-01-h3-call.json, runs/production-01-h3-in.json, runs/production-01-h3-save.json, runs/production-01-h3-shirt.json, runs/production-01-h4-b-call.json, runs/production-01-h4-b-out.json, runs/production-01-h4-b-save.json, runs/production-01-h4-share-in.json, runs/production-01-h5-call.json, runs/production-01-h5-calls.json, runs/production-01-h5-cap-out.json, runs/production-01-h5-cap-save.json, runs/production-01-h5-in.json, runs/production-01-h5-inpart.json, runs/production-01-h5-month.json, runs/production-01-h5-outpart.json, runs/production-01-h5-share.json, runs/production-01-h6-call.json, runs/production-01-h6-cut-call.json, runs/production-01-h6-cut-save.json, runs/production-01-h6-inpart.json, runs/production-01-h6-outpart.json, runs/production-01-lev-a-month.json, runs/production-01-lev-b-call.json, runs/production-01-lev-b-month.json, runs/production-01-lev-b-save.json, runs/production-01-qs1-call.json, runs/production-01-qs1-calls.json, runs/production-01-qs1-cap.json, runs/production-01-qs1-haiku.json, runs/production-01-qs1-in.json, runs/production-01-qs1-inpart.json, runs/production-01-qs1-month.json, runs/production-01-qs1-outpart.json, runs/production-01-qs1-save.json, runs/production-01-qs1-share.json, runs/production-01-qs2-2000.json, runs/production-01-qs2-call.json, runs/production-01-qs2-cap-out.json, runs/production-01-qs2-cap-save.json, runs/production-01-qs2-doc-call.json, runs/production-01-qs2-doc-save.json, runs/production-01-qs2-inpart.json, runs/production-01-qs2-outpart.json, runs/production-01-qs2-share-in.json, runs/production-01-re-all.json, runs/production-01-re-call.json, runs/production-01-re-calls.json, runs/production-01-re-cap-out.json, runs/production-01-re-cap-save.json, runs/production-01-re-cut-call.json, runs/production-01-re-cut-in.json, runs/production-01-re-cut-save.json, runs/production-01-re-day.json, runs/production-01-re-haiku.json, runs/production-01-re-in.json, runs/production-01-re-inpart.json, runs/production-01-re-instr.json, runs/production-01-re-month.json, runs/production-01-re-outpart.json, runs/production-01-re-share.json, runs/production-01-ty1-call.json, runs/production-01-ty1-in.json, runs/production-01-ty1-inpart.json, runs/production-01-ty1-outpart.json, runs/production-01-ty1-wrong-tokens.json, runs/production-01-ty1-wrong.json, runs/production-01-ty2-calls.json, runs/production-01-ty2-instr.json, runs/production-01-ty2-month.json, runs/production-01-ty2-rough.json, runs/production-01-ty2-share.json, runs/production-01-ty3-call.json, runs/production-01-ty3-in.json, runs/production-01-ty3-save.json, runs/production-01-we1-call.json, runs/production-01-we1-code.json, runs/production-01-we1-in.json, runs/production-01-we1-inpart.json, runs/production-01-we1-outpart.json, runs/production-01-we1-ratio.json, runs/production-01-we1-rough-in.json, runs/production-01-we1-rough.json, runs/production-01-we1-rough2.json, runs/production-01-we1-wrong-tokens.json, runs/production-01-we1-wrong.json, runs/production-01-we2-1000.json, runs/production-01-we2-calls.json, runs/production-01-we2-instr.json, runs/production-01-we2-month.json, runs/production-01-we2-q.json, runs/production-01-we2-share-ans.json, runs/production-01-we2-share-instr.json, runs/production-01-we2-share-q.json, runs/production-01-we3-a-call.json, runs/production-01-we3-a-in.json, runs/production-01-we3-a-month.json, runs/production-01-we3-a-save.json, runs/production-01-we3-b-call.json, runs/production-01-we3-b-month.json, runs/production-01-we3-b-save.json, runs/production-01-we3-ratio.json
+runs: runs/production-01-c1a.json, runs/production-01-c1b.json, runs/production-01-c1c.json, runs/production-01-c1d.json, runs/production-01-c2a.json, runs/production-01-c2b.json, runs/production-01-c2c.json, runs/production-01-c2d.json, runs/production-01-c4a.json, runs/production-01-c4b.json, runs/production-01-c4c.json, runs/production-01-c4d.json, runs/production-01-co-all.json, runs/production-01-co-call.json, runs/production-01-co-calls.json, runs/production-01-co-cap-out.json, runs/production-01-co-cap-save.json, runs/production-01-co-cut-call.json, runs/production-01-co-cut-in.json, runs/production-01-co-cut-save.json, runs/production-01-co-day.json, runs/production-01-co-haiku.json, runs/production-01-co-in.json, runs/production-01-co-inpart.json, runs/production-01-co-instr.json, runs/production-01-co-month.json, runs/production-01-co-outpart.json, runs/production-01-co-share.json, runs/production-01-h1-call.json, runs/production-01-h1-in.json, runs/production-01-h1-inpart.json, runs/production-01-h1-outpart.json, runs/production-01-h2-calls.json, runs/production-01-h2-month.json, runs/production-01-h2-rough.json, runs/production-01-h2-share.json, runs/production-01-h3-call.json, runs/production-01-h3-in.json, runs/production-01-h3-save.json, runs/production-01-h3-shirt.json, runs/production-01-h4-b-call.json, runs/production-01-h4-b-out.json, runs/production-01-h4-b-save.json, runs/production-01-h4-share-in.json, runs/production-01-h5-call.json, runs/production-01-h5-calls.json, runs/production-01-h5-cap-out.json, runs/production-01-h5-cap-save.json, runs/production-01-h5-in.json, runs/production-01-h5-inpart.json, runs/production-01-h5-month.json, runs/production-01-h5-outpart.json, runs/production-01-h5-share.json, runs/production-01-h6-call.json, runs/production-01-h6-cut-call.json, runs/production-01-h6-cut-save.json, runs/production-01-h6-inpart.json, runs/production-01-h6-outpart.json, runs/production-01-lev-a-month.json, runs/production-01-lev-b-call.json, runs/production-01-lev-b-month.json, runs/production-01-lev-b-save.json, runs/production-01-qs1-call.json, runs/production-01-qs1-calls.json, runs/production-01-qs1-cap.json, runs/production-01-qs1-haiku.json, runs/production-01-qs1-in.json, runs/production-01-qs1-inpart.json, runs/production-01-qs1-month.json, runs/production-01-qs1-outpart.json, runs/production-01-qs1-save.json, runs/production-01-qs1-share.json, runs/production-01-qs2-2000.json, runs/production-01-qs2-call.json, runs/production-01-qs2-cap-out.json, runs/production-01-qs2-cap-save.json, runs/production-01-qs2-doc-call.json, runs/production-01-qs2-doc-save.json, runs/production-01-qs2-inpart.json, runs/production-01-qs2-outpart.json, runs/production-01-qs2-share-in.json, runs/production-01-re-all.json, runs/production-01-re-call.json, runs/production-01-re-calls.json, runs/production-01-re-cap-out.json, runs/production-01-re-cap-save.json, runs/production-01-re-cut-call.json, runs/production-01-re-cut-in.json, runs/production-01-re-cut-save.json, runs/production-01-re-day.json, runs/production-01-re-haiku.json, runs/production-01-re-in.json, runs/production-01-re-inpart.json, runs/production-01-re-instr.json, runs/production-01-re-month.json, runs/production-01-re-outpart.json, runs/production-01-re-share.json, runs/production-01-ty1-call.json, runs/production-01-ty1-in.json, runs/production-01-ty1-inpart.json, runs/production-01-ty1-outpart.json, runs/production-01-ty1-wrong-tokens.json, runs/production-01-ty1-wrong.json, runs/production-01-ty2-calls.json, runs/production-01-ty2-instr.json, runs/production-01-ty2-month.json, runs/production-01-ty2-rough.json, runs/production-01-ty2-share.json, runs/production-01-ty3-call.json, runs/production-01-ty3-in.json, runs/production-01-ty3-save.json, runs/production-01-we1-call.json, runs/production-01-we1-code.json, runs/production-01-we1-in.json, runs/production-01-we1-inpart.json, runs/production-01-we1-outpart.json, runs/production-01-we1-ratio.json, runs/production-01-we1-rough-in.json, runs/production-01-we1-rough.json, runs/production-01-we1-rough2.json, runs/production-01-we1-wrong-tokens.json, runs/production-01-we1-wrong.json, runs/production-01-we2-1000.json, runs/production-01-we2-calls.json, runs/production-01-we2-day.json, runs/production-01-we2-instr.json, runs/production-01-we2-month.json, runs/production-01-we2-q.json, runs/production-01-we2-share-ans.json, runs/production-01-we2-share-instr.json, runs/production-01-we2-share-q.json, runs/production-01-we3-a-call.json, runs/production-01-we3-a-in.json, runs/production-01-we3-a-month.json, runs/production-01-we3-a-save.json, runs/production-01-we3-b-call.json, runs/production-01-we3-b-month.json, runs/production-01-we3-b-save.json, runs/production-01-we3-ratio.json
 built from: docs/research/gap-audit-production.md sections 4 and 5 (sample production-01), in unit format v3
 
 ## Step: The job
@@ -35,7 +35,7 @@ One check on the words before we start: which of the three parts is output, and 
 
 ### Key
 Kind: show
-New: what a token is and that each one is charged, input vs output
+New: a token is a charged piece of text; input vs output (the three parts of a call); separate prices quoted per 1000000 tokens
 Not scored. Right: the answer, because the model writes it; the instructions and the question are sent by the app, so they are input. If wrong: point at the line "The answer is **output**: what the model writes".
 
 ## Step: Worked example 1
@@ -57,17 +57,6 @@ Suppose the study helper's fixed instructions are 6,000 tokens, a question is 50
 - output part: 400 x $10 / 1,000,000 = $0.004
 - one call: $0.013 + $0.004 = **$0.017** (close to the rough $0.02, so no slip)
 
-```python
-input_tokens = 6000 + 500
-output_tokens = 400
-cost = input_tokens * 2 / 1000000 + output_tokens * 10 / 1000000
-print(round(cost, 4))
-```
-```output
-0.017
-```
-**How this code works.** Line 1 adds the two things you send, so the input count is built from its parts, not typed in as one number. Line 2 holds what comes back. Line 3 is the rule: each count times its own price, divided by 1,000,000 because prices are per 1,000,000 tokens. Line 4 prints the cost rounded to 4 decimal places, so tiny leftovers from computer arithmetic do not show.
-
 **What it means.** An output token costs 5 times more, yet the input part ($0.013) is bigger than the output part ($0.004): the instructions are 15 times longer than the answer and go out on every call.
 
 **Wrong turn (this is wrong):** pricing all 6,900 tokens at the input rate gives $0.0138. It treats the answer as if it cost $2 per 1,000,000, so the bill comes out too low.
@@ -78,7 +67,7 @@ Question: in one line, why is the 500-token question priced at $2 per 1,000,000 
 
 ### Key
 Kind: show
-New: price per token = price per 1000000 tokens / 1000000, one call = input part + output part, a rough size before the exact number
+New: each part = tokens x price divided by 1000000; one call = input part + output part; a rough size before the exact number
 Not scored (self-explanation on the key step). Right: the question is sent in by the app, so it is input and takes the input price. If wrong: point at "Input is everything you send".
 
 ## Step: Your turn 1
@@ -99,7 +88,9 @@ The input part is done for you: 3,000 + 200 = 3,200 tokens, and 3,200 x $2 / 1,0
 
 ### Key
 Kind: try
-1 = $0.003 (300 x $10 / 1,000,000). 2 = $0.0094 ($0.0064 + $0.003). 3 = too low: the 300 answer tokens cost $10 per 1,000,000, not $2. Not scored; aim: most of it right first try; record first-try rate. Wrong twice: stuck order, then Help: Your turn 1.
+1 = $0.003 (300 x $10 / 1,000,000). 2 = $0.0094 ($0.0064 + $0.003). 3 = too low: the 300 answer tokens cost $10 per 1,000,000, not $2. Not scored; aim: most of it right first try; count his first-try results for the tries line after Lever. Wrong twice: stuck order, then Help: Your turn 1.
+Two options: 1: the 300 answer tokens take the input price ($2) or the output price ($10)? 2: add the two parts, or multiply them? 3: were his 300 answer tokens priced at their own price or at the cheaper input price?
+Worked answer: 1: the answer is output, so 300 x $10 / 1,000,000 = $0.003. 2: one call = input part + output part = $0.0064 + $0.003 = $0.0094. 3: too low: he priced all 3,500 tokens at $2, so 3,500 x $2 / 1,000,000 = $0.007 treats the 300 answer tokens as input; they cost $10 per 1,000,000, so his number misses money.
 
 ## Step: Worked example 2
 
@@ -113,6 +104,7 @@ Suppose a student asks 20 questions a day, every day for 30 days.
 
 - one student a month: 600 x $0.017 = **$10.20**
 - 1,000 students a month: 1,000 x $10.20 = **$10,200**
+- 1,000 students for one day: 1,000 x 20 x $0.017 = **$340** (leave out the days)
 
 **Where the money goes in one call.** A share is one part divided by the whole call, written as a percent.
 
@@ -134,7 +126,7 @@ Question: in one line, why does the monthly bill grow with the number of student
 
 ### Key
 Kind: show
-New: calls in a month = calls a day x days, monthly cost = cost of a call x calls, a share = part / whole call
+New: calls in a month = calls a day x days; the bill = cost of a call x number of calls; a share = one part divided by the whole call
 Not scored. Right: every call has the same three parts in the same sizes, so more calls multiply every part by the same number. If wrong: point at the table, which is about one call.
 
 ## Step: Your turn 2
@@ -153,7 +145,9 @@ Suppose a student uses it 10 times a day for 30 days.
 
 ### Key
 Kind: try
-1 = about $3 (300 calls x $0.01). 2 = $2.82 (300 x $0.0094). 3 = 63.8% ($0.006 / $0.0094). Not scored; aim: most of it right first try; record first-try rate. Wrong twice: stuck order, then Help: Your turn 2.
+1 = about $3 (300 calls x $0.01). 2 = $2.82 (300 x $0.0094). 3 = 63.8% ($0.006 / $0.0094). Not scored; aim: most of it right first try; count his first-try results. Wrong twice: stuck order, then Help: Your turn 2.
+Two options: 1: 300 calls x $0.01, or 10 calls x $0.01? 2: 300 x $0.0094, or 30 x $0.0094? 3: $0.006 / $0.0094, or $0.0094 / $0.006?
+Worked answer: 1: calls in a month = 10 x 30 = 300; 300 x $0.01 = about $3. 2: 300 x $0.0094 = $2.82, close to the rough $3, so no slip. 3: a share is the part divided by the whole call: $0.006 / $0.0094 = 63.8%.
 
 ## Step: Worked example 3
 
@@ -179,8 +173,6 @@ Two ideas to cut the study helper's $0.017 call:
 
 **Which way does an unsure number bend the bill?** The 400-token answers were measured in a test week when students asked short questions. If real answers run longer, the true bill is **higher** than $10.20 a month; if they run shorter, it is **lower**. More tokens than you counted can only add cost; fewer can only remove it.
 
-**Where this stops:** shorter instructions can make answers worse. A cost number compares options that are equally good; it does not tell you the answers are still good.
-
 Question: in one line, why is cut (a)'s saving $0.006 and not $0.011?
 
 **Your answer.**
@@ -204,7 +196,9 @@ The homework helper costs $0.0094 a call and $2.82 per student a month.
 
 ### Key
 Kind: try
-1 = $0.003 ($0.0094 - $0.0064, before minus after). 2 = wrong: $0.0064 is the cost of a call after the cut; the saving is $0.003. 3 = higher. Not scored; record first-try rate. Wrong twice: stuck order, then Help: Your turn 3.
+1 = $0.003 ($0.0094 - $0.0064, before minus after). 2 = wrong: $0.0064 is the cost of a call after the cut; the saving is $0.003. 3 = higher. Not scored; count his first-try results. Wrong twice: stuck order, then Help: Your turn 3.
+Two options: 1: $0.0094 - $0.0064, or $0.0064 on its own? 2: is $0.0064 what a call costs after the cut, or the gap between before and after? 3: longer answers are more output tokens: do more tokens add cost or remove it?
+Worked answer: 1: a saving is before minus after: $0.0094 - $0.0064 = $0.003. 2: wrong: $0.0064 is what a call costs after the cut, only one side; the saving is $0.003. 3: higher: longer answers are more output tokens at $10 per 1,000,000, and more tokens than you counted can only add cost.
 
 ## Step: Lever
 
@@ -217,17 +211,22 @@ A lever is the one change that moves the bill the most. You can make one of thes
 | A. instructions from 3,000 to 1,500 tokens | $0.0064 | $0.003 | $0.90 | the model may follow your rules less closely |
 | B. answers capped at 150 tokens | $0.0079 | $0.0015 | $0.45 | long explanations get cut off |
 
+The last column matters too. A cost number compares cuts that keep the answers equally good; it cannot tell you the answers are still good.
+
 Which cut do you make first, A or B? Give the one number that decides it, and the share you worked out earlier that explains why.
 
 **Your answer.**
 
 ### Key
 Kind: try
-A. Deciding number: the saving per call, $0.003 against $0.0015 (twice as much). Why: the fixed instructions are the biggest share of the call, 63.8%. Not scored. Wrong twice: Help: Lever.
+A. Deciding number: the saving per call, $0.003 against $0.0015 (twice as much). Why: the fixed instructions are the biggest share of the call, 63.8%. Not scored. Wrong twice: stuck order, then Help: Lever.
+Two options: is the deciding number the saving per call, or the cost of a call after the cut? Is the biggest share of the call the fixed instructions or the answer?
+Worked answer: Cut A. It saves $0.003 a call against $0.0015 for B, twice as much ($0.90 against $0.45 per student a month). It wins because the fixed instructions are the biggest share of the call, 63.8%, so cutting them moves the most money.
+After this step, record the try steps (Your turn 1 to 3 and Lever, 10 answers): engine.py tries production-01 <right first try> 10. Under 7 right: slow down and use the Help blocks before the Quick set.
 
 ## Step: Quick set 1
 
-**Short set, part 1 of 2.** Give each answer as a number with its unit ($ or %). No help on this set.
+**Short set, part 1 of 2.** Work these alone. Give each answer as a number with its unit ($ or %). Keep a call's cost exact; round a share to 1 decimal place and a month's bill to the cent. If you are stuck on one, say so: a right answer after a hint counts half.
 
 Prices per 1,000,000 tokens: Sonnet 5 $2 input, $10 output. Haiku 4.5 (a smaller, cheaper Claude model) $1 input, $5 output.
 
@@ -243,9 +242,11 @@ Suppose a tutor bot on Sonnet 5 sends 4,000 tokens of fixed instructions and a 1
 
 ### Key
 Kind: scored
-Score: (items right) / 5, his first reply only; a right number with a wrong or missing unit counts wrong; a right answer after a hint counts half.
+Score: (items right) / 5, his first reply only; a right number with a wrong or missing unit counts wrong; a share to 1 decimal place or to the nearest whole percent counts right; a month's or a day's bill rounded to the cent counts right; a right answer after the Two options hint counts half; after the Worked answer, 0.
 1 = $0.0132. 2 = $5.94 (450 calls). 3 = 37.9%. 4 = $0.0025 (the answer part falls from $0.005 to $0.0025). 5 = $0.0066.
 Meaning items: 3, 4.
+Two options: (only the item he says he is stuck on) 1: is the 100-token question input or output? 2: 450 calls x the cost of one call, or 15 calls x it? 3: the answer part divided by the whole call, or the whole call divided by the answer part? 4: the answer part before minus after the cap, or the new answer part on its own? 5: halve both prices, or halve only the output price?
+Worked answer: 1: input 4,100 x $2 / 1,000,000 = $0.0082; output 500 x $10 / 1,000,000 = $0.005; one call $0.0132. 2: 15 x 30 = 450 calls; 450 x $0.0132 = $5.94. 3: $0.005 / $0.0132 = 37.9%. 4: the answer part falls from $0.005 to $0.0025; before minus after = $0.0025. 5: 4,100 x $1 / 1,000,000 + 500 x $5 / 1,000,000 = $0.0066.
 
 ## Step: Quick set 2
 
@@ -273,9 +274,11 @@ Back to the tutor bot from part 1 ($5.94 per student a month):
 
 ### Key
 Kind: scored
-Score: (items right) / 5, his first reply only; a right number with a wrong or missing unit counts wrong; a right answer after a hint counts half.
+Score: (items right) / 5, his first reply only; a right number with a wrong or missing unit counts wrong; a month's bill rounded to the cent counts right; a right answer after the Two options hint counts half; after the Worked answer, 0.
 6 = $0.0215. 7 = the document: saves $0.01; the summary cap saves $0.00075 (both savings needed). 8 = wrong: $0.0115 is the cost after the cut; the saving is $0.01. 9 = lower. 10 = $11,880.
 Meaning items: 7, 8, 9. Across both halves, 5 of 10 items are about what a number means.
+Two options: (only the item he says he is stuck on) 6: the document at $1 and the summary at $5, or both at $1? 7: each saving as before minus after, or each new call cost? 8: is $0.0115 the cost of a call after the cut, or the gap between before and after? 9: shorter answers are fewer tokens: do fewer tokens add cost or remove it? 10: 2,000 x $5.94, or 2,000 x $0.0132?
+Worked answer: 6: 20,000 x $1 / 1,000,000 + 300 x $5 / 1,000,000 = $0.02 + $0.0015 = $0.0215. 7: document $0.0215 - $0.0115 = $0.01; summary cap: the output part falls from $0.0015 to $0.00075, saving $0.00075; the document cut saves more. 8: wrong: $0.0115 is the cost after the cut; before minus after is $0.0215 - $0.0115 = $0.01. 9: lower: fewer tokens than you counted can only remove cost. 10: 2,000 x $5.94 = $11,880.
 
 ## Step: Close
 
@@ -315,7 +318,7 @@ Now your homework helper: its answer is 300 tokens at $10 per 1,000,000. What is
 ### Key
 Kind: show
 New: -
-$0.003 (300 x $10 / 1,000,000). Then send Your turn 1's questions 2 and 3 again.
+$0.003 (300 x $10 / 1,000,000). Then send Your turn 1 again, whole and verbatim, so he answers all three questions.
 
 ## Help: Your turn 2
 
@@ -337,7 +340,7 @@ Now your homework helper, used 10 times a day for 30 days: how many calls is tha
 ### Key
 Kind: show
 New: -
-300 calls, multiplied by the cost of one call ($0.0094). Then back to Your turn 2.
+300 calls, multiplied by the cost of one call ($0.0094). Then send Your turn 2 again, whole and verbatim.
 
 ## Help: Your turn 3
 
@@ -356,7 +359,7 @@ Now your homework helper: before the cut a call costs $0.0094, after it $0.0064.
 ### Key
 Kind: show
 New: -
-$0.0094 - $0.0064 = $0.003. Then back to Your turn 3.
+$0.0094 - $0.0064 = $0.003. Then send Your turn 3 again, whole and verbatim.
 
 ## Help: Lever
 
@@ -378,7 +381,7 @@ Now your homework helper: which part is the biggest share of its call, and so wh
 ### Key
 Kind: show
 New: -
-The fixed instructions (63.8%), so cut A. Then back to Lever.
+The fixed instructions (63.8%), so cut A. Then send Lever again, whole and verbatim.
 
 ## Help: Quick set 1
 
@@ -423,7 +426,9 @@ He reworks the missed item; compare with Solutions, part 2. Sent at the retry, b
 
 ## Retry
 
-**Another short set** (10 items; a number with its unit, or the word asked for). Prices per 1,000,000 tokens: Sonnet 5 $2 input, $10 output; Haiku 4.5 $1 input, $5 output.
+**Another short set, part 1 of 2** (5 items now, 5 in the next message). Give each answer as a number with its unit, or the word asked for. Keep a call's cost exact; round a share to 1 decimal place and a bill to the cent.
+
+Prices per 1,000,000 tokens: Sonnet 5 $2 input, $10 output; Haiku 4.5 $1 input, $5 output.
 
 Suppose an FAQ bot (it answers common questions about a university's admissions) on Sonnet 5 sends 2,000 tokens of fixed instructions and a 200-token question, and writes a 250-token answer. Each user asks 12 times a day for 30 days. You have 300 users.
 
@@ -432,7 +437,21 @@ Suppose an FAQ bot (it answers common questions about a university's admissions)
 3. All 300 users for a month?
 4. What share of a call is the fixed instructions?
 5. Cutting the instructions to 1,000 tokens saves how much per call?
-6. A teammate says that cut "saves $0.0049 a call". Right or wrong, and what did they work out?
+
+**Your answer.**
+
+### Key
+Kind: scored
+Score: (items right) out of 10 across Retry and Retry 2, his first reply only; a right number with a wrong or missing unit counts wrong; a share to 1 decimal place or to the nearest whole percent counts right; a bill rounded to the cent counts right. Pass 9 of 10. Mark after Retry 2, then record once: engine.py done production-01 --step "Retry=<right divided by 10>" --retry.
+1 = $0.0069. 2 = $2.484 (360 calls; $2.48 accepted). 3 = $745.20. 4 = 58.0% (58% accepted). 5 = $0.002 (a call becomes $0.0049).
+Meaning items: 4, 5.
+Worked answer (after marking, for each missed item): 1: input 2,000 + 200 = 2,200 tokens, 2,200 x $2 / 1,000,000 = $0.0044; output 250 x $10 / 1,000,000 = $0.0025; one call $0.0069. 2: 12 x 30 = 360 calls; 360 x $0.0069 = $2.484. 3: 300 x 360 x $0.0069 = $745.20. 4: 2,000 x $2 / 1,000,000 = $0.004; $0.004 / $0.0069 = 58.0%. 5: input 1,000 + 200 = 1,200 tokens; 1,200 x $2 / 1,000,000 + $0.0025 = $0.0049; before minus after $0.0069 - $0.0049 = $0.002.
+
+## Retry 2
+
+**Another short set, part 2 of 2.** Same FAQ bot as part 1: Sonnet 5, 2,000 tokens of fixed instructions, a 200-token question, a 250-token answer; 12 calls a day for 30 days; 300 users.
+
+6. A teammate says cutting the instructions to 1,000 tokens "saves $0.0049 a call". Right or wrong, and what did they work out?
 7. Cost of one call on Haiku 4.5?
 8. Which saves more per call: answers capped at 125 tokens, or instructions cut to 1,000? Give both savings.
 9. The 2,000 instruction tokens were counted before you added three new rules to them. Is the true bill higher or lower than your answer to 3?
@@ -442,13 +461,16 @@ Suppose an FAQ bot (it answers common questions about a university's admissions)
 
 ### Key
 Kind: scored
-Score: (items right) / 10, his first reply only; a right number with a wrong or missing unit counts wrong. Pass 9 of 10.
-1 = $0.0069. 2 = $2.484 (360 calls; $2.48 accepted). 3 = $745.20. 4 = 58%. 5 = $0.002 (a call becomes $0.0049). 6 = wrong: $0.0049 is the cost after the cut; the saving is $0.002. 7 = $0.00345. 8 = the instructions cut: $0.002 against $0.00125 for the cap. 9 = higher. 10 = $24.84.
-Meaning items: 4, 5, 6, 8, 9.
+Score: (items right) out of 10 across Retry and Retry 2, as in the Retry Key; record once, now: engine.py done production-01 --step "Retry=<right divided by 10>" --retry.
+6 = wrong: $0.0049 is the cost after the cut; the saving is $0.002. 7 = $0.00345. 8 = the instructions cut: $0.002 against $0.00125 for the cap. 9 = higher. 10 = $24.84.
+Meaning items: 6, 8, 9. Across both parts, 5 of 10 items are about what a number means.
+Worked answer (after marking, for each missed item): 6: wrong: $0.0049 is what a call costs after the cut, only one side; before minus after is $0.0069 - $0.0049 = $0.002. 7: 2,200 x $1 / 1,000,000 + 250 x $5 / 1,000,000 = $0.00345. 8: the cap takes the output part from $0.0025 to $0.00125, saving $0.00125; the instructions cut saves $0.002, so it wins. 9: higher: more tokens than you counted can only add cost. 10: 300 x 12 x $0.0069 = $24.84.
 
 ## Cold
 
-**Cold check** (10 items; a number with its unit, or the word asked for). Prices per 1,000,000 tokens: Sonnet 5 $2 input, $10 output; Haiku 4.5 $1 input, $5 output.
+**Cold check, part 1 of 2** (5 items now, 5 in the next message). Give each answer as a number with its unit, or the word asked for. Keep a call's cost exact; round a share to 1 decimal place and a bill to the cent.
+
+Prices per 1,000,000 tokens: Sonnet 5 $2 input, $10 output; Haiku 4.5 $1 input, $5 output.
 
 Suppose your FBR tax assistant (it answers questions about Pakistan's income tax) runs on Sonnet 5. It sends 5,000 tokens of fixed instructions and a 300-token question, and writes a 600-token answer. Each user asks 8 times a day for 30 days. You have 500 users.
 
@@ -457,7 +479,21 @@ Suppose your FBR tax assistant (it answers questions about Pakistan's income tax
 3. All 500 users for a month?
 4. What share of a call is the fixed instructions?
 5. Cutting the instructions to 2,500 tokens saves how much per call?
-6. A teammate says that cut "saves $0.0116 a call". Right or wrong, and what did they work out?
+
+**Your answer.**
+
+### Key
+Kind: scored
+Score: (items right) out of 10 across Cold and Cold 2, his first reply only; a right number with a wrong or missing unit counts wrong; a share to 1 decimal place or to the nearest whole percent counts right; a bill rounded to the cent counts right. Pass 9 of 10. Predict before this part (engine.py predict production-01 P --cold); mark after Cold 2, then record once: engine.py done production-01 --step "Cold=<right divided by 10>" --cold.
+1 = $0.0166. 2 = $3.984 (240 calls; $3.98 accepted). 3 = $1,992. 4 = 60.2%. 5 = $0.005 (a call becomes $0.0116).
+Meaning items: 4, 5.
+Worked answer (after marking, for each missed item): 1: input 5,000 + 300 = 5,300 tokens, 5,300 x $2 / 1,000,000 = $0.0106; output 600 x $10 / 1,000,000 = $0.006; one call $0.0166. 2: 8 x 30 = 240 calls; 240 x $0.0166 = $3.984. 3: 500 x 240 x $0.0166 = $1,992. 4: 5,000 x $2 / 1,000,000 = $0.01; $0.01 / $0.0166 = 60.2%. 5: input 2,500 + 300 = 2,800 tokens; 2,800 x $2 / 1,000,000 + $0.006 = $0.0116; before minus after $0.0166 - $0.0116 = $0.005.
+
+## Cold 2
+
+**Cold check, part 2 of 2.** Same FBR tax assistant as part 1: Sonnet 5, 5,000 tokens of fixed instructions, a 300-token question, a 600-token answer; 8 calls a day for 30 days; 500 users.
+
+6. A teammate says cutting the instructions to 2,500 tokens "saves $0.0116 a call". Right or wrong, and what did they work out?
 7. Cost of one call on Haiku 4.5?
 8. The 600-token answers were measured on simple salary questions. Real users also ask about businesses and property, which get longer answers. Is the true bill higher or lower than your answer to 3?
 9. Which saves more per call: answers capped at 300 tokens, or instructions cut to 2,500? Give both savings.
@@ -467,9 +503,10 @@ Suppose your FBR tax assistant (it answers questions about Pakistan's income tax
 
 ### Key
 Kind: scored
-Score: (items right) / 10, his first reply only; a right number with a wrong or missing unit counts wrong. Pass 9 of 10. Send the whole block as one message (the guard needs it verbatim); after marking, show the worked line for each missed item.
-1 = $0.0166. 2 = $3.984 (240 calls; $3.98 accepted). 3 = $1,992. 4 = 60.2%. 5 = $0.005 (a call becomes $0.0116). 6 = wrong: $0.0116 is the cost after the cut; the saving is $0.005. 7 = $0.0083. 8 = higher. 9 = the instructions cut: $0.005 against $0.003 for the cap. 10 = $66.40.
-Meaning items: 4, 5, 6, 8, 9.
+Score: (items right) out of 10 across Cold and Cold 2, as in the Cold Key; record once, now: engine.py done production-01 --step "Cold=<right divided by 10>" --cold.
+6 = wrong: $0.0116 is the cost after the cut; the saving is $0.005. 7 = $0.0083. 8 = higher. 9 = the instructions cut: $0.005 against $0.003 for the cap. 10 = $66.40.
+Meaning items: 6, 8, 9. Across both parts, 5 of 10 items are about what a number means.
+Worked answer (after marking, for each missed item): 6: wrong: $0.0116 is what a call costs after the cut, only one side; before minus after is $0.0166 - $0.0116 = $0.005. 7: 5,300 x $1 / 1,000,000 + 600 x $5 / 1,000,000 = $0.0083. 8: higher: longer answers are more output tokens, and more tokens than you counted can only add cost. 9: the cap takes the output part from $0.006 to $0.003, saving $0.003; the instructions cut saves $0.005, so it wins. 10: 500 x 8 x $0.0166 = $66.40.
 
 ## Cards
 

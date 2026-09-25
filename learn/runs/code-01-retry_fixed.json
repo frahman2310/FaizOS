@@ -3,5 +3,5 @@
  "program": "code/code-01/retry_fixed.py",
  "args": [],
  "exit_code": 0,
- "output": "input tokens: 16\n30\nRawalpindi\n"
+ "output": "16\n30\nRawalpindi\n"
 }

@@ -90,12 +90,12 @@ way, and never gives the answer to a question (C48, G11).
 | 3 | **Try with me 1** (we do) | try | Same shape, new surface; the trace table filled except its last row; one hinge question whose wrong options each match a named wrong idea (E1 to E4) | Renkl and Atkinson; Wiliam |
 | 4 | **Show 2** | show | The next knowledge point, one new idea added to the same kind of example; same line-by-line reading; one prompt | Math Academy knowledge points; Xie "added complexity" |
 | 5 | **Try with me 2** | try | The last two rows blank, or one line to complete | Renkl backward fading |
-| 6 | **Show 3** (the real shape) | show | The real-sized version (up to about 15 lines) with the subgoal labels named in its reading. Broken versions appear only here or later, after two correct examples, each run and labelled (crash / quietly wrong) as it is shown | Margulieux 2016; CS50P lecture 4; Große and Renkl 2007 |
-| 7 | **Try with me 3** | try | Parsons with one distractor, or a pick-the-line hinge | Ericson; Subgoals formative practice |
-| 8 | **Your turn** (you do) | scored | A new program of the same shape: trace it in full, then predict and label changed copies (crash / quietly wrong / fine), now that each label has been shown; each labelled line carries its aim | Rosenshine 9; PRIMM Modify |
+| 6 | **Show 3** (the real shape) | show | The real-sized version (up to about 15 lines) with the subgoal labels named in its reading. Broken versions appear only here or later, after two correct examples, each run and labelled (crash / quietly wrong / fine) as it is shown. When the real shape carries more than 3 new ideas, it is split into more show and try pairs (code-01 has five) | Margulieux 2016; CS50P lecture 4; Große and Renkl 2007 |
+| 7 | **Try with me 3** | try | Parsons with one distractor, or a pick-the-line hinge. Every try and scored Key holds a prepared `Two options:` and `Worked answer:` line (stuck moves 2 and 4) | Ericson; Subgoals formative practice |
+| 8 | **Your turn** (you do) | scored | A new program of the same shape: say what it shows (a full trace table only once the tries have faded to one), then label changed copies (crash / quietly wrong / fine), now that each label has been shown; each labelled line carries its aim | Rosenshine 9; PRIMM Modify |
 | 9 | Close | close | "Next time I see ..., I ..."; cards join the queue | Rosenshine 10 |
-| extra | Help: <step> | show | A second worked example on a new surface, for every try and the scored step, sent in the stuck order | Khan hints; Rosenshine re-teaching |
-| extra | Retry / Cold | scored | Same kind, new surface: after a miss, and 7 days later | Bloom and Guskey; `recommended-method.md` |
+| extra | Help: <step> | show | A second worked example on a new surface, for every try and the scored step, sent in the stuck order. It stands on its own (ends with its own one-line question, never "back to the exercise"), because after a miss it is sent in a later sitting | Khan hints; Rosenshine re-teaching |
+| extra | Retry / Cold | scored | Same kind, new surface: after a miss, and 7 days later; about 10 marked parts, continued in `## Retry 2` / `## Cold 2` if one message would pass 2,600 characters; answerable from the steps he always sees, never from a Help block | Bloom and Guskey; `recommended-method.md` |
 
 Rules that sit on top of the order:
 - **One knowledge point per show**, at most 3 new ideas (listed in the step's `New:` line). Each try aims at
@@ -112,7 +112,7 @@ third problem of a pattern he attempts first and then sees the expert version (`
 section 3). A new pattern starts again at Show (4C/ID saw-tooth).
 
 **Placement and fading** (skill-methods D2): a 90-second first-step test on a new pattern; right twice → the
-unit starts at Try with me 3. After C49 his placement on T1 is "not yet". Subgoal labels are removed from the
+unit starts at Try with me 3. After C49 his placement on T1 is "not yet"; the first-step test is not built yet, so every pattern starts at Show 1. Subgoal labels are removed from the
 third example of a pattern (Margulieux 2020: they help quizzes, not exams).
 
 **Stuck order** (from his record, D1, D4; `SKILL.md`): his own earlier answer or the show it uses; two options;
@@ -138,7 +138,7 @@ Never more improvised prose (D6: 0 of 5).
 
 | Level | Name | Milestone (observed, on code he has not seen) |
 |---|---|---|
-| L1 | Reader | Traces a 30-line function with 90% of table cells right; labels crash / quiet / fine 9 of 10; explains purpose at 5 of 7 or better; solves a Parsons with distractors |
+| L1 | Reader | Traces a 30-line function with 90% of marked parts right; labels crash / quiet / fine 9 of 10; explains purpose at 5 of 7 or better; solves a Parsons with distractors |
 | L2 | Fixer | 5 bugs found with the card, each under 10 minutes, no new bugs added; 3 edits of 5 to 20 lines passing tests; reads a SQL join and says the row count before running |
 | L3 | Steerer | 3 changes where a fresh AI, given only his spec and tests, passes hidden tests in 2 prompts or fewer; finds the planted bug in 4 of 5 AI diffs and writes the test that catches it |
 
@@ -162,8 +162,8 @@ Each class restarts at a worked example (4C/ID saw-tooth). Order follows the pre
 | T5 | Retrieval function | score, sort, keep top k, check hit | `projects/search/lab/lab.py` `top()`, `hit()` | sort direction, k off by one |
 | T6 | Agent loop | send, read tool request, run tool, append result, stop rule | Anthropic tool-use docs; local `ai-steering/willison-agentic-patterns/02` | missing stop rule, result not appended |
 
-Placement: his bootcamp covered the parts of T1 to T3 (A9, 69 of 88), so the first-step test is run on
-T2 and T3 first; he likely starts at L1 on T2.
+Placement: his bootcamp covered the parts of T1 to T3 (A9, 69 of 88), but after C49 he starts at L1 on T1
+(section 2); the first-step test on T2 and T3 is run once it is built.
 
 ---
 
@@ -191,7 +191,7 @@ All outputs below were produced by running the code on 2026-09-24.
 
 | Skill | Check | Mastery bar |
 |---|---|---|
-| Trace | Memory table on unseen code of the class | 90% of cells right, 2 sessions in a row, then 80% or more cold at 7 days |
+| Trace and label | Your turn, Retry and Cold items on unseen code of the class | 90% of marked parts, 2 units in a row, then 90% cold at 7 days (the same bar: `INTEGRATED.md` section 2.5, `engine.py`) |
 | Label | crash / quiet / fine, 10 mixed items | 9 of 10 |
 | Explain | EiPE rubric, or AI rebuild passes tests | 5 of 7, or tests pass |
 | Change | Given tests | All pass, in 2 attempts or fewer |
@@ -214,9 +214,9 @@ trace of its own script (skill-methods C5). This is re-testing, not re-teaching 
 
 | Slot | Length | What |
 |---|---|---|
-| Tue, Thu | 30 min each | One full unit (section 2) |
+| 2 sittings a week | 30 min each | One full unit (section 2); sittings run in order whenever he sits down, never tied to weekdays (C47) |
 | Mon to Sat | 5 min | Daily reps (section 5) |
-| Every 3rd week, Sat | 45 min | One steer session on the FBR assistant: he specifies a real change, the AI writes it, he reviews and runs the tests |
+| Every 3rd week, the whole-task sitting | 45 min | One steer session on the FBR assistant: he specifies a real change, the AI writes it, he reviews and runs the tests |
 
 About 1 h 30 to 1 h 45 a week. Session length 30 minutes: his best formats sat at 5 to 10 short items per
 message (B9) and messages of 700 to 2,100 characters (B8); one unit is about 7 such messages. Pace: one
@@ -228,8 +228,8 @@ pattern (task class) every 2 to 3 weeks, so L1 to L3 across six classes in about
 
 | Measure | Healthy | Alarm |
 |---|---|---|
-| Predict step right first try | rising within a pattern, 80%+ by its third unit | flat for 3 units |
-| Trace cells, cold at 7 days | 80% or more | under 70% |
+| Try steps right first time (`engine.py tries`) | about 80% | under 70% (overload alarm: slow down, use the Help blocks) |
+| Scored parts, cold at 7 days | 90% or more | 10 or more points below the in-session score |
 | E1 to E4 misses on daily reps | falling to 0 per week | same count 3 weeks running |
 | Debug: time to find a planted bug | falling; under 10 min | hypotheses changing code at random (no card use) |
 | Prompts to pass hidden tests | 2 or fewer by L3 | over 4, or passes only by pasting code |

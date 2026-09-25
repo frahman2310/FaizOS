@@ -3,5 +3,5 @@
  "program": "code/code-01/retry_c.py",
  "args": [],
  "exit_code": 1,
- "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-01/retry_c.py\", line 2, in <module>\n    print(reply[\"output_tokens\"])  # aim: the output token count\n          ~~~~~^^^^^^^^^^^^^^^^^\nKeyError: 'output_tokens'\n"
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-01/retry_c.py\", line 2, in <module>\n    print(reply[\"usage\"][\"tokens\"])  # aim: the output token count\n          ~~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'tokens'\n"
 }

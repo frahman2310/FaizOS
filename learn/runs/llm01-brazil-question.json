@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the capital of Brazil?\nA: The capital of Brazil is' --save llm01-brazil-question",
+ "made": "20260925-164230-309812",
+ "inputs": {
+  "prompt": "Q: What is the capital of Brazil?\nA: The capital of Brazil is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Bras",
+   "prob": 0.9663,
+   "percent": 96.6
+  },
+  {
+   "token": " São",
+   "prob": 0.0183,
+   "percent": 1.8
+  },
+  {
+   "token": " Rio",
+   "prob": 0.0111,
+   "percent": 1.1
+  },
+  {
+   "token": " Sao",
+   "prob": 0.0006,
+   "percent": 0.1
+  },
+  {
+   "token": " Bel",
+   "prob": 0.0005,
+   "percent": 0.0
+  }
+ ]
+}

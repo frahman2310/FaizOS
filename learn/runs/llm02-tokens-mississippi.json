@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Mississippi --save llm02-tokens-mississippi",
+ "made": "20260925-164357-921101",
+ "inputs": {
+  "text": "Mississippi"
+ },
+ "output": {
+  "characters": 11,
+  "words": 1,
+  "openai_o200k": [
+   "Miss",
+   "issippi"
+  ],
+  "qwen": [
+   "Miss",
+   "issippi"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

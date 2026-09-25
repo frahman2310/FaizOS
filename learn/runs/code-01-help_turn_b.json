@@ -3,5 +3,5 @@
  "program": "code/code-01/help_turn_b.py",
  "args": [],
  "exit_code": 0,
- "output": "[{'type': 'text', 'text': 'Peshawar'}]\n"
+ "output": "5\n"
 }

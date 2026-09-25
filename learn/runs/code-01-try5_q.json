@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 try5_q.py",
+ "program": "code/code-01/try5_q.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "9\n"
+}

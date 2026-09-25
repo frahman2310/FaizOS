@@ -3,5 +3,5 @@
  "program": "code/code-01/show3.py",
  "args": [],
  "exit_code": 0,
- "output": "{'input_tokens': 14, 'output_tokens': 4}\n4\nIslamabad\n"
+ "output": "{'input_tokens': 14, 'output_tokens': 4}\n4\n"
 }

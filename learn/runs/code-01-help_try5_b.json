@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 help_try5_b.py",
+ "program": "code/code-01/help_try5_b.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "end_turn\n"
+}

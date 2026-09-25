@@ -3,5 +3,5 @@
  "program": "code/code-01/retry_a.py",
  "args": [],
  "exit_code": 0,
- "output": "input tokens: {'input_tokens': 16, 'output_tokens': 30}\n"
+ "output": "{'input_tokens': 16, 'output_tokens': 30}\n"
 }

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-summary-fits '1550 - 1300' --note 'toy window: history room left when the running summary sends 1300 tokens (it fits the 1550 room)'",
+ "expression": "1550 - 1300",
+ "value": 250,
+ "note": "toy window: history room left when the running summary sends 1300 tokens (it fits the 1550 room)",
+ "made": "2026-09-25T16:39:07"
+}

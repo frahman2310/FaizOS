@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'What is 58 x 76? Reply with the number only.' --save llm01-help-multiply-model",
+ "made": "20260925-164305-342907",
+ "inputs": {
+  "prompt": "What is 58 x 76? Reply with the number only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 58 x 76? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "4368"
+}

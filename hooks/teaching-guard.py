@@ -48,7 +48,8 @@ def last_assistant_text(transcript):
 def main():
     data = json.load(sys.stdin)
     text = last_assistant_text(data["transcript_path"])
-    if re.search(r"\*\*Your answer[.:]?\*\*", text):   # the unit's question marker only; "look at your answer" is help
+    if re.search(r"\*\*Your answer[.:]?\*\*", text) or re.search(r"(?i)your answer[.:]?\W*$", text.strip()):
+        # the bold marker anywhere, or "your answer" closing the message; "look at your answer to 2" mid-text is help
         return unit_step(text, last_assistant_text.final)   # checked even on a retry
     if data.get("stop_hook_active"):
         return
@@ -96,7 +97,9 @@ def unit_step(text, final=None):
         for path in glob.glob(os.path.join(ROOT, "learn", "units", "*", "*.md")):
             unit = open(path).read()
             shown = " ".join(norm(b) for _, b, _ in steps(unit))     # key lines also in a step are not secret
-            for i, (name, body, key) in enumerate(steps(unit)):
+            order = [n for n, _, _ in steps(unit) if not is_extra(n)]      # position among teaching steps only
+            for name, body, key in steps(unit):
+                i = order.index(name) if name in order else -1
                 b = norm(body)
                 if b and b in sent:
                     matches.append((path, i, name, b, key))
@@ -122,7 +125,7 @@ def unit_step(text, final=None):
         errs = unit_problems(path)
         if errs:
             return block(f"Unit {os.path.basename(path)} fails its check: " + "; ".join(errs[:3]) + ".")
-        cursor_file = os.path.join(ROOT, "learn", "data", "cursor.json")
+        cursor_file = os.environ.get("FAIZ_CURSOR") or os.path.join(ROOT, "learn", "data", "cursor.json")
         cur = json.load(open(cursor_file)) if os.path.exists(cursor_file) else {}
         if not is_extra(name):                # Help, Retry and Cold blocks are sent when needed, outside the order
             same = cur.get("unit") == path

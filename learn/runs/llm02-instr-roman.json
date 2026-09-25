@@ -1,0 +1,51 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Sirf neeche di gayi FBR rate table se jawab dein.' --save llm02-instr-roman",
+ "made": "20260925-164451-010044",
+ "inputs": {
+  "text": "Sirf neeche di gayi FBR rate table se jawab dein."
+ },
+ "output": {
+  "characters": 49,
+  "words": 10,
+  "openai_o200k": [
+   "Sir",
+   "f",
+   " nee",
+   "che",
+   " di",
+   " gay",
+   "i",
+   " F",
+   "BR",
+   " rate",
+   " table",
+   " se",
+   " jawab",
+   " dein",
+   "."
+  ],
+  "qwen": [
+   "Sir",
+   "f",
+   " ne",
+   "e",
+   "che",
+   " di",
+   " gay",
+   "i",
+   " F",
+   "BR",
+   " rate",
+   " table",
+   " se",
+   " jaw",
+   "ab",
+   " dein",
+   "."
+  ],
+  "openai_o200k_count": 15,
+  "qwen_count": 17
+ }
+}

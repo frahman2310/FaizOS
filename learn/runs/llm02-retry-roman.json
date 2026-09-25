@@ -1,0 +1,57 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Mehrbani karke chhote, aasaan jumlon mein jawab dein.' --save llm02-retry-roman",
+ "made": "20260925-164457-518507",
+ "inputs": {
+  "text": "Mehrbani karke chhote, aasaan jumlon mein jawab dein."
+ },
+ "output": {
+  "characters": 53,
+  "words": 8,
+  "openai_o200k": [
+   "Mehr",
+   "b",
+   "ani",
+   " k",
+   "arke",
+   " ch",
+   "h",
+   "ote",
+   ",",
+   " aas",
+   "aan",
+   " jum",
+   "lon",
+   " mein",
+   " jawab",
+   " dein",
+   "."
+  ],
+  "qwen": [
+   "M",
+   "eh",
+   "rb",
+   "ani",
+   " kar",
+   "ke",
+   " ch",
+   "h",
+   "ote",
+   ",",
+   " a",
+   "asa",
+   "an",
+   " j",
+   "um",
+   "lon",
+   " mein",
+   " jaw",
+   "ab",
+   " dein",
+   "."
+  ],
+  "openai_o200k_count": 17,
+  "qwen_count": 21
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Amazon --save llm02-tokens-amazon",
+ "made": "20260925-164404-342477",
+ "inputs": {
+  "text": "Amazon"
+ },
+ "output": {
+  "characters": 6,
+  "words": 1,
+  "openai_o200k": [
+   "Amazon"
+  ],
+  "qwen": [
+   "Amazon"
+  ],
+  "openai_o200k_count": 1,
+  "qwen_count": 1
+ }
+}

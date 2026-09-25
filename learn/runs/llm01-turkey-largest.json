@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the largest city in Turkey?\nA: The largest city in Turkey is' --save llm01-turkey-largest",
+ "made": "20260925-164151-186419",
+ "inputs": {
+  "prompt": "Q: What is the largest city in Turkey?\nA: The largest city in Turkey is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Istanbul",
+   "prob": 0.5571,
+   "percent": 55.7
+  },
+  {
+   "token": " Ankara",
+   "prob": 0.4224,
+   "percent": 42.2
+  },
+  {
+   "token": " İzmir",
+   "prob": 0.0039,
+   "percent": 0.4
+  },
+  {
+   "token": " İstanbul",
+   "prob": 0.0033,
+   "percent": 0.3
+  },
+  {
+   "token": " the",
+   "prob": 0.0019,
+   "percent": 0.2
+  }
+ ]
+}

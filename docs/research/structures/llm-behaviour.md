@@ -20,17 +20,18 @@ it does not look up; temperature reshapes probabilities; the model has no memory
 (b) a larger set of **facts** that must stay available (about 3.5 English characters per token for Claude,
 output tokens cost more than input, prices and window sizes change). Physics education research calls
 (a) conceptual change: the learner already holds a wrong model, and telling him the right one does not
-remove the wrong one. That is why this skill needs its own structure. The applied skills (evaluation,
-design, code) are built from worked examples; this one is built from **wrong models made visible, then
-broken by a real run**, and **facts kept by spaced cards**.
+remove the wrong one. That is why this skill needs its own structure. Like the applied skills it starts from a
+**worked demonstration** (the mechanism shown on a real run, quoted from a named expert: section 2); what it adds
+is a **refutation of the wrong model with his own runs as the evidence**, and **facts kept by spaced cards**.
+(Corrected 2026-09-25: an earlier line set this skill apart from worked examples; see section 2.)
 
 ### What the new experts add
 
 | Expert, finding | Evidence | What it changes here |
 |---|---|---|
 | **Hake 1998**: 62 physics courses, 6,542 students, same concept test (Force Concept Inventory). Traditional courses: normalized gain 0.23 ± 0.04; interactive-engagement courses: 0.48 ± 0.14 | [M] independent standardized test, but courses not randomized https://eric.ed.gov/?id=ED441679 | Measure this skill the same way: a concept inventory before and after, reported as normalized gain. Target the interactive band |
-| **Mazur, Peer Instruction**: gain rose from 0.25 (last lecture year) to 0.49 (first PI year) and 0.74 by 1997, same test | [M] one course, not randomized https://web.mit.edu/jbelcher/www/TEALref/Crouch_Mazur.pdf | Use ConcepTests: one concept question, vote with a reason, then revote |
-| **ConcepTest difficulty rule**: 35 to 70% should be right before discussion; below 35% the question is ambiguous or the concept missing; above 70% little to gain | [S] same paper, sec. on ConcepTest design | A difficulty band for his first answer, and a placement rule |
+| **Mazur, Peer Instruction**: gain rose from 0.25 (last lecture year) to 0.49 (first PI year) and 0.74 by 1997, same test | [M] one course, not randomized https://web.mit.edu/jbelcher/www/TEALref/Crouch_Mazur.pdf | Superseded 2026-09-25: no ConcepTest votes or revotes in units; the idea kept is "one concept question with a reason", asked after the worked demonstration (section 2) |
+| **ConcepTest difficulty rule**: 35 to 70% should be right before discussion; below 35% the question is ambiguous or the concept missing; above 70% little to gain | [S] same paper, sec. on ConcepTest design | Superseded 2026-09-25: not used. The pre-question is unscored and comes before teaching, so it has no band; try steps aim at about 80% right first time, alarm under 70% (section 2, `engine.py tries`) |
 | **Crouch, Fagen, Callan, Mazur 2004**: correct outcomes on a later test: no demo 61%, watched 70%, predicted first 77%, predicted and discussed 82%. Correct **explanations**: 22%, 24%, 30%, 32%. Prediction costs about 2 minutes | [M] researcher test https://www.otffeo.on.ca/wp-content/uploads/sites/2/2014/11/Mazur_demo-article.pdf | **Challenge to the current plan**: predict-run lifts "what happens" but leaves "why" at 30%. The explanation must be written, checked against the source, and refuted if wrong |
 | **Interactive lecture demonstrations** (Sokoloff, Thornton): predict on a sheet, discuss, watch, compare with the prediction | [S] method https://pages.uoregon.edu/sokoloff/ILDbook0116.pdf ; gains reported on the FMCE [M, authors' own] | The prediction is written down before the run, and compared line by line after |
 | **Refutation texts**: state the wrong idea, flag it wrong, give the right one with evidence. Tippett's 20-year review: consistently beats plain explanation | [S] review https://eric.ed.gov/?id=EJ905216 ; pre-registered meta-analysis, 71 articles, 294 effect sizes, advantage held across 26 moderators [M] https://experts.nau.edu/en/publications/the-effectiveness-of-refutation-text-in-confronting-scientific-mi/ ; g = 0.41 (Schroeder and Kucera 2022, teaching-methods.md 2g) | Every misconception item ends with a 4-line refutation using his own run as the evidence |
@@ -51,8 +52,8 @@ broken by a real run**, and **facts kept by spaced cards**.
 - ScaleDojo's temperature chapter says temperature 0 "can occasionally" differ. Thinking Machines measured
   80 distinct completions in 1,000 runs of one prompt at temperature 0 on Qwen3-8B [M]
   https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/ . "Occasionally" understates it.
-- tiktoken and transformers are not installed on this machine. Every number in a unit must come from a run,
-  so the unit cannot start until they are (or until recorded outputs exist, see section 2).
+- Every number in a unit comes from a saved run (`learn/demo.py`, `learn/calc.py`, with `--save`), so units
+  are written only from recorded outputs (tiktoken and transformers are installed as of 2026-09-25).
 
 ---
 
@@ -79,18 +80,23 @@ broken by a real run**, and **facts kept by spaced cards**.
 | 4 | **Run and compare** (show) | The real output at once. He says how far off he was and which part of step 2 explains the gap. The small-model line goes here, only if the result is a small-model effect. | Answer shown in this message, never later. | method-effectiveness row 15 ("answer shown at once"); recorded-output rule below |
 | 5 | **Wrong idea fixed** (try) | Refutation: the wrong idea, "this is wrong", his runs as evidence, the right idea in the words of step 2; then one decision priced at scale that he works out (not a read-back). | Only ideas taught in steps 2 to 4. Made-up scenario numbers on a line starting "Suppose". Prepared Help block. | Refutation texts (Tippett; Schroeder and Kucera g = 0.41); Posner (pay-off); T21 price at scale |
 | 6 | **Checks** (try) | 2 or 3 short questions in one message, same mechanism, new surfaces: a direction question (two options), a "why" in one line, a fix. | Every rule needed is in a step body above. About 80% first-try is the target (A9, A12). Prepared Help block. | Retrieval with feedback (method-effectiveness rows 1, 1b); B9; E12 |
-| 7 | **New case** (scored) | A transfer item on a new surface: a real failure or product situation. One-line answer and reason, then confidence. | The only scored step in the session. Stuck order: his own earlier answer, two options, the Help block (a second worked example on a new surface), then the answer line by line. A hinted answer scores 0.5. | Butler 2010 transfer; bar on transfer (section 5) |
+| 7 | **New case 1, 2, 3** (scored) | 2 or 3 transfer items, one per message, each on a different surface (a real failure or product situation): a one-line answer and a one-line reason, each marked. | The only scored steps in the session; mastery never rests on one item (review M3). Every answer rests on a show step body. Stuck order: his own earlier answer, the Key's prepared two options, the step's Help block (a second worked example on a new surface), then the Key's worked answer line by line. A part right after a hint gets half its marks. | Butler 2010 transfer; bar on transfer (section 5) |
 | 8 | **Close** (close) | "Next time I see X, I do Y." Goes into the recall queue. | Not scored. | INTEGRATED.md |
-| Retry | scored | After a miss, the Help blocks, then a new-surface item of the same kind. | Only content from steps always sent. | Bloom and Guskey correctives |
-| Cold | scored | 7 days later, a new surface of the same mechanism, same format as step 7. | Only content from steps always sent. | Mastery with a delayed recheck (method-effectiveness row 7) |
+| Retry | scored | After a miss, the Help blocks, then new-surface items of the same kinds: about 5 to 10 marked parts (may continue in `## Retry 2`), recorded as marks / total. | Only content from steps always sent (show and try bodies, never Help blocks or Keys). | Bloom and Guskey correctives |
+| Cold | scored | 7 days later, new surfaces of the same mechanism: about 5 to 10 marked parts (may continue in `## Cold 2`), recorded as marks / total. | Only content from steps always sent. | Mastery with a delayed recheck (method-effectiveness row 7) |
 | Cards | | 4 to 6, each answer found in a step body; at least one why card and one boundary card; number cards carry a second surface; dated facts carry date and source. | First return the next day. | Card rules (section 5); Wozniak rule 1 |
 
-**Placement (replaces the old answer-first skip rule).** If his pre-question answer and reason are right, he
-still gets step 2 (it carries the facts the checks and cards use); steps 3 and 4 may be skipped. After two units
-of a level pass cold, the next unit may open with its step 7 item as a first-step test (Kalyuga); right with a
-right reason goes straight to step 5. Nothing that states a tested fact is ever skipped.
+**Extra show steps and file order.** When a mechanism needs more than 3 new ideas, split it: add a further
+show step after Run and compare (llm-01 adds "One piece at a time"), so no show step lists more than 3 in its
+`New:` line. In the unit file, every `## Help:` block sits after the Close step, as in the other skills' units
+(the guard counts steps by their place in the file).
 
-**Scoring.** Scored: step 7, the Retry item and the Cold item only. Tracked, never gating: the pre-question
+**No skipping (corrected 2026-09-25).** Every step is sent, in order; the guard (`hooks/teaching-guard.py`)
+blocks a skipped step, and steps 2 to 5 all state facts the checks, scored items and cards use. A right
+pre-question answer is recorded and changes nothing. "ik this" or "move on" means send the next step now,
+without extra feedback. (The earlier placement rule, which let steps 3 and 4 or steps 2 to 4 be skipped, is withdrawn.)
+
+**Scoring.** Scored: the New case steps, the Retry items and the Cold items only. Tracked, never gating: the pre-question
 answer, reason quality, confidence, first-try rate per step (alarm under 70%).
 
 **Stuck order** (INTEGRATED 2.4): his own earlier answer, two options, the step's prepared Help block, then the
@@ -100,7 +106,7 @@ category mistake this skill exists to remove.
 
 **Recorded-output rule.** Every output shown comes from `learn/demo.py` or `learn/calc.py` runs saved in
 `learn/runs/` with the command that made them, or from verified `learn/facts.md` rows. Never an invented
-output. The demo model is Qwen2.5-0.5B (tiny); each unit says so once and marks small-model effects.
+output. The demo model is Qwen2.5-0.5B-Instruct (tiny, chat-trained); each unit says so once and marks small-model effects.
 
 ### Why this differs from the other four skills
 
@@ -149,13 +155,12 @@ model, post-training, hallucination, thinking tokens).
 
 ## 4. Practice formats, one example each
 
-**A. ConcepTest** (Mazur). One concept, 4 options built from real wrong models, a reason, a confidence.
-> You set temperature to 0.2 instead of 1.0 for an FBR tax assistant. What happens to the probabilities
-> the model computes for its next token?
-> (a) Nothing; temperature only changes which answer is shown. (b) The model thinks more carefully.
-> (c) The likeliest token's share grows and the rest shrink. (d) The model switches to exact lookup.
-> Reason in one line. Confidence 1 to 5.
-Right: (c). (b) targets "temperature = effort", (d) the lookup category mistake, (a) "sampling is after the fact".
+**A. Direction check** (a try or scored item, after the worked demonstration; corrected 2026-09-25: the earlier
+4-option ConcepTest vote is not used in units, F30). Two options at most, then a one-line reason.
+> You set temperature to 0.2 instead of 1.0 for an FBR tax assistant. Does the likeliest next token's share
+> go up or down? One-line reason.
+Right: up; the rest shrink. A wrong reason names the misconception ("it thinks more carefully", "it looks up"),
+which the Help block then answers.
 
 **B. Predict, run, explain** (Sokoloff and Thornton, Crouch 2004).
 > Predict: the sentence "How much tax do I owe on my salary?" in English and in Urdu. Which uses more
@@ -221,10 +226,10 @@ pass (Adams and Wieman). It is a home-made test, so its gains will look larger t
 
 | Unit | Bar |
 |---|---|
-| A concept | Transfer revote right **with a right reason** twice in a row, on two different surfaces |
-| A level | LBCI items for that level 9/10 on answer **and** reason; same bar again at a cold 7-day recheck; no item wrong with confidence 4 or 5 |
+| A concept | Its unit's New case items (2 or 3 surfaces, answer and reason) at the bar, then its Cold items at the bar 7 days later |
+| A level | LBCI items for that level 9/10 on answer **and** reason; same bar again at a cold 7-day recheck |
 | A card | Recalled at an interval of 21 days or more |
-| Not yet | A wrong answer given with confidence 4 or 5 sends the concept back for a new demonstration and refutation, not a re-read |
+| Not yet | A unit below the bar gets its Help blocks, then its Retry items (SKILL.md step 5). Confidence is recorded for calibration only and never demotes (corrected 2026-09-25) |
 
 ### Retention plan
 
@@ -252,15 +257,15 @@ Lapsed cards are not re-taught by the tutor; the concept's refutation is shown o
 
 | | Weeks 1 to 6 (Level 1) | Weeks 7 to 12 (Level 2) | After |
 |---|---|---|---|
-| Break-it units | 2 per week, 20 min (Mon and Thu) | 1 per week | Inside design and eval units |
+| LLM units | as the sitting order gives them (INTEGRATED.md; one new unit per sitting in weeks 1 and 2; sittings, not weekdays, C47), about 20 min | as the sitting order gives them | Inside design and eval units |
 | Cards | 3 to 5 min daily | 3 to 5 min daily | 2 to 3 min daily |
 | Predict-and-run inside other skills | 1 per week | 2 per week | as needed |
 | Total | about 70 min/week | about 55 min/week | about 30 min/week |
 
-Why 2 units early: expert curricula put this skill first (expert-curricula.md), and every other skill leans on
-it. Why 20 minutes: one concept per unit; the Crouch 2004 prediction step adds only about 2 minutes; units
-longer than one concept broke his attention before (postmortem, method 8). This replaces the single Thursday
-predict-and-run in curriculum-map.md for the first 12 weeks.
+Why early: expert curricula put this skill first (expert-curricula.md), and every other skill leans on it. Why
+about 20 minutes: one concept per unit; the Crouch 2004 prediction step adds only about 2 minutes; units longer
+than one concept broke his attention before (postmortem, method 8). Weekly counts here are superseded by the
+sitting order in INTEGRATED.md and `engine.py` (corrected 2026-09-25).
 
 ---
 
@@ -270,8 +275,8 @@ predict-and-run in curriculum-map.md for the first 12 weeks.
 |---|---|---|---|
 | LBCI normalized gain | (post - pre) / (100 - pre), answers and reasons scored separately | 0.5 or more (above Hake's interactive mean, 0.48) | Under 0.3 (the lecture band): the demos are not breaking the model; rewrite refutations |
 | Answer vs reason gap | LBCI answer score minus reason score | 15 points or less | Over 25: he knows what, not why; add explain steps, not more runs |
-| First-vote ConcepTest band | Share right at step 2, over a week | 35 to 70% | Over 70%: items too easy, move on; under 35%: prerequisite missing |
-| Confident errors | Wrong answers with confidence 4 or 5 | Falling to under 10% by week 6 | Flat: the category mistake persists; revisit concept 1 |
+| First-try rate on try steps | `engine.py tries`, per unit | about 80% | Under 70%: overload; slow down, use the Help blocks, split the unit (the old 35 to 70% first-vote band is withdrawn, 2026-09-25) |
+| Confident errors | Wrong answers with confidence 4 or 5 (tracked, never demoting) | Falling to under 10% by week 6 | Flat: the category mistake persists; add a Help block and a refutation line to the next unit |
 | Prediction direction | 20 predict-then-run items per level | 80% or more with reasons | Under 60% at week 6 |
 | Card retention | True recall on due cards | 85 to 92% (target 90) | Under 80%: cards badly written; rewrite by the rules |
 | Cold retention | LBCI 30 days after the level | 80% or more of the post score | Under 70%: more why-cards |
@@ -285,7 +290,7 @@ predict-and-run in curriculum-map.md for the first 12 weeks.
 | Choice | Grade | Basis |
 |---|---|---|
 | Concept test before and after, normalized gain | B | Hake [M] 6,542 students, not randomized; Adams and Wieman [S] |
-| ConcepTest with reason and revote | B | Crouch and Mazur [M] one course; revote without peers is untested |
+| One concept question with a reason, after teaching (no vote or revote) | B | Crouch and Mazur [M] one course; the revote without peers was untested and is dropped |
 | Predict before the run | B | Crouch 2004 [M]; Brod review (method-effectiveness row 15) |
 | Written explanation checked against the source | B | Crouch 2004: explanations lag outcomes [M]; self-explanation g = 0.55 (recommended-method) |
 | Refutation after the run | B | Meta-analysis 294 effects [M]; g = 0.41 [M] |
@@ -300,7 +305,7 @@ predict-and-run in curriculum-map.md for the first 12 weeks.
 
 | Excluded | Why |
 |---|---|
-| Peer discussion (the heart of Peer Instruction) | No peers. The tutor posing as a peer is untested and invites sycophancy (ai-tutoring.md); replaced by a written reason and a revote |
+| Peer discussion (the heart of Peer Instruction) | No peers. The tutor posing as a peer is untested and invites sycophancy (ai-tutoring.md); replaced by a written reason, marked against the unit's Key |
 | Watching demos without predicting | Watched demos: 70% vs 61% with none, explanations 24% vs 22% (Crouch 2004) |
 | Long video or long reading first (Karpathy 3.5 h) | Supplement only; video replacing teaching 0.28 (method-effectiveness.md). Transcripts are used as quoted sources |
 | Deriving attention, backprop or building a GPT | Model internals are not needed to predict behaviour at Levels 1 to 2; expert curricula start from behaviour (postmortem cause 7) |

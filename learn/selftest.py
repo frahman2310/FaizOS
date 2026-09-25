@@ -84,18 +84,17 @@ GUARD = ROOT / "hooks" / "teaching-guard.py"
 
 
 def guard(text, cursor=None, active=False):
-    data = HERE / "data"
-    saved = (data / "cursor.json").read_text() if (data / "cursor.json").exists() else None
-    data.mkdir(exist_ok=True)
-    (data / "cursor.json").write_text(json.dumps(cursor)) if cursor else (data / "cursor.json").unlink(missing_ok=True)
-    t = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
-    t.write(json.dumps({"type": "user", "message": {"content": "go"}}) + "\n")
-    t.write(json.dumps({"type": "assistant", "message": {"content": [{"type": "text", "text": text}]}}) + "\n")
-    t.close()
-    r = subprocess.run([sys.executable, str(GUARD)], input=json.dumps({"transcript_path": t.name, "stop_hook_active": active}),
-                       capture_output=True, text=True)
-    (data / "cursor.json").write_text(saved) if saved else (data / "cursor.json").unlink(missing_ok=True)
-    return "block" in r.stdout
+    """Run the Stop hook on a one-message transcript, with its own cursor file (never the real one)."""
+    with tempfile.TemporaryDirectory() as d:
+        cur = Path(d) / "cursor.json"
+        if cursor:
+            cur.write_text(json.dumps(cursor))
+        t = Path(d) / "t.jsonl"
+        t.write_text(json.dumps({"type": "user", "message": {"content": "go"}}) + "\n" +
+                     json.dumps({"type": "assistant", "message": {"content": [{"type": "text", "text": text}]}}) + "\n")
+        r = subprocess.run([sys.executable, str(GUARD)], input=json.dumps({"transcript_path": str(t), "stop_hook_active": active}),
+                           capture_output=True, text=True, env={**os.environ, "FAIZ_CURSOR": str(cur)})
+        return "block" in r.stdout
 
 
 if base is not None:
@@ -130,6 +129,23 @@ if base is not None:
             if not ok:
                 break
         expect(f"guard allows every step of {u.parent.name}/{u.name} in order", ok)
+    moved = base.parent / f"zz-selftest-inline-{os.getpid()}.md"      # a Help block between steps must not count as a step
+    t0 = base.read_text()
+    helpb = re.search(r"(?ms)^## Help: .*?(?=^## )", t0).group(0)
+    names = [n for n, b, k in steps(t0) if not is_extra(n)]
+    t1 = t0.replace(helpb, "").replace(f"## Step: {names[1]}\n", helpb + f"## Step: {names[1]}\n", 1)
+    hold = base.with_suffix(".selftest-hold")                         # only one unit may hold these step texts
+    base.rename(hold)
+    moved.write_text(t1)
+    try:
+        cur, ok = None, True
+        for i, (name, body, _) in enumerate([x for x in steps(moved.read_text()) if not is_extra(x[0])]):
+            ok = ok and not guard(body, cur)
+            cur = {"unit": str(moved), "index": i, "finished": False}
+        expect("guard counts only teaching steps (inline Help block)", ok)
+    finally:
+        moved.unlink()
+        hold.rename(base)
     expect("guard allows re-sending an earlier step (re-teach)", not guard(s0, {"unit": str(base), "index": 2, "finished": False}))
     expect("guard blocks starting another unit mid-unit",
            guard(steps(other.read_text())[0][1], {"unit": str(base), "index": 1, "finished": False}))

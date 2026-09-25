@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'In which year did the Gwadar Silk Stock Exchange open? Reply with the year only.' --save llm01-exchange",
+ "made": "20260925-164258-325161",
+ "inputs": {
+  "prompt": "In which year did the Gwadar Silk Stock Exchange open? Reply with the year only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nIn which year did the Gwadar Silk Stock Exchange open? Reply with the year only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "2018"
+}

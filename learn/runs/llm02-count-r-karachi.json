@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'How many times does the letter r appear in the word Karachi? Reply with the number only.' --save llm02-count-r-karachi",
+ "made": "20260925-164510-213007",
+ "inputs": {
+  "prompt": "How many times does the letter r appear in the word Karachi? Reply with the number only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nHow many times does the letter r appear in the word Karachi? Reply with the number only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "3"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-retry-bill '400 * 17 // 8' --note 'English instruction bill scaled by Roman Urdu/English tokens, OpenAI o200k'",
+ "expression": "400 * 17 // 8",
+ "value": 850,
+ "note": "English instruction bill scaled by Roman Urdu/English tokens, OpenAI o200k",
+ "made": "2026-09-25T16:50:46"
+}
