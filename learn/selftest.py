@@ -146,13 +146,19 @@ if base is not None:
     finally:
         moved.unlink()
         hold.rename(base)
+    live = {"unit": str(base), "index": 1, "finished": False}
+    expect("guard blocks an improvised question mid-unit (no marker)", guard("Close. What do you think a list holds here?", live))
+    expect("guard allows stuck help written as statements mid-unit", not guard("Look at your answer to question 2: the key sits inside usage.", live))
     expect("guard allows re-sending an earlier step (re-teach)", not guard(s0, {"unit": str(base), "index": 2, "finished": False}))
     expect("guard blocks starting another unit mid-unit",
            guard(steps(other.read_text())[0][1], {"unit": str(base), "index": 1, "finished": False}))
 
 # ---------- 3. engine flows in a temp copy ----------
 with tempfile.TemporaryDirectory() as d:
-    shutil.copytree(HERE, Path(d) / "learn", ignore=shutil.ignore_patterns(".venv", "data", "__pycache__", "runs"))
+    shutil.copytree(HERE, Path(d) / "learn", ignore=shutil.ignore_patterns(".venv", "data", "__pycache__"))
+    for side in ("private", "docs", "scripts"):             # sources, glossary and checker helpers the units need
+        if (ROOT / side).exists():
+            (Path(d) / side).symlink_to(ROOT / side)
     py = str(HERE / ".venv/bin/python") if (HERE / ".venv/bin/python").exists() else sys.executable  # engine needs fsrs
     run = lambda *a: subprocess.run([py, "engine.py", *a], cwd=Path(d) / "learn", capture_output=True, text=True)
     expect("engine plans a sitting with no start date (C47)", "code" in run("today").stdout)
@@ -164,6 +170,18 @@ with tempfile.TemporaryDirectory() as d:
         expect("engine refuses a cold check before a session", run("predict", uid, "50", "--cold").returncode == 0
                and run("done", uid, "--step", "Cold=1", "--cold").returncode != 0)
         expect("engine refuses an unknown card", run("review", "nope", "3").returncode != 0)
+        m = next(q for q in units if "code/" in str(q))        # a miss, then the corrective retry
+        mid = re.search(r"(?m)^id:\s*(\S+)", m.read_text()).group(1)
+        sc = [x.strip() for x in re.search(r"(?m)^scored:(.*)$", m.read_text()).group(1).split(",")]
+        run("predict", mid, "80")
+        miss = run("done", mid, *sum([["--step", f"{x}=0.2"] for x in sc], []))
+        expect("engine records a miss", "not yet" in miss.stdout)
+        nxt = subprocess.run([py, "-c", "import engine; print(engine.next_unit('code', engine.load('results.json', [])))"],
+                             cwd=Path(d) / "learn", capture_output=True, text=True).stdout
+        expect("engine offers RETRY at the next code sitting after a miss", "RETRY" in nxt)
+        run("predict", mid, "70", "--retry")
+        rt = run("done", mid, "--step", "Retry=1", "--retry")
+        expect("engine records a retry", rt.returncode == 0 and "retry" in rt.stdout)
 
 print(f"\n{'all attacks caught' if not fails else str(len(fails)) + ' attack(s) got through'}")
 sys.exit(1 if fails else 0)

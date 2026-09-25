@@ -42,7 +42,8 @@ logged in `docs/learning-evidence.md` (C1 to C49); his latest words win.
    (confidence is for calibration only; it never lowers his level). Pass = mean of scored steps at the skill's
    bar (code, llm, production 90; evaluation 80; design 70). His Close line: `uv run engine.py close <unit-id> "<line>"`.
 5. **A miss is re-taught, not just re-tested** (mastery learning: Bloom, Guskey). Next time `today` says RETRY:
-   send the unit's `## Help:` blocks for the steps he missed, then its `## Retry` item (predict with `--retry`,
+   send the unit's `## Help:` blocks for the steps he missed, ask in one line for his predicted score, then its
+   `## Retry` item (record the prediction with `--retry`,
    record `done <unit-id> --step "Retry=<v>" --retry`). A second miss moves him to a parallel unit.
 6. **7-day cold check** (listed by `today` until done): predict first (`predict <unit-id> <p> --cold`), send the
    `## Cold` item verbatim, mark with its `Score:` line, record `done <unit-id> --step "Cold=<v>" --cold`.
@@ -51,7 +52,8 @@ logged in `docs/learning-evidence.md` (C1 to C49); his latest words win.
 
 ## Feedback
 - Right: one line naming what was right; one sentence more only if it adds something.
-- Wrong: say so, one reframe, one hint. Never confirm half and hand him numbers to plug in.
+- Wrong: say so, one reframe, one hint, written as statements (during a unit every question comes from the unit
+  file; the guard blocks others). Never confirm half and hand him numbers to plug in.
 - When he asks for the answer: give it worked line by line with the reason, then he says it back in one line
   (C19, C23, C28).
 - **Stuck order** (teaches, never just re-asks): (1) point at his own earlier answer or the show step it uses;

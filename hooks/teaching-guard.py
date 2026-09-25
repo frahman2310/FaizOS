@@ -45,9 +45,30 @@ def last_assistant_text(transcript):
     return "\n".join(texts)
 
 
+def improvised_question(final):
+    """A question sentence in the final message, while a unit is in progress, that is not in that unit's file."""
+    try:
+        cursor_file = os.environ.get("FAIZ_CURSOR") or os.path.join(ROOT, "learn", "data", "cursor.json")
+        cur = json.load(open(cursor_file)) if os.path.exists(cursor_file) else {}
+        if not cur.get("unit") or cur.get("finished") or not os.path.exists(cur["unit"]):
+            return None
+        unit = norm(open(cur["unit"]).read())
+        for sent in re.findall(r"[^.!?\n]*\?", final or ""):
+            s = norm(sent).strip("*_ ")
+            if len(s) > 12 and s not in unit:
+                return s
+    except Exception:
+        return None
+    return None
+
+
 def main():
     data = json.load(sys.stdin)
     text = last_assistant_text(data["transcript_path"])
+    q = improvised_question(last_assistant_text.final)
+    if q:
+        print(json.dumps({"decision": "block", "reason": f"During a unit, every question comes from the unit file; this one does not: '{q[:80]}'. Give hints as statements, or send the prepared Two options / Help text."}))
+        return
     if re.search(r"\*\*Your answer[.:]?\*\*", text) or re.search(r"(?i)your answer[.:]?\W*$", text.strip()):
         # the bold marker anywhere, or "your answer" closing the message; "look at your answer to 2" mid-text is help
         return unit_step(text, last_assistant_text.final)   # checked even on a retry

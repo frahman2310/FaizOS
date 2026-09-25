@@ -182,7 +182,7 @@ def next_unit(skill, results):
         if m["id"] in done_ok:
             continue
         if m["id"] in missed and m["id"] not in retried:
-            return p, "RETRY: re-teach with its Help blocks and the show steps he missed, then send its ## Retry item"
+            return p, "RETRY: send its ## Help blocks for the steps he missed, then its ## Retry item (predict with --retry first)"
         if m["id"] in missed:
             par = [meta(q) for q in unit_files(skill) if meta(q)["parallel_of"] == m["id"]]
             fresh = [q for q in par if q["id"] not in done_ok | missed]
@@ -273,6 +273,12 @@ def cmd_today(a):
             path, note = None, f"{meta(path)['id']} fails learn/check_unit.py; fix it before teaching"
         print(f"Unit {s}: " + (meta(path)["id"] + "  (file: " + str(path.relative_to(HERE)) + "; never show him the name)"
                                 + (f"  {note}" if note else "") if path else f"none ({note})"))
+    cursor = DATA / "cursor.json"             # the guard's step cursor: a new unit starts clean
+    if cursor.exists():
+        cur = json.loads(cursor.read_text())
+        served = [str(next_unit(s, results)[0]) for s in units]
+        if cur.get("unit") not in served:
+            cursor.unlink()
     for o in other:
         print(f"Also: {o}")
     if not units and not other:
