@@ -20,7 +20,7 @@ logged in `docs/learning-evidence.md` (C1 to C46); his latest words win.
   loop; E3 one record per call vs one per try; E4 which kind of value a variable holds.
 
 ## How a session runs
-1. In `learn/`, run `uv run engine.py today`: today's recall, the scheduled unit(s) by id, any cold check due
+1. In `learn/`, run `uv run engine.py today`: recall, the next sitting's unit(s) by id (sittings run in order whenever he sits down, never tied to weekdays: C47), any cold check due
    (listed until done) and any other session (rapid round, drill, placement, Saturday whole task).
 2. **Recall** (about 10 minutes, at most 20 cards, mixed across skills): `uv run engine.py due`. One card
    per message: ask the question, wait, show the stored answer; **he grades himself** (1 wrong, 2 right with
@@ -59,7 +59,7 @@ logged in `docs/learning-evidence.md` (C1 to C46); his latest words win.
 ## Words and delivery
 - Plain, conversational words. Any technical word is explained in the sentence where it first appears
   (`docs/glossary.md`). No em dashes.
-- One step per message. Code is shown in the chat, never "open the file".
+- One step per message. Code is shown in the chat, never "open the file". Every code block comes with its prepared **How this code works** block: what each part does and why it is built that way, never the answer (C48).
 - No recaps of the plan or his progress unless he asks. "ik this" or "move on" means move on now.
 
 ## Honesty

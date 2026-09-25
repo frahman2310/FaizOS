@@ -30,6 +30,8 @@ print("B", times[2])
 print("C", times[5])
 ```
 
+**How this code works.** `times` is a list of call times in ms (thousandths of a second). `sort` is a machine that belongs to every list and lines it up in place, so no new list is made. A number in square brackets picks the item at that position; once a list of five is lined up, position 2 is the middle, which is why A and B both read position 2. Each print starts with a letter so you can tell the outputs apart.
+
 For each of the three print lines, write exactly what it shows, and give one label:
 
 - **crash**: the program stops with an error (write the error's name)
@@ -79,6 +81,12 @@ def report(log):
 
 print(report(LOG))
 ```
+
+**How this code works, and why it is built this way.**
+- `LOG` holds one record per call: `ok` says whether it worked, `tries` how many tries it took.
+- `report` works in two loops on purpose. The first keeps the records that worked in a new list, `oks`. The second walks only `oks`, so it counts within the calls that worked, as the goal says.
+- `retried` gets its start value before the second loop, so it collects across every record it visits. `len(oks)` counts the items in `oks`.
+- It hands back a dict (a set of labelled values), so each number carries its own name.
 
 1. Fill every cell, one row for each time a marked line runs, in order. Call the records R1, R2, R3 (top to bottom). `-` means no value yet.
 
@@ -138,6 +146,8 @@ assert summary["failed"] == 1
 print("PASS")
 ```
 
+**How this test works.** `program` is your edited file, loaded so the test can use your `report` and `LOG`. It builds the summary once, then each `assert` line checks one label in it and stops the test with an `AssertionError` if the value is not what it should be, so `PASS` prints only when all three hold. The first two checks make sure your edit did not break what `report` already did.
+
 Write the line as you would rewrite it.
 
 **Your answer.**
@@ -167,6 +177,8 @@ def ask(q, log):
         except RuntimeError:
             time.sleep(pause)
 ```
+
+**How this code works.** It is a retry loop like `fetch` in unit 2, with a stopwatch added. `time.time()` is a clock reading, and the time taken is a second reading minus the first, rounded as in unit 1. A try that works writes one record and leaves; a failed try pauses and goes round again. One line is in the wrong place. Nothing crashes, so the only clue is the logged time.
 
 Fill in the debug card yourself:
 
@@ -210,6 +222,8 @@ for c in calls:
         slowest = c["ms"]
 print("slowest good call:", slowest)
 ```
+
+**How this code works.** `calls` is a log with one record per call. The first loop keeps the calls that worked in a new list, `good`. The second loop finds the biggest time: `slowest` starts at 0, and each time bigger than the biggest so far takes its place. The print line shows the result.
 
 1. What does it print?
 2. Label it: crash, quietly wrong, or fine.

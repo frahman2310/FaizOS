@@ -23,6 +23,8 @@ print(log[1])
 print(log[1]["cost"] + log[2])
 ```
 
+**How this code works.** `log` is a list of records, one dict (a set of labelled values) per call, all with the same labels, so one loop can read every record the same way. The `for` loop looks at each record in turn as `row`; `row["ok"]` reads the value under the label `ok`, and when it is True the counter `passed` goes up by one. A number in square brackets after a list picks the item at that position; a label in square brackets after a dict picks the value under that label. The last line adds two things together.
+
 For each of the three print lines, write exactly what it shows, and give one label:
 
 - **crash**: the program stops with an error (write the error's name)
@@ -76,6 +78,12 @@ def score(cases):
 
 passed, failing = score(CASES)
 ```
+
+**How this code works, and why it is built this way.**
+- `passed` and `failing` get start values before the loop, so they collect across every case instead of starting over.
+- The loop visits each case once. `summarise(case)` makes the note, and the `if` line asks whether the text the case needs is inside that note.
+- A case that passes adds one to the count; a case that fails is noted in `failing`, so a person can see which ones to fix, not just how many.
+- `return passed, failing` hands both back together, because a count alone would not say which cases failed.
 
 `CASES` holds 3 cases: `scan-000` must include `PKR 80,000`, `credit-note-77` must include `-$310`, `typed-000` must include `$100`. The last line catches the two values handed back, in order, into two stickers.
 
@@ -140,6 +148,8 @@ Put these lines in order to build `spend(log)`, which adds up the cost of every 
 def spend(log):                          # F
 ```
 
+**How this code works.** `spend` is a running total: a start value, a loop that visits each record once, a line that adds to the total on every pass, and a return after the loop that hands the total back. The start value is a number, so an empty log still gives a number back. Each record is a dict like the ones in Predict.
+
 The test: `spend(log)` must be `0.0054` for the Predict log, and `spend([])` must be `0.0`.
 
 **Your answer.**
@@ -173,6 +183,8 @@ def score(cases):
             failing.append(case["invoice"])
     return passed, failing
 ```
+
+**How this code works.** It is `score` from the Trace with the numbered comments taken out: start values, one pass per case, make the note, the pass-or-fail check, then count it or name it, and hand back both. One line was rewritten. Nothing crashes, so the only clue is the pass count.
 
 Fill in the debug card yourself:
 
@@ -220,6 +232,8 @@ for t in TESTS:
         right.append(t)
 print("score:", len(TESTS), "of", len(TESTS))
 ```
+
+**How this code works.** `TESTS` is a list of test cases, each a dict with the question, the answer wanted and the answer the model gave. The loop keeps the cases where the answer given matches the one wanted, in a separate list, `right`. `len(x)` counts the items in a list. The last line prints the score.
 
 1. What does it print?
 2. Label it: crash, quietly wrong, or fine.

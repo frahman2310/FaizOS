@@ -22,7 +22,7 @@ def norm(s):
 
 
 def last_assistant_text(transcript):
-    texts = []
+    texts, final = [], []
     for line in open(transcript):
         try:
             e = json.loads(line)
@@ -34,9 +34,14 @@ def last_assistant_text(transcript):
             is_tool_result = isinstance(content, list) and all(
                 isinstance(c, dict) and c.get("type") == "tool_result" for c in content)
             if not is_tool_result:
-                texts = []
+                texts, final = [], []
+            else:
+                final = []                    # text before a tool call is narration, not the final message
         elif e.get("type") == "assistant" and isinstance(content, list):
-            texts += [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
+            t = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
+            texts += t
+            final += t
+    last_assistant_text.final = "\n".join(final)
     return "\n".join(texts)
 
 
@@ -44,7 +49,7 @@ def main():
     data = json.load(sys.stdin)
     text = last_assistant_text(data["transcript_path"])
     if re.search(r"(?i)your answer", text):
-        return unit_step(text)                # checked even on a retry: the correction must itself be right
+        return unit_step(text, last_assistant_text.final)   # checked even on a retry
     if data.get("stop_hook_active"):
         return
     from check_lesson_script import parts, problems, START_MARKERS, ASK_MARKERS
@@ -74,7 +79,7 @@ def main():
     }))
 
 
-def unit_step(text):
+def unit_step(text, final=None):
     """Unit steps (learn/units): the message must hold exactly one step of a checked unit, verbatim, as its last
     text, the next one in order; no answer-key text anywhere; feedback on his last answer may come before it.
     Fails closed: any error here blocks. The hook runs after the message is shown, so a block asks for a
@@ -90,20 +95,24 @@ def unit_step(text):
         matches = []
         for path in glob.glob(os.path.join(ROOT, "learn", "units", "*", "*.md")):
             unit = open(path).read()
+            shown = " ".join(norm(b) for _, b, _ in steps(unit))     # key lines also in a step are not secret
             for i, (name, body, key) in enumerate(steps(unit)):
                 b = norm(body)
                 if b and b in sent:
                     matches.append((path, i, name, b, key))
                 for line in key.splitlines():
-                    if len(norm(line)) >= 25 and norm(line) in sent:
+                    if len(norm(line)) >= 25 and norm(line) in sent and norm(line) not in shown:
                         return block(f"Answer-key text from {os.path.basename(path)} appears in the message.")
         if not matches:
             return block("A question asking for his answer does not come from a checked unit.")
         if len(matches) > 1:
             return block("More than one step in one message.")
         path, i, name, b, key = matches[0]
-        after = sent[sent.index(b) + len(b):].strip()
-        before = sent[:sent.index(b)]
+        last = norm(final if final is not None else text)   # order and length: the final message only
+        if b not in last:
+            return block(f"Step '{name}' must be in the final message, after any tool use.")
+        after = last[last.index(b) + len(b):].strip()
+        before = last[:last.index(b)]
         if after:
             return block(f"Text was added after step '{name}'.")
         if re.search(r"(?i)your answer", before) or "?" in before:

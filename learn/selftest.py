@@ -104,6 +104,16 @@ if base is not None:
     expect("guard blocks a step from a unit that fails the checker",
            guard(s0.replace(w, w + " 4837", 1)))
     bad.unlink()
+    for u in sorted((HERE / "units").glob("*/*.md")):         # every real step, in order, must be allowed
+        cur = None
+        for i, (name, body, _) in enumerate(steps(u.read_text())):
+            if name == "Cold":
+                continue
+            ok = not guard(body, cur)
+            cur = {"unit": str(u), "index": i, "finished": False}
+            if not ok:
+                break
+        expect(f"guard allows every step of {u.parent.name}/{u.name} in order", ok)
     expect("guard blocks a repeated step", guard(s0, {"unit": str(base), "index": 0, "finished": False}))
 
 # ---------- 3. engine flows in a temp copy ----------
@@ -111,8 +121,7 @@ with tempfile.TemporaryDirectory() as d:
     shutil.copytree(HERE, Path(d) / "learn", ignore=shutil.ignore_patterns(".venv", "data", "__pycache__", "runs"))
     py = str(HERE / ".venv/bin/python") if (HERE / ".venv/bin/python").exists() else sys.executable  # engine needs fsrs
     run = lambda *a: subprocess.run([py, "engine.py", *a], cwd=Path(d) / "learn", capture_output=True, text=True)
-    expect("engine refuses a date before the start", "error" in run("start", "2999-01-01").stdout + run("today").stderr + run("today").stdout)
-    run("start", "2020-01-06")
+    expect("engine plans a sitting with no start date (C47)", "code" in run("today").stdout)
     expect("engine plans a day", run("today").returncode == 0)
     units = sorted((Path(d) / "learn/units").glob("*/*.md"))
     if units:

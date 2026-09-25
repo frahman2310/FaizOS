@@ -158,8 +158,11 @@ def problems(path):
             out.append(f"{where} has no real ### Key")
         if (name in h["scored"] or name == "Cold") and not re.search(r"(?m)^Score:", key):
             out.append(f"{where} is scored, so its Key needs a line starting 'Score:' (how to mark it)")
-        if len(body) > 2000:
-            out.append(f"{where} is {len(body)} characters, max 2000")
+        prose_len = len(re.sub(r"(?ms)^```.*?^```", "", body))
+        if prose_len > 2500:
+            out.append(f"{where} has {prose_len} characters of prose (code not counted), max 2500")
+        if skill == "code" and "```python" in body and "**How this" not in body:
+            out.append(f"{where} shows code without a '**How this code works' explanation (C48)")
         out += [f"{where}: {j}" for j in jargon_problems(body)]
         out += check_numbers(where, body, known, sources_text)
         out += check_numbers(f"{where} Key", key, known, sources_text)

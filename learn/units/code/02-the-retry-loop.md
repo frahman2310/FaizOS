@@ -22,6 +22,8 @@ for pause in PAUSES:
 print("tries:", tries)
 ```
 
+**How this code works.** `PAUSES` is a list (items in a fixed order) with one pause for each try. `for pause in PAUSES:` runs the indented lines under it once for each item, with `pause` holding that item. `tries` is the counter: `tries = 0` gives it a value, and `tries = tries + 1` adds one to whatever it holds. The print line is not indented, so it is outside the loop and runs once the loop is done.
+
 Write exactly what it prints, and give one label:
 
 - **crash**: the program stops with an error (write the error's name)
@@ -73,6 +75,13 @@ def fetch(prompt, records):
 records = []
 print(fetch("USD to PKR", records))
 ```
+
+**How this code works, and why it is built this way.**
+- `fake_provider` stands in for the AI company. It takes the next outcome off the list, and for anything but `"ok"` it raises (throws) a `RuntimeError`, which is how a real timeout reaches your code. So it fails and works on cue, offline.
+- `try:` and `except RuntimeError as err:` pair up: Python runs the lines under `try`, and if a RuntimeError is raised there it jumps to the lines under `except` instead of crashing. That is what lets one failure be survived.
+- The loop gives one try per pause. A try that works writes its record and leaves at once with `return`; a failed try keeps the reason and waits, giving the provider time to recover before the next try.
+- `tries` and `reason` get start values before the loop, so they carry across tries. The lines after the loop run only if no try worked; they write the failure record, with the reason, so someone can see why it gave up.
+- `records` is made outside and passed in, as `log` was in unit 1, so the records survive after `fetch` is done.
 
 1. Fill every cell, in the order the lines run (`-` for no value yet).
 
@@ -137,6 +146,8 @@ Put these lines in order under `def fetch(prompt):` to build a loop that tries u
         except RuntimeError:                     # I
 ```
 
+**How this code works.** These are the pieces of `fetch` from the Trace, cut down: no records, and the reply and the number of tries are handed back together, so the caller gets both. `PAUSES` and `fake_provider` are the same as in the Trace. The `try` line and the `except` line pair up: Python runs the lines under `try`, and if the provider raises a RuntimeError it jumps to the lines under `except` instead of crashing. The line that hands back `None` is for when every try failed, so the caller still gets an answer it can check.
+
 New rule: `return x, y` hands back two values together, and Python shows them in round brackets, like `('rate: hi', 2)`. The test (the fake provider times out once, then works): `fetch("hi")` must hand back `('rate: hi', 2)`.
 
 **Your answer.**
@@ -174,6 +185,8 @@ Someone moved one line in `fetch`. It runs with no error. The symptom, counted b
             time.sleep(pause)
         records.append({"done": False, "tries": tries, "reason": reason})
 ```
+
+**How this code works.** It is the loop from `fetch` in the Trace, with the numbered comments taken out and the start lines above the loop not shown. One line was moved. Nothing crashes, so the only clue is the number of records.
 
 Fill in the debug card yourself:
 
@@ -230,6 +243,8 @@ history = []
 print(get(history))
 print(history)
 ```
+
+**How this code works.** The same shape as `fetch`, with new names. `ask` stands in for the provider: it takes the next reply off the list and raises an error for anything but `"ok"`. `get` gives one try per delay: a try that works writes one record into `history` and leaves, and a failed try pauses and adds that delay to `waited`. `history` is made outside and passed in, so the records are still there after `get` is done.
 
 `waited` is meant to be the total time spent pausing.
 

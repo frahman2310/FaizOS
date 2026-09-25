@@ -23,6 +23,8 @@ print(cost_of("haiku", 1200, 300))
 print(cost_of("sonnet", 1200, 300))
 ```
 
+**How this code works.** `RATES` is a dict (a set of labelled values) holding the dollar rates for each model name. `cost_of` looks up the rates for the model it is given, multiplies each token count by its rate, adds the two, and divides by `1_000_000` because the rates are per `1_000_000` tokens. The two print lines use the same machine with two model names.
+
 For each of the two print lines, write exactly what it shows, and give it one label:
 
 - **crash**: the program stops with an error (write the error's name)
@@ -71,7 +73,11 @@ print(text)
 print(log)
 ```
 
-`time.time()` is a clock reading; call it T. `round(..., -2)` rounds to the nearest 100. The fake's wait comes out as `300.0` ms.
+**How this code works, and why it is built this way.**
+- `fake_provider` stands in for the AI company. A real call goes over the internet and costs money; this one only waits a moment and hands back a reply dict shaped like a real one, so it runs offline and free.
+- `call` wraps one AI call in the jobs every real call needs, in the order of the numbered comments. The clock is read before the send, so the timing covers the call only. The whole reply is kept, because the text and the token counts are both inside it. The time taken is the second clock reading minus the first, and the price comes from `cost_of` with the reply's token counts. Then one record goes into the log, and only the text is handed back, because the text is what the app shows the user.
+- `log` is made once outside `call` (`log = []`) and passed in, so every call adds to the same list and the records survive between calls.
+- `time.time()` is a clock reading; call it T. `round(..., -2)` rounds to the nearest 100, so tiny clock differences do not change the result. The fake's wait comes out as `300.0` ms.
 
 1. Fill every cell: what each sticker holds right after the marked line runs. Write `-` if it has no value yet.
 
@@ -128,6 +134,8 @@ assert log[0]["cost"] == 0.0027
 print("PASS")
 ```
 
+**How this test works.** `program` is your edited file, loaded so the test can use your `call`. It makes a fresh empty log, makes one call, then looks at the first record (`log[0]`: position 0 is the first). Each `assert` line checks that one thing is true and stops the test with an `AssertionError` if it is not, so `PASS` prints only when both hold. The second check makes sure your edit did not break the cost.
+
 Write the lines you would add or change, and say which marked line they replace or sit next to.
 
 **Your answer.**
@@ -155,6 +163,8 @@ def call(prompt, model, log):
     log.append({"model": model, "ms": ms, "cost": cost})
     return answer["text"]
 ```
+
+**How this code works.** It is the `call` from the Trace with the numbered comments taken out: clock, send, time taken, price, record, hand back the text. One line was edited. Nothing crashes, so the only clue is the wrong number.
 
 Fill in the debug card yourself:
 
@@ -202,6 +212,8 @@ bill = []
 bill.append({"size": "small", "dollars": price("small", reply["n_in"], reply["n_in"])})
 print(bill)
 ```
+
+**How this code works.** The same pattern as the first machine, with new names. `PRICES` holds the dollar rates for each size, and `price` looks up the rates for a size and works out the dollars. `reply` stands in for one AI reply, and `bill` is a list that collects one record per call.
 
 1. What does it print?
 2. Label it: crash, quietly wrong, or fine.

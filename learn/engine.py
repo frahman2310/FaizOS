@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """The shared layer (docs/research/structures/INTEGRATED.md section 2). Personal data in learn/data/ (git-ignored).
 
-    uv run engine.py start 2026-09-28            set day 1 of week 1 (once)
-    uv run engine.py today                       the day's plan: recall, units, cold checks, other sessions
+    uv run engine.py today                       this sitting: recall, next unit(s), cold checks, other sessions
+                                                 (sittings follow the week order, not calendar days: C47)
     uv run engine.py due                         today's recall cards: capped, interleaved across skills
     uv run engine.py review CARD RATING          he grades himself: 1 wrong, 2 right with effort, 3 right, 4 easy
     uv run engine.py predict UNIT P [--cold]     his predicted score, asked BEFORE the first scored step
@@ -106,19 +106,23 @@ def cards_of(path):
 
 # ---------- calendar ----------
 def week_no(today=None):
-    start = load("state.json", {}).get("start")
-    if not start:
-        fail("no start date yet: run  uv run engine.py start YYYY-MM-DD")
-    today = today or dt.date.today()
-    days = (today - dt.date.fromisoformat(start)).days
-    if days < 0:
-        fail(f"week 1 starts {start}; nothing is scheduled before it")
-    return days // 7 + 1
+    """Weeks count sittings, not calendar days (C47: "days don't matter"): 7 slots make a week."""
+    return load("state.json", {}).get("slot", 0) // 7 + 1
 
 
-def plan(today, w):
-    """(units by skill, other sessions) for the day, INTEGRATED sections 4 and 5."""
-    wd = today.weekday()
+def current_slot():
+    """(slot, units, other): the next slot with a unit; other sessions of skipped empty slots come along."""
+    k, other = load("state.json", {}).get("slot", 0), []
+    for k in range(k, k + 14):
+        units, o = plan(k % 7, k // 7 + 1)
+        other += [x for x in o if x not in other]
+        if units:
+            return k, units, other
+    return k, [], other
+
+
+def plan(wd, w):
+    """(units by skill, other sessions) for slot wd (0-6, the INTEGRATED 5 week order), week w."""
     on = lambda s: w >= START_WEEK[s]
     units = {0: ["evaluation"], 1: ["code", "llm"], 2: ["design"], 3: ["code"], 4: ["production"], 5: ["design"], 6: []}[wd]
     if w <= 8 and wd == 3:
@@ -246,11 +250,12 @@ def cmd_start(a):
 
 def cmd_today(a):
     today = dt.date.today()
-    w = week_no(today)
     results = load("results.json", [])
-    units, other = plan(today, w)
+    k, units, other = current_slot()
+    done = load("state.json", {}).get("slot_done", [])
+    units = [u for u in units if u not in done or units.count(u) > done.count(u)]
     served, total = due_cards()
-    print(f"Week {w}, {today:%A %d %b}")
+    print(f"Week {k // 7 + 1}, sitting {k % 7 + 1} of 7")
     print(f"Recall: {len(served)} cards today" + (f" ({total - len(served)} more wait for tomorrow)" if total > len(served) else ""))
     for r in cold_due(results, today):
         print(f"Cold check due (since {r['cold_due']}): {r['unit']}  (its ## Cold item; predict first)")
@@ -346,6 +351,11 @@ def cmd_done(a):
          "passed": (steps.get("Cold", 0) * 100 >= BAR[skill]) if a.cold else passes(skill, steps)}
     if not a.cold:
         r["cold_due"] = str(today + dt.timedelta(days=7))
+        k, units, _ = current_slot()
+        if skill in units:                    # the sitting ends when each of its units is recorded
+            st["slot_done"] = st.get("slot_done", []) + [skill]
+            if all(st["slot_done"].count(x) >= units.count(x) for x in units):
+                st["slot"], st["slot_done"] = k + 1, []
         waiting = add_cards(cards_of(u["path"]))
         if waiting:
             print(f"{waiting} new cards wait: the recall backlog is over {BACKLOG_PAUSE}")
@@ -393,7 +403,7 @@ def cmd_dashboard(a):
             notes.append("ALARM cold 10+ below session")
         if main is not None and main >= 90 and c is not None and c < 70:
             notes.append("EARLY WARNING: teaching recognition, not skill")
-        weeks_in = week_no() - START_WEEK[s] if start else 0
+        weeks_in = week_no() - START_WEEK[s]
         if gap is not None and abs(gap) > 20:
             notes.append(f"ALARM prediction gap {gap:+d}")
         elif gap is not None and weeks_in >= 4 and abs(gap) > 10:
