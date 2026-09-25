@@ -3,5 +3,5 @@
  "program": "code/code-02/retry_b.py",
  "args": [],
  "exit_code": 1,
- "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/retry_b.py\", line 11, in <module>\n    a = send(\"remind Ali\", calls)\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/retry_b.py\", line 6, in send\n    record = {\"message\": message, \"tokens_out\": reply[\"output_tokens\"]}\n                                                ~~~~~^^^^^^^^^^^^^^^^^\nKeyError: 'output_tokens'\n"
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/retry_b.py\", line 11, in <module>\n    a = send(\"remind Ali\", calls)\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/retry_b.py\", line 6, in send\n    record = {\"message\": message, \"tokens_out\": reply[\"usage\"][\"output\"]}\n                                                ~~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'output'\n"
 }

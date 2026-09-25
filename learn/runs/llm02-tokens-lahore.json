@@ -1,0 +1,25 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Lahore --save llm02-tokens-lahore",
+ "made": "20260925-171743-107702",
+ "inputs": {
+  "text": "Lahore"
+ },
+ "output": {
+  "characters": 6,
+  "words": 1,
+  "openai_o200k": [
+   "L",
+   "ah",
+   "ore"
+  ],
+  "qwen": [
+   "L",
+   "ah",
+   "ore"
+  ],
+  "openai_o200k_count": 3,
+  "qwen_count": 3
+ }
+}

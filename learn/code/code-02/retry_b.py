@@ -3,7 +3,7 @@ def fake_model(prompt):
 
 def send(message, calls):
     reply = fake_model(message)
-    record = {"message": message, "tokens_out": reply["output_tokens"]}
+    record = {"message": message, "tokens_out": reply["usage"]["output"]}
     calls.append(record)
     return reply["text"]
 

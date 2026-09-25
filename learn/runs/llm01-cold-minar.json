@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: In which city is Minar-e-Pakistan?\nA: Minar-e-Pakistan is in' --k 5 --save llm01-cold-minar",
+ "made": "20260925-171459-884938",
+ "inputs": {
+  "prompt": "Q: In which city is Minar-e-Pakistan?\nA: Minar-e-Pakistan is in",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Lahore",
+   "prob": 0.303,
+   "percent": 30.3
+  },
+  {
+   "token": " Islamabad",
+   "prob": 0.1427,
+   "percent": 14.3
+  },
+  {
+   "token": " Pakistan",
+   "prob": 0.1159,
+   "percent": 11.6
+  },
+  {
+   "token": " Karachi",
+   "prob": 0.0567,
+   "percent": 5.7
+  },
+  {
+   "token": " the",
+   "prob": 0.0333,
+   "percent": 3.3
+  }
+ ]
+}

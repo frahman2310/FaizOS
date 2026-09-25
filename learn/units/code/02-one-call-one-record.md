@@ -526,11 +526,11 @@ Two changed copies; everything else is as above. Labels: crash (stops with an er
 
 ```python
 # B: the record line is now
-record = {"message": message, "tokens_out": reply["output_tokens"]}
+record = {"message": message, "tokens_out": reply["usage"]["output"]}
 ```
 ```python
 # C: the return line is now
-return reply  # aim: hand back the text of the reply
+return calls  # aim: hand back the text of the reply
 ```
 
 2. For B: what it shows, its label, and the fixed line.
@@ -542,11 +542,11 @@ return reply  # aim: hand back the text of the reply
 Kind: scored
 From runs/code-02-retry_a.json, retry_b.json, retry_c.json:
 1. `[{'message': 'remind Ali', 'tokens_out': 5}, {'message': 'remind Sara', 'tokens_out': 5}]`; `Sent`; `3`; `remind Ali` (4 parts).
-2. B: `KeyError: 'output_tokens'`; crash; fix `reply["usage"]["output_tokens"]` (3 parts).
-3. C: `{'text': 'Sent', 'usage': {'input_tokens': 12, 'output_tokens': 5}}`; quietly wrong; fix `return reply["text"]` (3 parts).
+2. B: `KeyError: 'output'`; crash; fix `reply["usage"]["output_tokens"]` (3 parts).
+3. C: `[{'message': 'remind Ali', 'tokens_out': 5}, {'message': 'remind Sara', 'tokens_out': 5}, {'message': 'remind Omar', 'tokens_out': 5}]`; quietly wrong; fix `return reply["text"]` (3 parts).
 Score: 10 parts; right parts over 10. Record as Retry = right parts over 10.
-Two options: for the part he is stuck on, is the value a list, a dict or the text? For B and C: does it stop with an error, or run and miss its aim?
-Worked answer: two calls before `print(calls)`, so it shows two records; the third call returns `Sent`; three calls, three records; `calls[0]` is the first record, `remind Ali`. B skips `usage`, so the first call stops with a `KeyError`: crash. C returns the whole reply dict, so it runs but `print(c)` shows the dict, not the text: quietly wrong.
+Two options: for the part he is stuck on, is the value a list, a dict or the text? For B: is `output` a key inside `usage`? For C: does `c` hold the text, or the list of records?
+Worked answer: two calls before `print(calls)`, so it shows two records; the third call returns `Sent`; three calls, three records; `calls[0]` is the first record, `remind Ali`. B looks inside `usage` for `output`, but the key there is `output_tokens`, so the first call stops with a `KeyError`: crash. C returns the log list, so it runs but `print(c)` shows all three records, not the text `Sent`: quietly wrong.
 
 ## Cold
 

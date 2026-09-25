@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Quetta --save llm02-tokens-quetta",
+ "made": "20260925-171758-111274",
+ "inputs": {
+  "text": "Quetta"
+ },
+ "output": {
+  "characters": 6,
+  "words": 1,
+  "openai_o200k": [
+   "Qu",
+   "etta"
+  ],
+  "qwen": [
+   "Qu",
+   "etta"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

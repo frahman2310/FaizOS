@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Write the word Lahore backwards, letter by letter.' --save llm02-retry-lahore-backwards",
+ "made": "20260925-171736-570887",
+ "inputs": {
+  "prompt": "Write the word Lahore backwards, letter by letter.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWrite the word Lahore backwards, letter by letter.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "Sure! Here's the word \"Lahore\" written backwards:\n\nLoere\n\nI apologize for any confusion earlier. The correct backward writing of \"Lahore\" is indeed \"Loere\"."
+}

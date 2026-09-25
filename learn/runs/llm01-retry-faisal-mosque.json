@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: In which city is the Faisal Mosque?\nA: The Faisal Mosque is in' --k 5 --save llm01-retry-faisal-mosque",
+ "made": "20260925-171452-877158",
+ "inputs": {
+  "prompt": "Q: In which city is the Faisal Mosque?\nA: The Faisal Mosque is in",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Riyadh",
+   "prob": 0.2313,
+   "percent": 23.1
+  },
+  {
+   "token": " Medina",
+   "prob": 0.1007,
+   "percent": 10.1
+  },
+  {
+   "token": " Islamabad",
+   "prob": 0.0921,
+   "percent": 9.2
+  },
+  {
+   "token": " D",
+   "prob": 0.0899,
+   "percent": 9.0
+  },
+  {
+   "token": " the",
+   "prob": 0.0838,
+   "percent": 8.4
+  }
+ ]
+}

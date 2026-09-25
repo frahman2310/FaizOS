@@ -5,7 +5,7 @@ def send(message, calls):
     reply = fake_model(message)
     record = {"message": message, "tokens_out": reply["usage"]["output_tokens"]}
     calls.append(record)
-    return reply  # aim: hand back the text of the reply
+    return calls  # aim: hand back the text of the reply
 
 calls = []
 a = send("remind Ali", calls)
