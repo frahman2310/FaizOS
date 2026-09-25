@@ -1,0 +1,31 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'What is my electricity bill?' --save llm02-help-english-bill",
+ "made": "20260925-140805-129880",
+ "inputs": {
+  "text": "What is my electricity bill?"
+ },
+ "output": {
+  "characters": 28,
+  "words": 5,
+  "openai_o200k": [
+   "What",
+   " is",
+   " my",
+   " electricity",
+   " bill",
+   "?"
+  ],
+  "qwen": [
+   "What",
+   " is",
+   " my",
+   " electricity",
+   " bill",
+   "?"
+  ],
+  "openai_o200k_count": 6,
+  "qwen_count": 6
+ }
+}

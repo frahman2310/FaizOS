@@ -1,0 +1,39 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Answer only from the FBR rate table below.' --save llm02-instr-english",
+ "made": "20260925-140244-843864",
+ "inputs": {
+  "text": "Answer only from the FBR rate table below."
+ },
+ "output": {
+  "characters": 42,
+  "words": 8,
+  "openai_o200k": [
+   "Answer",
+   " only",
+   " from",
+   " the",
+   " F",
+   "BR",
+   " rate",
+   " table",
+   " below",
+   "."
+  ],
+  "qwen": [
+   "Answer",
+   " only",
+   " from",
+   " the",
+   " F",
+   "BR",
+   " rate",
+   " table",
+   " below",
+   "."
+  ],
+  "openai_o200k_count": 10,
+  "qwen_count": 10
+ }
+}

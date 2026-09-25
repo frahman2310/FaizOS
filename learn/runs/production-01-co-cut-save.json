@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-co-cut-save 'round(0.0166 - 0.0116, 6)' --note saving",
+ "expression": "round(0.0166 - 0.0116, 6)",
+ "value": 0.005,
+ "note": "saving",
+ "made": "2026-09-25T14:01:17"
+}

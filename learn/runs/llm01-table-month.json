@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-table-month 'round(2000 * 0.003 * 30)'",
+ "expression": "round(2000 * 0.003 * 30)",
+ "value": 180,
+ "note": "",
+ "made": "2026-09-25T14:04:58"
+}

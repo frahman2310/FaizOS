@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-instr-ratio-qwen 'round(33 / 10, 1)'",
+ "expression": "round(33 / 10, 1)",
+ "value": 3.3,
+ "note": "",
+ "made": "2026-09-25T14:04:59"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-qs2-cap-save 'round(0.0015 - 0.00075, 6)' --note 'saving from the cap'",
+ "expression": "round(0.0015 - 0.00075, 6)",
+ "value": 0.00075,
+ "note": "saving from the cap",
+ "made": "2026-09-25T14:01:15"
+}

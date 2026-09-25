@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-wrong-removed '2000 * 12 // 100 - 2000 * 1 // 100'",
+ "expression": "2000 * 12 // 100 - 2000 * 1 // 100",
+ "value": 220,
+ "note": "",
+ "made": "2026-09-25T14:04:58"
+}

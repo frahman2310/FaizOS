@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-qs2-cap-out '150 * 5 / 1000000' --note 'summary part capped at 150'",
+ "expression": "150 * 5 / 1000000",
+ "value": 0.00075,
+ "note": "summary part capped at 150",
+ "made": "2026-09-25T14:01:15"
+}

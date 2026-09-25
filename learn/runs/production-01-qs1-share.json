@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-qs1-share 'round(0.005 / 0.0132 * 100, 1)' --note 'share of answer'",
+ "expression": "round(0.005 / 0.0132 * 100, 1)",
+ "value": 37.9,
+ "note": "share of answer",
+ "made": "2026-09-25T14:01:15"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we1-ratio '6000 / 400' --note 'instructions are 15 times longer than the answer'",
+ "expression": "6000 / 400",
+ "value": 15.0,
+ "note": "instructions are 15 times longer than the answer",
+ "made": "2026-09-25T14:02:55"
+}

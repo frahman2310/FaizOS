@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-ty2-rough '300 * 0.01' --note 'rough month with $0.0094 rounded to $0.01'",
+ "expression": "300 * 0.01",
+ "value": 3.0,
+ "note": "rough month with $0.0094 rounded to $0.01",
+ "made": "2026-09-25T14:01:13"
+}

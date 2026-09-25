@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 try2_trace.py",
+ "program": "code/code-02/try2_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1, reply: {'text': 'Due Friday', 'usage': {'input_tokens': 15, 'output_tokens': 3}}\nafter line 2, record: {'text': 'Due Friday', 'tokens_in': 15}\nafter line 3, log: []\nafter line 4, log: [{'text': 'Due Friday', 'tokens_in': 15}]\n15\n"
+}

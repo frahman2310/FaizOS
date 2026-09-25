@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-msg20-summary '300 * 5 + 300' --note 'Suppose 300 tokens per message and a 300-token summary: last 5 messages plus the summary'",
+ "expression": "300 * 5 + 300",
+ "value": 1800,
+ "note": "Suppose 300 tokens per message and a 300-token summary: last 5 messages plus the summary",
+ "made": "2026-09-25T14:01:43"
+}

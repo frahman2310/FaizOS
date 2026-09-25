@@ -1,0 +1,24 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens JazzCash --save llm02-cold-jazzcash",
+ "made": "20260925-140328-982603",
+ "inputs": {
+  "text": "JazzCash"
+ },
+ "output": {
+  "characters": 8,
+  "words": 1,
+  "openai_o200k": [
+   "Jazz",
+   "Cash"
+  ],
+  "qwen": [
+   "J",
+   "azz",
+   "Cash"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 3
+ }
+}

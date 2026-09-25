@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-lev-b-call 'round(3200 * 2 / 1000000 + 150 * 10 / 1000000, 6)' --note 'call with answers capped at 150'",
+ "expression": "round(3200 * 2 / 1000000 + 150 * 10 / 1000000, 6)",
+ "value": 0.0079,
+ "note": "call with answers capped at 150",
+ "made": "2026-09-25T14:01:14"
+}

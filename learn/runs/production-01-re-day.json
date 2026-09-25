@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-re-day 'round(300 * 12 * 0.0069, 4)' --note 'all users one day'",
+ "expression": "round(300 * 12 * 0.0069, 4)",
+ "value": 24.84,
+ "note": "all users one day",
+ "made": "2026-09-25T14:01:16"
+}

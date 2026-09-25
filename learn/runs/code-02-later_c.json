@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 later_c.py",
+ "program": "code/code-02/later_c.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/later_c.py\", line 11, in <module>\n    r1 = review(\"fuel receipt\", history)\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/later_c.py\", line 6, in review\n    record = {\"claim\": claim, \"tokens_in\": reply[\"input_tokens\"]}\n                                           ~~~~~^^^^^^^^^^^^^^^^\nKeyError: 'input_tokens'\n"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-c1c 'round(1000 * 2 / 1000000 + 1000 * 10 / 1000000, 6)' --note 'card 1 surface c'",
+ "expression": "round(1000 * 2 / 1000000 + 1000 * 10 / 1000000, 6)",
+ "value": 0.012,
+ "note": "card 1 surface c",
+ "made": "2026-09-25T14:01:19"
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 turn_a.py",
+ "program": "code/code-02/turn_a.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'question': 'file tax return', 'tokens_in': 9}]\nFiled\n2\ncheck refund\n"
+}

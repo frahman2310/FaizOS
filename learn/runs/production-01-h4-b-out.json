@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-h4-b-out '900 * 5 / 1000000' --note 'output part at 900 tokens'",
+ "expression": "900 * 5 / 1000000",
+ "value": 0.0045,
+ "note": "output part at 900 tokens",
+ "made": "2026-09-25T14:01:18"
+}

@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'Q: What is the national language of Pakistan?\nA: The national language of Pakistan is' --save llm01-language-question",
+ "made": "20260925-140432-715566",
+ "inputs": {
+  "prompt": "Q: What is the national language of Pakistan?\nA: The national language of Pakistan is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Urdu",
+   "prob": 0.3882,
+   "percent": 38.8
+  },
+  {
+   "token": " Pun",
+   "prob": 0.2362,
+   "percent": 23.6
+  },
+  {
+   "token": " English",
+   "prob": 0.0761,
+   "percent": 7.6
+  },
+  {
+   "token": " Pakistan",
+   "prob": 0.0729,
+   "percent": 7.3
+  },
+  {
+   "token": " Arabic",
+   "prob": 0.0453,
+   "percent": 4.5
+  }
+ ]
+}

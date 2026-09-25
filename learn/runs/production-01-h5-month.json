@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-h5-month 'round(150 * 0.01, 4)' --note 'one user a month, shown as $1.50'",
+ "expression": "round(150 * 0.01, 4)",
+ "value": 1.5,
+ "note": "one user a month, shown as $1.50",
+ "made": "2026-09-25T14:01:18"
+}

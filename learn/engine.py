@@ -11,13 +11,12 @@
     uv run engine.py outside SKILL SCORE "what"  an outside task (ScaleDojo lab, new product, hidden tests)
     uv run engine.py dashboard                   per skill: main, cold, prediction gap, alarms
 
-Scoring follows each skill's own bar (INTEGRATED section 3), from the unit's declared scored steps:
-  code        pass = Trace >= 0.9 (share of memory-table cells right) and Change == 1 (tests pass in 2 tries)
-  llm         pass = the two concept questions (Pick and say why, New case) each right in answer AND reason
-  production  pass = Quick set >= 0.9 (9 of 10)
-  evaluation  pass = kappa >= 0.70 and no missed failure, pooled over 24+ traces (recorded by the unit)
-  design      pass = rubric >= 70 with every brief number met
-The unit score shown is the mean of its scored steps x 100. Unscored steps (Odd result, Close) never count.
+Scoring (INTEGRATED section 3, after the 2026-09-25 audits): only steps with Kind: scored count, all of which
+come after he has been shown and has practised. Each scored step is 0 to 1 (a right answer after a hint is 0.5,
+an answer given to him is 0). Pass = mean of scored steps >= the skill's bar. Evaluation may also record
+kappa / missed_fail / traces; design may record rubric / numbers_met (their pass rules then apply).
+A miss is followed by corrective teaching and the unit's '## Retry' item (Bloom and Guskey); a second miss
+moves to a parallel unit. Confidence is recorded for calibration only and never lowers his level.
 """
 import argparse
 import datetime as dt
@@ -36,22 +35,17 @@ BACKLOG_PAUSE = 40                  # due backlog above this: new cards wait (ll
 FLOOR_GAP = 20                      # floor = bar minus 20 points
 
 
-def passes(skill, s):
-    """s: {step: value 0..1, plus 'kappa', 'missed_fail', 'traces', 'rubric', 'numbers_met'} for one unit."""
-    if skill == "code":
-        return s.get("Trace", 0) >= 0.9 and s.get("Change", 0) >= 1
-    if skill == "llm":
-        return s.get("Pick and say why", 0) >= 1 and s.get("New case", 0) >= 1
-    if skill == "production":
-        return s.get("Quick set", 0) >= 0.9
-    if skill == "evaluation":
-        return s.get("kappa", 0) >= 0.70 and s.get("missed_fail", 1) == 0 and s.get("traces", 0) >= 24
-    if skill == "design":
-        return s.get("rubric", 0) >= 70 and s.get("numbers_met", 0) >= 1
-    raise ValueError(skill)
+def passes(skill, s, scored):
+    """s: {step: value}; scored: the unit's scored step names (INTEGRATED section 3)."""
+    if skill == "evaluation" and "kappa" in s:
+        return s["kappa"] >= 0.70 and s.get("missed_fail", 1) == 0 and s.get("traces", 0) >= 24
+    if skill == "design" and "rubric" in s:
+        return s["rubric"] >= 70 and s.get("numbers_met", 0) >= 1
+    vals = [s[k] for k in scored if k in s]
+    return bool(vals) and len(vals) == len(scored) and sum(vals) / len(vals) * 100 >= BAR[skill]
 
 
-BAR = {"code": 90, "llm": 100, "production": 90, "evaluation": 70, "design": 70}   # for the floor and display
+BAR = {"code": 90, "llm": 90, "production": 90, "evaluation": 80, "design": 70}    # percent of scored steps
 
 
 # ---------- storage ----------
@@ -144,14 +138,15 @@ def plan(wd, w):
 
 # ---------- results and mastery ----------
 def sessions(results, skill=None):
-    return [r for r in results if r["kind"] == "session" and (skill is None or r["skill"] == skill)]
+    """Taught attempts at a unit: the first session and, after a miss, its retry."""
+    return [r for r in results if r["kind"] in ("session", "retry") and (skill is None or r["skill"] == skill)]
 
 
 def skill_state(results, skill):
     """Walk the skill's sessions in order: rung moves and mastery (INTEGRATED 2.5)."""
     rung, streak_up, streak_down = 1, [], 0
     for r in sessions(results, skill):
-        below_floor = r["score"] < BAR[skill] - FLOOR_GAP or r.get("confident_wrong", 0) > 0
+        below_floor = r["score"] < BAR[skill] - FLOOR_GAP          # confidence never demotes (audit-pedagogy)
         if r["passed"]:
             streak_up = [u for u in streak_up if u != r["unit"]] + [r["unit"]]
             streak_down = 0
@@ -172,20 +167,26 @@ def skill_state(results, skill):
 
 
 def next_unit(skill, results):
-    done_ok = {r["unit"] for r in sessions(results, skill) if r["passed"]}
-    failed = {r["unit"] for r in sessions(results, skill) if not r["passed"]} - done_ok
+    """(path, note). A missed unit gets corrective teaching and its Retry item once; a second miss moves to a
+    parallel unit (new surface, same skill)."""
+    sess = sessions(results, skill)
+    done_ok = {r["unit"] for r in sess if r["passed"]}
+    retried = {r["unit"] for r in results if r["kind"] == "retry"}
+    missed = {r["unit"] for r in sess if not r["passed"]} - done_ok
     for p in unit_files(skill):
         m = meta(p)
         if m["id"] in done_ok:
             continue
-        if m["id"] in failed:                 # never serve a failed unit again: its parallel unit instead
+        if m["id"] in missed and m["id"] not in retried:
+            return p, "RETRY: re-teach with its Help blocks and the show steps he missed, then send its ## Retry item"
+        if m["id"] in missed:
             par = [meta(q) for q in unit_files(skill) if meta(q)["parallel_of"] == m["id"]]
-            fresh = [q for q in par if q["id"] not in done_ok | failed]
+            fresh = [q for q in par if q["id"] not in done_ok | missed]
             if fresh:
                 return fresh[0]["path"], None
-            return None, f"{m['id']} was missed: prepare a parallel unit (new surface) before the next {skill} slot"
-        if m["parallel_of"] and m["parallel_of"] not in failed:
-            continue                          # parallel units are only served after a miss
+            return None, f"{m['id']} was missed twice: prepare a parallel unit (new surface) before the next {skill} slot"
+        if m["parallel_of"] and m["parallel_of"] not in missed:
+            continue                          # parallel units are only served after a second miss
         return p, None
     return None, f"no {skill} unit prepared yet"
 
@@ -254,6 +255,8 @@ def cmd_today(a):
     k, units, other = current_slot()
     done = load("state.json", {}).get("slot_done", [])
     units = [u for u in units if u not in done or units.count(u) > done.count(u)]
+    if k // 7 + 1 <= 2:
+        units = units[:1]                     # one new unit per sitting in weeks 1-2 (audit-pedagogy: load)
     served, total = due_cards()
     print(f"Week {k // 7 + 1}, sitting {k % 7 + 1} of 7")
     print(f"Recall: {len(served)} cards today" + (f" ({total - len(served)} more wait for tomorrow)" if total > len(served) else ""))
@@ -264,7 +267,8 @@ def cmd_today(a):
         path, note = next_unit(s, results)
         if path and problems(path):
             path, note = None, f"{meta(path)['id']} fails learn/check_unit.py; fix it before teaching"
-        print(f"Unit {s}: " + (meta(path)["id"] + "  (file: " + str(path.relative_to(HERE)) + "; never show him the name)" if path else f"none ({note})"))
+        print(f"Unit {s}: " + (meta(path)["id"] + "  (file: " + str(path.relative_to(HERE)) + "; never show him the name)"
+                                + (f"  {note}" if note else "") if path else f"none ({note})"))
     for o in other:
         print(f"Also: {o}")
     if not units and not other:
@@ -321,10 +325,11 @@ def cmd_done(a):
         fail(f"{a.unit} fails learn/check_unit.py, so it is not taught or recorded; fix the unit first")
     skill, today = u["skill"], dt.date.today()
     results, st = load("results.json", []), load("state.json", {})
-    key = f"{a.unit}{':cold' if a.cold else ''}"
+    tag = ":cold" if a.cold else ":retry" if a.retry else ""
+    key = f"{a.unit}{tag}"
     predicted = st.get("predictions", {}).pop(key, None)
     if predicted is None:
-        fail(f"no prediction recorded for {key}: run  engine.py predict {a.unit} P{' --cold' if a.cold else ''}  before the first scored step")
+        fail(f"no prediction recorded for {key}: run  engine.py predict {a.unit} P{' --' + tag[1:] if tag else ''}  before the first scored item")
     steps = {}
     for kv in a.step:
         k, _, v = kv.partition("=")
@@ -339,6 +344,12 @@ def cmd_done(a):
         if dt.date.fromisoformat(prior[-1]["cold_due"]) > today:
             fail(f"cold check for {a.unit} is not due until {prior[-1]['cold_due']}")
         scored = list(steps)                  # the cold item's own scored parts
+    elif a.retry:
+        if not [r for r in sessions(results) if r["unit"] == a.unit and not r["passed"]]:
+            fail(f"{a.unit} has no missed session, so no retry")
+        if "Retry" not in steps:
+            fail('record the retry item as --step "Retry=<0..1>"')
+        scored = ["Retry"]
     else:
         scored = u["scored"]
         missing = [s for s in scored if s not in steps and s not in ("kappa", "rubric")]
@@ -346,9 +357,11 @@ def cmd_done(a):
             fail(f"score every scored step of {a.unit}: missing {missing} (declared in its 'scored:' line)")
     vals = [steps[s] for s in scored if s in steps and s not in ("kappa", "rubric", "traces", "missed_fail", "numbers_met")]
     score = round(100 * sum(vals) / len(vals)) if vals else round(steps.get("rubric", steps.get("kappa", 0) * 100))
-    r = {"date": str(today), "skill": skill, "unit": a.unit, "kind": "cold" if a.cold else "session", "score": score,
-         "predicted": predicted, "steps": steps, "confident_wrong": a.confident_wrong,
-         "passed": (steps.get("Cold", 0) * 100 >= BAR[skill]) if a.cold else passes(skill, steps)}
+    kind = "cold" if a.cold else "retry" if a.retry else "session"
+    passed = {"cold": steps.get("Cold", 0) * 100 >= BAR[skill], "retry": steps.get("Retry", 0) * 100 >= BAR[skill],
+              "session": passes(skill, steps, scored)}[kind]
+    r = {"date": str(today), "skill": skill, "unit": a.unit, "kind": kind, "score": score,
+         "predicted": predicted, "steps": steps, "confident_wrong": a.confident_wrong, "passed": passed}
     if not a.cold:
         r["cold_due"] = str(today + dt.timedelta(days=7))
         k, units, _ = current_slot()
@@ -362,7 +375,7 @@ def cmd_done(a):
     results.append(r)
     save("results.json", results)
     save("state.json", st)
-    print(f"Recorded {a.unit}{' (cold)' if a.cold else ''}: {score}, {'passed' if r['passed'] else 'not yet'} "
+    print(f"Recorded {a.unit}{' (' + kind + ')' if kind != 'session' else ''}: {score}, {'passed' if r['passed'] else 'not yet'} "
           f"(predicted {predicted}, gap {score - predicted:+d}).")
 
 
@@ -423,8 +436,10 @@ if __name__ == "__main__":
     sub.add_parser("due")
     p = sub.add_parser("review"); p.add_argument("card"); p.add_argument("rating", type=int, choices=[1, 2, 3, 4])
     p = sub.add_parser("predict"); p.add_argument("unit"); p.add_argument("p", type=int); p.add_argument("--cold", action="store_true")
+    p.add_argument("--retry", action="store_true")
     p = sub.add_parser("done"); p.add_argument("unit"); p.add_argument("--step", action="append", default=[])
     p.add_argument("--confident-wrong", type=int, default=0); p.add_argument("--cold", action="store_true")
+    p.add_argument("--retry", action="store_true")
     p = sub.add_parser("close"); p.add_argument("unit"); p.add_argument("line")
     p = sub.add_parser("outside"); p.add_argument("skill"); p.add_argument("score", type=int); p.add_argument("what")
     sub.add_parser("dashboard")

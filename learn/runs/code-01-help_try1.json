@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 help_try1.py",
+ "program": "code/code-01/help_try1.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "3\n{'item': 'chai', 'qty': 3}\n"
+}

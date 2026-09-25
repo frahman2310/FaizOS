@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-help-wrong-training '5000 * 8 // 100'",
+ "expression": "5000 * 8 // 100",
+ "value": 400,
+ "note": "",
+ "made": "2026-09-25T14:04:58"
+}

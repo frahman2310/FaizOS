@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-dau '10 * 1000' --note 'QuickChat brief \"10K DAU\": K means thousand'",
+ "expression": "10 * 1000",
+ "value": 10000,
+ "note": "QuickChat brief \"10K DAU\": K means thousand",
+ "made": "2026-09-25T14:03:20"
+}

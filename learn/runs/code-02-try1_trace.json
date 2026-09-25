@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 try1_trace.py",
+ "program": "code/code-02/try1_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1: [] 0\nafter line 2: [{'item': 'chai', 'price': 60}] 1\nafter line 3: [{'item': 'chai', 'price': 60}, {'item': 'samosa', 'price': 40}] 2\nafter line 4: [{'item': 'chai', 'price': 60}, {'item': 'samosa', 'price': 40}, {'item': 'chai', 'price': 60}] 3\n3\nprices added up (wrong option C): 160\n"
+}

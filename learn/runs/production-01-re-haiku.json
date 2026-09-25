@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-re-haiku 'round(2200 * 1 / 1000000 + 250 * 5 / 1000000, 6)' --note 'same call on Haiku 4.5'",
+ "expression": "round(2200 * 1 / 1000000 + 250 * 5 / 1000000, 6)",
+ "value": 0.00345,
+ "note": "same call on Haiku 4.5",
+ "made": "2026-09-25T14:01:16"
+}

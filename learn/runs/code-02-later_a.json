@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 later_a.py",
+ "program": "code/code-02/later_a.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'claim': 'fuel receipt', 'tokens_in': 20}]\nApproved\n2\nhotel bill\n20\n"
+}

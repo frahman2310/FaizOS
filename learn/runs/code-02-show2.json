@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 show2.py",
+ "program": "code/code-02/show2.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'text': 'Paid', 'tokens_out': 2}]\n"
+}

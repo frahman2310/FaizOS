@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 try1_trace.py",
+ "program": "code/code-01/try1_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1, row holds: {'account': 'MCB-7', 'balance': 900}\nafter line 2, b holds: 900\n900\n"
+}

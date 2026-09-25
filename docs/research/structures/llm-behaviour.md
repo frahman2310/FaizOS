@@ -58,43 +58,60 @@ broken by a real run**, and **facts kept by spaced cards**.
 
 ## 2. The structure
 
-**Name: the Break-it unit.** Puzzle, commit, run, explain, refute, transfer, keep. About 20 minutes.
+> **Corrected 2026-09-25** after `docs/research/gap-audit-llm-behaviour.md` (F1, F5, F16, F20) and
+> `audit-pedagogy.md` (M1). The first version put a scored "commit before any teaching" first and had no
+> worked example, citing Chen, Kalyuga and Sweller 2015. That was a misreading: in Chen 2015 students
+> **studied** the material for 10 minutes and only **then** recalled it (retrieval after teaching); the
+> "low element interactivity" material was single formulas, and tests were same-session only. Nothing in
+> the research base supports graded answering before teaching for a novice. What Chen supports here is
+> "study, then retrieve" (the cards), and worked examples for novices on material with interacting parts.
+> Every expert this file names (Karpathy, Huyen, the Hugging Face course, ScaleDojo) shows the mechanism
+> with real numbers first. The unit below restores that order. It is enforced by `learn/check_unit.py`
+> (unit format v3: Kind show / try / scored / close).
 
-| # | Step | Min | What he does | What the tutor does | Material comes from |
-|---|---|---|---|---|---|
-| 0 | Cards | 3 to 5 | Answers due cards from memory, short answer typed, then grades himself | Shows due cards only (FSRS); never re-teaches; a lapsed card is flagged for its unit's refutation | Deck built in step 7 of earlier units |
-| 1 | Puzzle | 1 | Reads 2 or 3 real odd behaviours that one mechanism explains | Shows them with real outputs, no explanation | Karpathy puzzle lists (tokenizer, deep-dive transcripts); logprobs cookbook; his own past outputs |
-| 2 | ConcepTest, first vote | 2 | Picks an option, types a one-line reason and a confidence 1 to 5 | Logs all three; says nothing | Inventory bank (section 5); distractors = known wrong models |
-| 3 | Predict | 1 | Writes a specific prediction for the run: direction and a number | Asks for the number if he gave only a direction | Unit script, prepared before the session |
-| 4 | Run | 3 | Watches the real run | Runs the code live (tokenizer counts, the same prompt 20 times at two temperatures, logprobs, a token-count call) or plays recorded outputs from a checked file | Code in the unit folder; HF course ch. 2 snippets; OpenAI cookbooks; Anthropic token counting |
-| 5 | Explain | 3 | Writes why the result happened, in 1 to 3 lines, in his own words | Compares with the source's explanation, quoted and named; marks "matches / partly / wrong" with the missing piece | Karpathy transcripts, Huyen sampling and RLHF posts, Weng on hallucination, vendor docs |
-| 6 | Refute and price | 2 | Reads a 4-line refutation of the wrong option he (or most people) chose, then works out one money or risk number | Shows the refutation: wrong idea, "this is wrong", right idea, **his run** as evidence; then gives the numbers for one calculation | Refutation written before the session from sources; prices from `anthropic-pricing.md` (dated) |
-| 7 | Transfer revote | 2 | Answers a second ConcepTest on the same concept in a new surface, with reason and confidence | Scores answer and reason separately | Inventory bank, different surface |
-| 8 | Keep | 2 | Reads the 4 to 6 cards for this concept, answers each once, deletes or rewords any that do not feel precise | Offers expert-drafted cards; checks his rewrites against the card rules | Drafted before the session from the sources |
+**Name: the worked-mechanism unit.** One mechanism per unit. Each numbered row is one message. About 20 minutes.
 
-**Placement (the answer-first rule).** If his step 2 answer is right, the reason is right and confidence is 4
-or 5, he skips 3 to 6 and goes straight to the transfer revote. Right on the revote too: concept banked,
-cards added, unit done in 8 minutes. This applies Chen, Kalyuga and Sweller 2015 (answering first beats
-examples for simple material) and the ConcepTest 70% ceiling: no teaching of what he already has.
+| # | Step (Kind) | What he receives | Rules | Source |
+|---|---|---|---|---|
+| 1 | **Goal and odd result** (show) | One line: what he will be able to decide by the end, and what it costs in money or risk. Then one real odd result from a run: two contrasting rows that differ in one thing. Then at most **one optional pre-question**: two options or a one-line answer, plus a one-line reason. | At most 3 new ideas, each explained where it first appears. Under about 150 words before the question. The pre-question is never scored, never hinted, no confidence asked. Skip it when he has no intuitive idea to use (for example temperature). | Goal card (teaching-structure.md); contrasting cases (Loibl, Roll and Rummel 2017); pre-questions (teaching-methods.md); productive-failure prior-knowledge condition (Loibl 2017) |
+| 2 | **How it works** (show: the worked demonstration) | Opens with the answer to the pre-question and a prepared line for each option. Then the mechanism in 3 to 5 lines, **quoted or closely adapted from a named expert source** (Karpathy, Huyen, Hugging Face, the saved ScaleDojo chapters), shown on the same real run with its numbers (a table; a sweep across one setting where there is one). One everyday picture in one sentence, plus where it breaks. Ends with one focused self-explanation question on the key line, answerable from what is on screen. | Under about 250 words of explanation. Nothing new that the checks do not need. The picture must not plant the category mistake ("a brain", "a search engine"). | Karpathy deep dive (explains, then shows); skill-methods C2 mechanism card; Kapur consolidation; self-explanation on the key step (method-effectiveness row 8) |
+| 3 | **Predict** (try) | A new input where the mechanism just taught gives a direction; all data he needs is in the message. He writes a direction, a rough number and a one-line reason. | Derivable from step 2, not a coin flip (C39). Unscored. Prepared Help block. | teaching-methods 1d; method-effectiveness row 15; Crouch 2004 |
+| 4 | **Run and compare** (show) | The real output at once. He says how far off he was and which part of step 2 explains the gap. The small-model line goes here, only if the result is a small-model effect. | Answer shown in this message, never later. | method-effectiveness row 15 ("answer shown at once"); recorded-output rule below |
+| 5 | **Wrong idea fixed** (try) | Refutation: the wrong idea, "this is wrong", his runs as evidence, the right idea in the words of step 2; then one decision priced at scale that he works out (not a read-back). | Only ideas taught in steps 2 to 4. Made-up scenario numbers on a line starting "Suppose". Prepared Help block. | Refutation texts (Tippett; Schroeder and Kucera g = 0.41); Posner (pay-off); T21 price at scale |
+| 6 | **Checks** (try) | 2 or 3 short questions in one message, same mechanism, new surfaces: a direction question (two options), a "why" in one line, a fix. | Every rule needed is in a step body above. About 80% first-try is the target (A9, A12). Prepared Help block. | Retrieval with feedback (method-effectiveness rows 1, 1b); B9; E12 |
+| 7 | **New case** (scored) | A transfer item on a new surface: a real failure or product situation. One-line answer and reason, then confidence. | The only scored step in the session. Stuck order: his own earlier answer, two options, the Help block (a second worked example on a new surface), then the answer line by line. A hinted answer scores 0.5. | Butler 2010 transfer; bar on transfer (section 5) |
+| 8 | **Close** (close) | "Next time I see X, I do Y." Goes into the recall queue. | Not scored. | INTEGRATED.md |
+| Retry | scored | After a miss, the Help blocks, then a new-surface item of the same kind. | Only content from steps always sent. | Bloom and Guskey correctives |
+| Cold | scored | 7 days later, a new surface of the same mechanism, same format as step 7. | Only content from steps always sent. | Mastery with a delayed recheck (method-effectiveness row 7) |
+| Cards | | 4 to 6, each answer found in a step body; at least one why card and one boundary card; number cards carry a second surface; dated facts carry date and source. | First return the next day. | Card rules (section 5); Wozniak rule 1 |
 
-**Stuck order** (from recommended-method): his own earlier answer, two options, one everyday picture, then
-the answer with the reason. Every picture is checked against the mechanism: "autocomplete trained on the
-internet" is allowed; "a brain that thinks" and "a search engine" are not, because they plant the category
-mistake this skill exists to remove.
+**Placement (replaces the old answer-first skip rule).** If his pre-question answer and reason are right, he
+still gets step 2 (it carries the facts the checks and cards use); steps 3 and 4 may be skipped. After two units
+of a level pass cold, the next unit may open with its step 7 item as a first-step test (Kalyuga); right with a
+right reason goes straight to step 5. Nothing that states a tested fact is ever skipped.
 
-**Recorded-output fallback.** When a live run is not possible (no local model, API cost), the tutor plays a
-file of real outputs captured once, with date, model and settings in its header. Never an invented output.
+**Scoring.** Scored: step 7, the Retry item and the Cold item only. Tracked, never gating: the pre-question
+answer, reason quality, confidence, first-try rate per step (alarm under 70%).
+
+**Stuck order** (INTEGRATED 2.4): his own earlier answer, two options, the step's prepared Help block, then the
+answer with the reason, said back. Every picture is checked against the mechanism: "autocomplete trained on
+the internet" is allowed; "a brain that thinks" and "a search engine" are not, because they plant the
+category mistake this skill exists to remove.
+
+**Recorded-output rule.** Every output shown comes from `learn/demo.py` or `learn/calc.py` runs saved in
+`learn/runs/` with the command that made them, or from verified `learn/facts.md` rows. Never an invented
+output. The demo model is Qwen2.5-0.5B (tiny); each unit says so once and marks small-model effects.
 
 ### Why this differs from the other four skills
 
 | | Evaluation, system design, code | Production | **LLM behaviour** |
 |---|---|---|---|
-| Backbone | Worked example, faded | Worked numeric solution, faded fast | **No worked example.** Wrong model shown, then broken by a run |
-| His first act | Studies an example (first two), then attempts | Reads the exhibit | **Commits to an answer with a reason and confidence**, before any teaching |
-| The expert answer | An expert's solution | The exact number | **The measured run plus the source's quoted mechanism** |
+| Backbone | Worked example, faded | Worked numeric solution, faded fast | **Worked demonstration of the mechanism on a real run**, quoted from a named expert, then a refutation of the wrong model |
+| His first act | Studies an example | Reads the exhibit | **Reads the goal and a real odd result**; at most one unscored pre-question, answered in the next message |
+| The expert answer | An expert's solution | The exact number | **The measured run plus the source's quoted mechanism**, in a step body he reads |
 | Main error type | Missing steps | Wrong substitution | **A confident wrong model** (tracked by confidence) |
 | Retention | Spaced mixed problems | Spaced mixed problems | **Expert-drafted cards on FSRS**, the largest deck of any skill |
-| Unit length | 25 min | 25 min | 20 min, 8 if placed out |
+| Unit length | 25 min | 25 min | about 20 min |
 
 ---
 
@@ -212,7 +229,7 @@ pass (Adams and Wieman). It is a home-made test, so its gains will look larger t
 ### Retention plan
 
 **Card-writing rules** (Matuschak, Wozniak, adapted):
-1. No card before the concept is understood (Wozniak 1): cards come at step 8, after the run and the refutation.
+1. No card before the concept is understood (Wozniak 1): cards come after the worked demonstration, the run and the refutation.
 2. One fact or one link per card; the answer is a word, a number or one short line (minimum information).
 3. The same question always has the same answer (consistent); no "list the five..." cards (avoid sets).
 4. For each concept, cover at least 3 lenses: mechanism, consequence, boundary. Add a contrast card when
@@ -224,7 +241,7 @@ pass (Adams and Wieman). It is a home-made test, so its gains will look larger t
 8. He may reword or delete any card; the tutor checks rewrites against rules 2 to 7.
 9. About 5 per concept, 4 to 6 per unit; about 50 for Level 1.
 
-**Schedule.** FSRS with target retention 0.9 (the `fsrs` Python package); new cards enter at step 8 and first
+**Schedule.** FSRS with target retention 0.9 (the `fsrs` Python package); new cards enter after the unit and first
 return the next day. Fallback if FSRS is not wired in: the fixed 1, 3, 7, 21, 60 day ladder already planned.
 Daily card time is capped at 5 minutes; if the cap is hit twice in a week, stop adding new cards for 3 days.
 Lapsed cards are not re-taught by the tutor; the concept's refutation is shown once, then the card returns.
@@ -273,7 +290,7 @@ predict-and-run in curriculum-map.md for the first 12 weeks.
 | Written explanation checked against the source | B | Crouch 2004: explanations lag outcomes [M]; self-explanation g = 0.55 (recommended-method) |
 | Refutation after the run | B | Meta-analysis 294 effects [M]; g = 0.41 [M] |
 | Category shift taught first | C | Chi [S]; users' lookup model [M, qualitative] |
-| Answer-first placement, no worked examples | B | Chen, Kalyuga, Sweller 2015 [M], immediate tests only |
+| Worked demonstration first, then retrieval (cards); pre-question unscored | B | Chen, Kalyuga, Sweller 2015 [M]: study, then recall, immediate tests only (corrected 2026-09-25: it does not support answering before teaching); worked-example effect for novices |
 | Expert-drafted cards embedded in the unit | C | Quantum Country [SR], observational |
 | Card rules | C | Matuschak, Wozniak [S]; minimum information widely used, little direct testing |
 | Why-cards for transfer | B | Butler 2010 [M] |
@@ -284,7 +301,6 @@ predict-and-run in curriculum-map.md for the first 12 weeks.
 | Excluded | Why |
 |---|---|
 | Peer discussion (the heart of Peer Instruction) | No peers. The tutor posing as a peer is untested and invites sycophancy (ai-tutoring.md); replaced by a written reason and a revote |
-| Worked examples as the backbone | Answer-first beats them for low-interactivity material (Chen 2015) |
 | Watching demos without predicting | Watched demos: 70% vs 61% with none, explanations 24% vs 22% (Crouch 2004) |
 | Long video or long reading first (Karpathy 3.5 h) | Supplement only; video replacing teaching 0.28 (method-effectiveness.md). Transcripts are used as quoted sources |
 | Deriving attention, backprop or building a GPT | Model internals are not needed to predict behaviour at Levels 1 to 2; expert curricula start from behaviour (postmortem cause 7) |

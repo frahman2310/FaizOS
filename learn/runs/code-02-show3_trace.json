@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 show3_trace.py",
+ "program": "code/code-02/show3_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after first call: first = Done | records in log: 1\nafter second call: second = Done | records in log: 2\n"
+}

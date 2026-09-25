@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 later_d.py",
+ "program": "code/code-01/later_d.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "{'prompt_tokens': 12, 'completion_tokens': 3}\n"
+}

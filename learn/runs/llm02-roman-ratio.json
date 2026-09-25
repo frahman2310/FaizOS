@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm02-roman-ratio 'round(16 / 10, 1)'",
+ "expression": "round(16 / 10, 1)",
+ "value": 1.6,
+ "note": "",
+ "made": "2026-09-25T14:08:05"
+}

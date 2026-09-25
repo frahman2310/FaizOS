@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-bar '100 * 0.7' --note 'design pass bar as a percent of scored steps (learn/engine.py BAR design = 70; INTEGRATED section 3)'",
+ "expression": "100 * 0.7",
+ "value": 70.0,
+ "note": "design pass bar as a percent of scored steps (learn/engine.py BAR design = 70; INTEGRATED section 3)",
+ "made": "2026-09-25T14:03:20"
+}

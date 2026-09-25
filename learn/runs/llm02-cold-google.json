@@ -1,0 +1,21 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Google --save llm02-cold-google",
+ "made": "20260925-140314-429317",
+ "inputs": {
+  "text": "Google"
+ },
+ "output": {
+  "characters": 6,
+  "words": 1,
+  "openai_o200k": [
+   "Google"
+  ],
+  "qwen": [
+   "Google"
+  ],
+  "openai_o200k_count": 1,
+  "qwen_count": 1
+ }
+}

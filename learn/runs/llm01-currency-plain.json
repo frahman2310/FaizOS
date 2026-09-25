@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The currency of Pakistan is the' --save llm01-currency-plain",
+ "made": "20260925-140120-486282",
+ "inputs": {
+  "prompt": "The currency of Pakistan is the",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Pakistani",
+   "prob": 0.2436,
+   "percent": 24.4
+  },
+  {
+   "token": " ru",
+   "prob": 0.207,
+   "percent": 20.7
+  },
+  {
+   "token": " Ru",
+   "prob": 0.1793,
+   "percent": 17.9
+  },
+  {
+   "token": " Pakistan",
+   "prob": 0.0564,
+   "percent": 5.6
+  },
+  {
+   "token": " __",
+   "prob": 0.0407,
+   "percent": 4.1
+  }
+ ]
+}

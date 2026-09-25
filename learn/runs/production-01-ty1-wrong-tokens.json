@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-ty1-wrong-tokens '3200 + 300' --note 'all tokens'",
+ "expression": "3200 + 300",
+ "value": 3500,
+ "note": "all tokens",
+ "made": "2026-09-25T14:01:13"
+}

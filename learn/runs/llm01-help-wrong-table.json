@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py llm01-help-wrong-table '5000 * 2 // 100'",
+ "expression": "5000 * 2 // 100",
+ "value": 100,
+ "note": "",
+ "made": "2026-09-25T14:04:59"
+}

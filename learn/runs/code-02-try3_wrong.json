@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 try3_wrong.py",
+ "program": "code/code-02/try3_wrong.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "Booked\n[{'text': 'Booked', 'usage': {'input_tokens': 8, 'output_tokens': 3}}]\n"
+}

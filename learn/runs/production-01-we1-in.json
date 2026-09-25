@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we1-in '6000 + 500' --note 'input tokens'",
+ "expression": "6000 + 500",
+ "value": 6500,
+ "note": "input tokens",
+ "made": "2026-09-25T14:01:12"
+}

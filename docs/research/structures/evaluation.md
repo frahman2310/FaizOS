@@ -41,7 +41,7 @@ The first three are what is new here. The fourth plays to his strength (finance,
 | **Essay-scoring calibration (ETS, GRE)** | Before scoring, raters pass a calibration set of 10 exemplars: at least 6 exact, no answer 2+ points off; 2 attempts; 20 to 40 minutes. Calibrating on day 1 only held accuracy over 5 days | [M] https://files.eric.ed.gov/fulltext/EJ1238527.pdf ; kappa 0.70 as the ETS acceptability line [S, search summary] https://www.ets.org/research/policy_research_reports/publications/report/1998/hxww.html | **Challenge to judgement-training.md 8d:** 3 calibration traces is too few to detect drift. Use 6, and a "no critical miss" rule (never pass a trace the expert failed). Calibration can fade to once per product |
 | **Radiology double reading** | Two readers, discrepancies reviewed | Discrepancy 0.4 to 22% by setting [M] https://link.springer.com/article/10.1007/s13244-018-0599-0 ; breast-density readers' self-agreement rose from kappa 0.62 to 0.79 with training [M, search summary] https://pubmed.ncbi.nlm.nih.gov/24951217 | His **self-agreement a week later** is a measure (intra-rater kappa), not only agreement with the expert |
 | **Qualitative coding** (Saldaña; MacQueen; Hruschka; Campbell; O'Connor and Joffe) | First-cycle codes, then second-cycle grouping, analytic memos [S] https://uk.sagepub.com/sites/default/files/upm-assets/146042_book_item_146042.pdf . Codebook entry = code, brief definition, full definition, when to use, when not to use, example [S] https://journals.sagepub.com/doi/10.1177/1525822X980100020301 . Double-code 10 to 25% of units; revise and recode in rounds; about 20 codes at most (Hruschka), 30 to 40 (MacQueen) [S] https://discovery.ucl.ac.uk/id/eprint/10091273/ | Coders start very different; codebook revision and recoding reach kappa about 0.8 on most codes [M, qualitative report] https://journals.sagepub.com/doi/10.1177/1525822X04266540 . Negotiated agreement took reliability from 54% to 96% [M] https://journals.sagepub.com/doi/abs/10.1177/0049124113500475 | **Codebook building is its own practice format** (4d), with "when not to use" and a close negative per type. Cap at about 10 types per product |
-| **Gigerenzer, natural frequencies** | Teach people to turn probabilities into counts ("of 1,000 women, 10 have cancer, 9 test positive...") with a tree or grid, instead of teaching Bayes' rule | Study 1a medians after training: 75% (tree) and 90% (grid) vs 60% for rule training; rule training fell to a median 20% at 5 weeks while frequency training held (small groups, 5 to 13 at follow-up) [M] http://wexler.free.fr/library/files/sedlmeier%20(2001)%20teaching%20bayesian%20reasoning%20in%20less%20than%20two%20hours.pdf . 160 gynaecologists: 21% to 87% after one session [M] https://www.stat.berkeley.edu/~aldous/157/Papers/health_stats.pdf . Meta-analysis: 24% vs 4% from format alone [M] https://pubmed.ncbi.nlm.nih.gov/29048176/ | Judge TPR/TNR and pass-rate correction are taught **as a frequency tree first**, formula second (4e) |
+| **Gigerenzer, natural frequencies** | Teach people to turn probabilities into counts ("of 1,000 women, 10 have cancer, 9 test positive...") with a tree or grid, instead of teaching Bayes' rule | Study 1a medians after training: 75% (tree) and 90% (grid) vs 60% for rule training; rule training fell to a median 20% at 5 weeks while frequency training held (small groups, 5 to 13 at follow-up) [M] http://wexler.free.fr/library/files/sedlmeier%20(2001)%20teaching%20bayesian%20reasoning%20in%20less%20than%20two%20hours.pdf . 160 gynaecologists: 21% to 87% after one session [M] https://www.stat.berkeley.edu/~aldous/157/Papers/health_stats.pdf . Meta-analysis: 24% vs 4% from format alone [M] https://pubmed.ncbi.nlm.nih.gov/29048176/ | Judge catch and clear rates and pass-rate correction are taught **as a frequency tree first**, formula second (4e) |
 | **Audit judgement training** (Bonner and Walker; Earley; Plumlee et al.) | Practice with feedback that explains why; self-explanation of the rationale; train divergent thinking (list explanations for an anomaly) then convergent thinking (eliminate the infeasible) | Explanatory feedback or rules plus outcome feedback were needed to acquire procedural knowledge [M] https://www.semanticscholar.org/paper/The-effects-of-instruction-and-experience-on-the-of-Walker-Bonner/37c038b8413826648618a86e7c85aba36c82b145 . Self-explanation and explanatory feedback each helped, together best [M] https://doi.org/10.2308/accr.2001.76.1.81 . Both-stage training gave four times the odds of a viable explanation vs divergent alone [M] https://meridian.allenpress.com/accounting-review/article/90/1/351/127779/Training-Auditors-to-Perform-Analytical-Procedures | **Root-cause step** becomes the auditor's two passes (4g). Feedback is always explanatory |
 | **Audit sampling** (PCAOB AS 2315) | Sample deviation rate vs tolerable rate, with an allowance for sampling risk; then the "nature and cause" of each deviation | [S] https://pcaobus.org/oversight/standards/auditing-standards/details/AS2315 (paras .41, .42) | "Did the fix work" is framed as an audit conclusion he already knows: rate, upper bound, tolerable rate, then the cause |
 | **Google People + AI Guidebook** | An "error audit": collect canonical error examples; sort into system limitation, context error, background error; ask stakes per error | [S] https://pair.withgoogle.com/chapter/errors-failing/ | Adds **cost of a failure to the user** as a column in every count table |
@@ -50,7 +50,7 @@ The first three are what is new here. The fourth plays to his strength (finance,
 ### 1c. Challenges to the existing research
 1. **"80% agreement with expert labels"** (recommended-method.md section 6) is raw agreement. In HW3's
    101 labelled traces (75 pass, 26 fail), a labeller who passes everything scores 74% (run) with kappa 0.
-   Replace with kappa plus fail recall (section 5).
+   Replace with kappa plus catch rate (section 5).
 2. **SCT items in 8d** are borrowed from medicine and untested for traces. The saved material has a better
    tool built for this skill: close negatives (Cartwheel HW4). They replace SCT.
 3. **"Full ladder, slow"** (skill-methods.md C1) ignores that he has done L5 and L6. Worked examples are for
@@ -60,32 +60,57 @@ The first three are what is new here. The fourth plays to his strength (finance,
 
 ---
 
-## 2. THE STRUCTURE: the "Calibrate, Label, Code, Check" unit
+## 2. THE STRUCTURE: the evaluation unit (corrected 2026-09-25)
 
-25 minutes, same order every time, run by the script. Trace sets and expert labels are prepared and
-checked before the session; the tutor never labels in place of the expert key.
+**Corrected after `../gap-audit-evaluation.md` (C49).** The first version of this section opened every unit
+with labelling, cut the worked examples to one step per task class, used kappa before it was taught and put
+12 full traces in one message. It is replaced by the template below: frame-of-reference training in its full
+order (the standard, examples at each level, practice with feedback, then blind rating compared with the
+expert), the worked-example ladder for each node, and one trace per message where feedback follows each
+trace. Unit format v3 (`learn/check_unit.py`) enforces the kinds: show, try, scored, close.
 
-| # | Step | Min | What he does | What the tutor does | Material from |
+**One node per unit**, in Hamel's order: label against one rule (eval-01) → agreement beyond chance, taught as
+counts (eval-02) → look-alikes and arguing with the key (eval-03) → open notes (eval-04) → group → count →
+judge → validate the judge → measure a fix. A node's first unit opens with 2 worked examples of that node.
+
+One message per step, in this order, each ending **Your answer.**:
+
+| # | Step | Kind | What it does | Research | Hard rules |
 |---|---|---|---|---|---|
-| 1 | **Mixed recall** | 0 to 3 | 3 due items: one codebook definition from an old product, one metric from a small table, one from another skill | serves items due at 1, 3, 7, 21 days; marks against the key | his miss list; cue rules |
-| 2 | **Frame and predict** | 3 to 4 | reads the product, the decision it feeds, the cost of one failure; writes his predicted failure rate | silent | brief written from the saved source |
-| 3 | **Calibrate** | 4 to 8 | labels 6 expert-labelled traces one at a time: pass/fail plus the cue he used | after each, shows the expert label **and reason** (FOR). Gate: 5 of 6 and no expert-fail passed; else 4 more, then continue with a flag | HW3 `labeled_traces.jsonl`; Cartwheel close negatives |
-| 4 | **Blind batch** | 8 to 15 | 12 new traces: pass/fail, open code (first thing that went wrong), sure or unsure | nothing shown until the batch ends | the product's raw traces |
-| 5 | **Code** | 15 to 18 | groups his open codes into codebook entries (name, binary definition, when not to use, one close negative) | then shows the expert taxonomy; he marks which of his types match, merge or are missing | expert taxonomy file |
-| 6 | **Agreement and disagreements** | 18 to 22 | reads his numbers; for each disagreement writes whose label is right and the cue, before seeing the expert's reason | runs code: kappa, fail recall, lenient or strict bias vs the expert fail rate; then reveals reasons one disagreement at a time; he may overturn the key with evidence (negotiated agreement) | code; key |
-| 7 | **Count and decide** | 22 to 24 | pivot by type x cost; the decision; one changed fact ("fail cost doubles", "base rate halves"): what moves | checks the decision against the expert's | code |
-| 8 | **Review** | 24 to 25 | predicted vs actual failure rate, why the gap, one "cue → label" rule | puts the rule in the spaced queue | tracker |
+| 1 | **The job and the rule** | show | The problem with context (the product, who is hurt by a miss, the decision the labels feed); the rule quoted from the source; the source's own pass and fail examples; one everyday picture; the paths; a short check | FOR dimensions (Woehr and Huffcutt; Roch); C34; A12 | At most 3 new ideas; every rule a later question uses is stated here (B6) |
+| 2 | **Worked example 1** | show | One trace, the expert's moves numbered: rule first, what to set aside, the deciding line, what it means under the rule, the label with the key's reason, one dead end; one question on the key move | Renkl and Atkinson; Collins, Brown and Newman (modelling); CTA | Moves come only from the source rule and the key's written reason |
+| 3 | **Worked example 2** | show | A close negative of example 1: looks alike, opposite label, same moves | Cartwheel close negatives; contrasting cases | Same layout as example 1 |
+| 4 | **Finish the expert's work** | try | Moves 1 to 3 done; he writes what the lines mean and the label | backward fading (Renkl 2002) | Feedback at once; the key reason opens the next step |
+| 5-10 | **Warm-up label 1 to 6** | try | One trace per message: label, deciding line, sure or not sure. Message n+1 opens with the expert's label and reason for trace n | FOR; ETS calibration; Kulkarni | About 3 pass and 3 fail; the first repeats the worked cue on a new surface; clear to subtle; aimed at about 80% right |
+| 11 | **Warm-up result** | try | The reason for trace 6; he counts his matches; gate (5 of 6, no expert FAIL passed; trial); he predicts his batch score with his warm-up count in hand | ETS gate; C39 | The gate result is a count, not a statistic |
+| 12+ | **Label the batch 1 to n** | scored | At most 4 excerpts per message, blind, no feedback until the end | blind labelling | At most 2,600 characters per message including excerpts |
+| next | **Compare: your numbers** | try | The expert's labels listed; he counts: matches, expert FAILs he also failed, expert PASSes he also passed; for each difference he says whose label is right and which line, before any reason | Gigerenzer (counts first); Earley (explain first) | Counts only until kappa is taught (eval-02) |
+| next | **Compare: the expert's reasons** | show | The key's deciding sentence for each trace; he names the move that would have caught each miss, or argues the key with a line | negotiated agreement; FOR discussion | Reasons are shown text, not answer-key text |
+| (node) | **Use the labels** | depends | The node's own task (group, count and decide, check a judge); absent until that node | Hamel's order | Never on a one-criterion product |
+| last | **Close** | close | Predicted vs actual (his count), then "next time I see X, I do Y" | after-action review | Two short answers |
 
-**In later task steps**, steps 4 and 5 are replaced by the node being trained, keeping 1 to 3 and 6 to 8:
-judge building (write the judge from his codebook, run on dev, read TPR/TNR as a frequency tree, 4e);
-fix measurement (before and after rates with intervals, 4f); root cause (4g).
+Outside the order: `## Help: <step>` blocks (a second worked example on a new surface) for the first tries
+and every scored step, sent when he is stuck or after a miss; `## Retry` (new traces, same rule) and
+`## Cold` (7 days later, new traces), both scored.
 
-**First time a task class appears:** step 4 becomes a worked example: 6 traces shown with the expert's
-open code and the reason beside each, then he does 6 with the notes hidden (completion). This is C1's
-anatomy, cut to one step per unit.
+**Excerpts.** Request, diet on record, rule, dish name and the lines the label depends on, word for word
+from the source; cut parts marked in square brackets ("checked, nothing in them changes the label"). Only
+HIGH-confidence traces whose label follows directly from the quoted rule and that a person has read in full.
+Kept out of scored sets: the audit's disputed list (9_25, 35_15, 48_3), plus 1_35 and 1_37, whose "granola
+(preferably vegan)" line is an "X or Y" choice by the unit's own path rule, and 47_30, whose "or your
+preferred bread" line is the same. Each unit lists a run that checks every excerpt line and quoted reason
+against the source (eval-01: `learn/code/eval-01/traces.py`, run as `runs/eval-01-traces.json`).
 
-**Two other formats** run outside the main unit: the 8-minute rapid round (4a) and, every 4 to 6 weeks, a
-full error analysis on 100 traces as a capstone (4h).
+**Feedback words.** Until kappa is taught, every result is a count ("you matched 10 of 12; the expert failed
+3 and you also failed 2"). Rates on a judge use one pair of plain names everywhere: **catch rate** (of the
+traces a person marked FAIL, the share the judge also marked FAIL) and **clear rate** (of the traces a person
+marked PASS, the share the judge also marked PASS), as in `docs/glossary.md`. "Fail recall" is not used. When
+HW3 or `judgy` material is shown, one line converts it: HW3 calls the clear rate TPR and the catch rate TNR,
+because it treats PASS as the positive class.
+
+**Other formats** run outside the unit: the 8-minute rapid round (4a), from the second evaluation sitting,
+only on categories already taught and only from keyed items; and, every 4 to 6 weeks, a full error analysis
+on 100 traces as a capstone (4h).
 
 ### Why this differs from the other four skills
 | Skill | Its centre | Evaluation's centre instead |
@@ -118,8 +143,8 @@ validate judge → measure a fix (curriculum-design.md edge E2 → E4 → E5 →
 ### 3b. Levels and milestones
 | Level | He can, observed | Threshold |
 |---|---|---|
-| Novice | labels a class-1 batch after calibration; writes an open code naming the first failure; computes TPR/TNR from a table | kappa ≥ 0.60 vs expert; fail recall ≥ 0.75 |
-| Competent | builds a codebook of 4 to 10 types from 50 to 100 traces with counts x cost; writes and validates a judge; corrects a pass rate | kappa ≥ 0.70; fail recall ≥ 0.85; self-agreement at 7 days ≥ 0.80; judge TPR and TNR ≥ 0.85 on held-out data |
+| Novice | labels a class-1 batch after calibration; writes an open code naming the first failure; computes catch and clear rates from a table | kappa ≥ 0.60 vs expert; catch rate ≥ 0.75 |
+| Competent | builds a codebook of 4 to 10 types from 50 to 100 traces with counts x cost; writes and validates a judge; corrects a pass rate | kappa ≥ 0.70; catch rate ≥ 0.85; self-agreement at 7 days ≥ 0.80; judge catch and clear rates ≥ 0.85 on held-out data |
 | Proficient | on a new product with no expert labels: sizes the sample for the decision, labels, codes, and his codebook survives an expert check; spots a biased metric | first cold batch kappa ≥ 0.60 on a new product; ship/no-ship call matches the expert on 4 of 5 cases |
 
 ### 3c. The fading rule
@@ -169,10 +194,10 @@ own two passes are rewritten or merged (Hruschka).
   (`talks/aakash-gupta-hamel-shreya-evals-step-by-step.md`, Step 4).
 
 ### 4e. Judge validation as a frequency tree
-He draws the tree before any formula. Then code computes TPR, TNR, and the corrected pass rate
-(`repos/judgy`).
+He draws the tree before any formula. Then code computes the catch rate, the clear rate and the corrected
+pass rate (`repos/judgy`, which calls the clear rate TPR and the catch rate TNR).
 - **Example (run, illustrative judge):** 1,000 traces at HW3's base rate: 743 pass, 257 fail. A judge
-  with TPR 0.90 (on passes) and TNR 0.80 (on fails) flags 206 of the 257 fails and wrongly flags 74 of
+  with a clear rate of 0.90 (on passes) and a catch rate of 0.80 (on fails) flags 206 of the 257 fails and wrongly flags 74 of
   the 743 passes. It reports 72.0% pass; the true rate is 74.3%; correcting with (0.72 + 0.80 − 1) /
   (0.90 + 0.80 − 1) gives 74.3%. Changed fact: fails drop to 5%; how many flags are now false?
 
@@ -210,10 +235,10 @@ patches, walkthroughs) and the curriculum rubric.
 | What | Pass | Why this number |
 |---|---|---|
 | Calibration gate | 5 of 6 exact; no expert-fail labelled pass | GRE uses 6 of 10 with no 2-point miss [M]; binary labels allow a stricter bar |
-| Blind labelling vs expert | kappa ≥ 0.70 and fail recall ≥ 0.85, on 2 units | ETS kappa 0.70 [S]; fails are what matter (Yan [S]) |
+| Blind labelling vs expert | kappa ≥ 0.70 and catch rate ≥ 0.85, on 2 units | ETS kappa 0.70 [S]; fails are what matter (Yan [S]) |
 | Rapid round | ≥ 90% on new excerpts, median ≤ 20 s | PLM accuracy plus fluency; ECG PALM 15 s [S] |
 | Codebook | self-agreement kappa ≥ 0.80 at 7 days on 20%; ≤ 10 types | Hruschka 0.8 [M]; code caps [S] |
-| Judge | TPR and TNR ≥ 0.85 on held-out test, interval reported | Hamel: above 80%, ideally 90% (saved talk) [S] |
+| Judge | catch and clear rates ≥ 0.85 on held-out test, interval reported | Hamel: above 80%, ideally 90% (saved talk) [S] |
 | Fix measurement | right ship/no-ship call with the interval | AS 2315 logic [S] |
 
 A node is mastered at these bars on two units, plus the 7-day recheck (recommended-method.md).
@@ -250,7 +275,7 @@ also asks for Monday in weeks 1 to 6.
 | Measure | Healthy | Alarm |
 |---|---|---|
 | Kappa vs expert, per product | rising across units to ≥ 0.70 | flat for 3 units |
-| Fail recall | ≥ 0.85 | under 0.75: he is passing failures |
+| Catch rate (his, against the expert) | ≥ 0.85 | under 0.75: he is passing failures |
 | Bias | his fail rate within 5 points of the expert's | consistently lenient or strict by 10+ |
 | Predicted vs actual failure rate | gap ≤ 10 points after 4 weeks | above 20 |
 | 7-day self-agreement | ≥ 0.80 | under 0.70: labels are guesses |
@@ -267,7 +292,7 @@ also asks for Monday in weeks 1 to 6.
 |---|---|---|
 | Calibration with expert reasons before labelling | moderate to strong | FOR meta-analyses d = 0.50 to 0.83 [M]; GRE [M] |
 | Rapid classification rounds | moderate | large effects, few randomised studies, medical and maths [M]; never tested on text traces |
-| Mastery by kappa plus fail recall | moderate | agreement statistics are standard [S]; the exact bars are borrowed |
+| Mastery by kappa plus catch rate | moderate | agreement statistics are standard [S]; the exact bars are borrowed |
 | Codebook format and reliability rounds | moderate | Hruschka, Campbell [M, small]; MacQueen, O'Connor and Joffe [S] |
 | Frequency tree before the formula | moderate to strong | meta-analysis 24% vs 4% [M]; training studies with small follow-up [M] |
 | Explanatory feedback plus self-explanation | moderate | Bonner and Walker, Earley [M, lab studies with students and auditors] |

@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The national language of Pakistan is' --save llm01-language-plain",
+ "made": "20260925-140426-104022",
+ "inputs": {
+  "prompt": "The national language of Pakistan is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " ______",
+   "prob": 0.1673,
+   "percent": 16.7
+  },
+  {
+   "token": " __",
+   "prob": 0.0789,
+   "percent": 7.9
+  },
+  {
+   "token": "\n",
+   "prob": 0.0705,
+   "percent": 7.0
+  },
+  {
+   "token": ":\n\n",
+   "prob": 0.0703,
+   "percent": 7.0
+  },
+  {
+   "token": " ____",
+   "prob": 0.0675,
+   "percent": 6.8
+  }
+ ]
+}

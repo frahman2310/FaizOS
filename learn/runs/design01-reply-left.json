@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-reply-left '2000 - 150 - 1700' --note 'toy window: history grows to 1700 tokens; tokens left for the reply (300 were needed)'",
+ "expression": "2000 - 150 - 1700",
+ "value": 150,
+ "note": "toy window: history grows to 1700 tokens; tokens left for the reply (300 were needed)",
+ "made": "2026-09-25T14:01:43"
+}

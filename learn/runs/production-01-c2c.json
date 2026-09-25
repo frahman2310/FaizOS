@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-c2c 'round(0.009 - 0.006, 6)' --note 'card 2 surface c'",
+ "expression": "round(0.009 - 0.006, 6)",
+ "value": 0.003,
+ "note": "card 2 surface c",
+ "made": "2026-09-25T14:01:19"
+}

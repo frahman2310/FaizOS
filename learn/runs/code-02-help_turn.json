@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 help_turn.py",
+ "program": "code/code-02/help_turn.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'invoice': 'INV-1', 'tokens_out': 1}]\nChecked\n2\nINV-1\n"
+}

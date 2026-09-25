@@ -6,9 +6,6 @@ explains it in plain words where it first appears (followed within the same sent
 "is", "called", or a bracket).
 
 ## Taught
-sticker: a name stuck on one value (a variable)
-machine: something you run with brackets that hands back a result (a function)
-slot: an input a machine takes (a parameter)
 list: things in a row in square brackets
 dict: labels paired with values in curly brackets
 loop: running the inside once for each item (for)

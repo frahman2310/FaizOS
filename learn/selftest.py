@@ -16,7 +16,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
-from check_unit import problems, steps  # noqa: E402
+from check_unit import problems, steps, is_extra  # noqa: E402
 
 fails = []
 
@@ -54,9 +54,18 @@ else:
     attack("no cards", text.split("## Cards")[0] + "## Cards\n")
     attack("no cold item", re.sub(r"(?ms)^## Cold\n.*?(?=^## )", "", text))
     attack("no scored line", re.sub(r"(?m)^scored:.*\n", "", text))
-    attack("steps out of order", text.replace("## Step: " + steps(text)[0][0], "## Step: TEMP", 1)
-           .replace("## Step: " + steps(text)[1][0], "## Step: " + steps(text)[0][0], 1)
-           .replace("## Step: TEMP", "## Step: " + steps(text)[1][0], 1))
+    st0 = steps(text)
+    first_try = next(n for n, b, k in st0 if "Kind: try" in k)
+    first_scored = next(n for n, b, k in st0 if "Kind: scored" in k)
+    attack("a scored step before any try (asked before practice)",
+           text.replace(f"Kind: try", "Kind: scored", 1).replace(f"scored: ", f"scored: {first_try}, ", 1))
+    attack("the first step is a question, not a show", text.replace("Kind: show", "Kind: try", 1))
+    attack("a show step with 4 new ideas", re.sub(r"(?m)^New:.*$", "New: dict, key, list, loop", text, count=1))
+    attack("a show step with no New: line", re.sub(r"(?m)^New:.*\n", "", text, count=1))
+    attack("no Help block", re.sub(r"(?ms)^## Help: .*?(?=^## )", "", text))
+    attack("no Retry item", re.sub(r"(?ms)^## Retry\n.*?(?=^## )", "", text))
+    attack("a step over 2600 characters", inj("x" * 2700))
+    attack("'given:' in text he reads", inj("given: the bill is 4837."))
     (HERE / "runs/zz-nocommand.json").write_text('{"output": 1}')
     attack("run without a recorded command", re.sub(r"(?m)^runs:[ \t]*", "runs: runs/zz-nocommand.json, ", text, count=1))
     (HERE / "runs/zz-nocommand.json").unlink(missing_ok=True)
@@ -107,7 +116,7 @@ if base is not None:
     for u in sorted((HERE / "units").glob("*/*.md")):         # every real step, in order, must be allowed
         cur = None
         for i, (name, body, _) in enumerate(steps(u.read_text())):
-            if name == "Cold":
+            if is_extra(name):
                 continue
             ok = not guard(body, cur)
             cur = {"unit": str(u), "index": i, "finished": False}

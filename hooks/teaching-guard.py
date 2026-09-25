@@ -90,7 +90,7 @@ def unit_step(text, final=None):
                           "any short feedback, in the unit's order."}))
     try:
         sys.path.insert(0, os.path.join(ROOT, "learn"))
-        from check_unit import steps, problems as unit_problems
+        from check_unit import steps, is_extra, problems as unit_problems
         sent = norm(text)
         matches = []
         for path in glob.glob(os.path.join(ROOT, "learn", "units", "*", "*.md")):
@@ -117,15 +117,14 @@ def unit_step(text, final=None):
             return block(f"Text was added after step '{name}'.")
         if re.search(r"(?i)your answer", before) or "?" in before:
             return block("A question appears before the step; feedback before a step only says what was right or wrong.")
-        if len(before) > 400:
-            return block("The feedback before the step is longer than 400 characters (at most 3 short points).")
+        if len(before) > 600:
+            return block("The feedback before the step is longer than 600 characters (at most 3 short points).")
         errs = unit_problems(path)
         if errs:
             return block(f"Unit {os.path.basename(path)} fails its check: " + "; ".join(errs[:3]) + ".")
         cursor_file = os.path.join(ROOT, "learn", "data", "cursor.json")
         cur = json.load(open(cursor_file)) if os.path.exists(cursor_file) else {}
-        cold = name.startswith("Cold")
-        if not cold:
+        if not is_extra(name):                # Help, Retry and Cold blocks are sent when needed, outside the order
             same = cur.get("unit") == path
             finished = cur.get("finished", True)
             if same and i <= cur.get("index", -1):
@@ -134,7 +133,7 @@ def unit_step(text, final=None):
                 return block(f"The unit {os.path.basename(cur['unit'])} is not finished (its Close step is not sent).")
             if not same and i != 0:
                 return block(f"A unit starts at its first step, not '{name}'.")
-            total = len([s for s in steps(open(path).read()) if not s[0].startswith("Cold")])
+            total = len([s for s in steps(open(path).read()) if not is_extra(s[0])])
             os.makedirs(os.path.dirname(cursor_file), exist_ok=True)
             json.dump({"unit": path, "index": i, "finished": i == total - 1}, open(cursor_file, "w"))
     except Exception as e:                    # fail closed for unit steps

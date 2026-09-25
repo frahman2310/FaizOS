@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 show3.py",
+ "program": "code/code-02/show3.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "Done\n[{'prompt': 'pay rent', 'tokens_out': 4}, {'prompt': 'pay school fees', 'tokens_out': 4}]\n"
+}

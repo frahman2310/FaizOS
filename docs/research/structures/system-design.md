@@ -6,7 +6,7 @@
 Written 2026-09-24. The skill: choose and connect components (retrieval, tools, agents, memory, guardrails,
 serving) for a brief with a budget, a latency target and a quality bar, and defend each choice against the
 alternatives. His words: "logic build-up + cognitive development". His own reasoning must grow, so every
-session makes him commit before he sees any expert reasoning.
+class moves him from studying expert decisions to committing his own first (section 2, corrected 2026-09-25).
 
 Builds on, does not repeat: `../recommended-method.md` (10-step unit), `../postmortem.md`,
 `../curricula/judgement-training.md` (ShadowBox, crit, AAR, the 35-minute design session in 8c),
@@ -45,7 +45,7 @@ rubric of reasoning, with partial credit where experts differ**, never "matches 
 | **O'Reilly Katas 2026 (AI-assisted architecture)** | Teams submit ADRs and diagrams; judges scored six criteria: innovative AI use, fit to constraints, right level of detail, handling uncertainty, alignment, and **proving the AI's results can be trusted** | [S] https://github.com/Humanberto/architectural-katas-2026 ; format https://www.oreilly.com/live-events/architectural-katas/0636920458487/ | Rubric dimension R6 (evaluation and trust) comes from this |
 | **Google SRE, NALSD** | Design is iterated through fixed questions: basic design ("is it possible? can we do better?"), then scaled design ("is it feasible? is it resilient? can we do better?"). Numbers are a "bill of materials"; rough numbers are fine because the value is "combining many imperfect-but-reasonable results" | [S] https://sre.google/workbook/non-abstract-design/ | The session's middle steps are these questions, in this order |
 | **NALSD classroom** | Groups of 4 to 6 with one experienced SRE facilitator; three breakouts (single datacenter 40 min, multi-datacenter 30 min, provision the system 35 min) with 5-minute breaks; groups do "their own solution first", then the leader presents a sample solution with the reasons; can be done "with a buddy or on your own" | [S] slides https://sre.google/static/pdf/nalsd-pubsub-slides.pdf ; https://cloud.google.com/blog/products/devops-sre/join-sre-classroom-nalsd-workshops | Design sessions are 40 minutes, longer than other skills; a mid-session break point is allowed |
-| **Kleppmann (DDIA)** | Teaches tools by comparing them "so that you can see the strengths and weaknesses of each", goes "under the hood", and ties ideas back to reality: looking good "on a whiteboard" is not working | [S] https://dataintensive.net/ | Background reading is organised as trade-off tables per component, read after an attempt, never before |
+| **Kleppmann (DDIA)** | Teaches tools by comparing them "so that you can see the strengths and weaknesses of each", goes "under the hood", and ties ideas back to reality: looking good "on a whiteboard" is not working | [S] https://dataintensive.net/ | Background reading is organised as trade-off tables per component, read before the class (the toolbox steps) and kept open during it |
 | **Hohpe (Architect Elevator)** | Architects "see more dimensions": they turn an either/or into a third option; architecture is buying and selling **options** whose value grows with uncertainty; "what's the question?" before any diagram | [S] https://www.infoq.com/articles/thinking-like-architect/ | Changed-fact questions ask "which option did your design keep open?" |
 | **Will Larson (Staff Engineer)** | A good design doc "describes a specific problem, surveys possible solutions, and explains the selected approach"; start from the problem; keep templates minimal; to improve, **reread your designs after building and study where the build deviated from the plan** | [S] https://lethain.com/static/blog/staffeng/staffeng-2020-12-16.pdf (pp. 41 to 43) | A design-vs-build deviation check on his FBR assistant (section 7) |
 | **Google design docs** | Sections: context and scope, goals and non-goals, design, **alternatives considered**, cross-cutting concerns; the doc is "the place to write down the trade-offs"; 1 to 3 page "mini design docs" for small work | [S] https://www.industrialempathy.com/posts/design-docs-at-google/ | His written artefact is a 1-page mini design doc |
@@ -73,31 +73,52 @@ rubric of reasoning, with partial credit where experts differ**, never "matches 
 
 ---
 
-## 2. The structure: the Design Crit (one session, 40 minutes)
+## 2. The structure: a ladder of rungs per task class (corrected 2026-09-25)
 
-Name: **Brief, Conjecture, Numbers, Options, Crit, Twist, Record.** Kata brief in, NALSD questions in the
-middle, a crit on his own draft, an ADR out. Tutor prepares everything before the session (postmortem cause
-4): the brief, a hidden fact sheet, 3 decision points with the expert's ranked options and reasons, the
-expert numbers run in Python, one changed fact, one planted cue.
+**Corrected 2026-09-25** after `../gap-audit-system-design.md` (findings S1 to S6, S9, K1) and
+`../audit-pedagogy.md`. The earlier version opened every class with "guess the architect's move" and gave a
+full "Design Crit" (his own design before any expert reasoning) from design 4 on, with component knowledge
+read only after an attempt. For a novice that is commit-first on first contact, which the research base does
+not support (`skill-methods.md` C3 and E; `method-effectiveness.md` line 34; `judgement-training.md` line 217;
+Kapur and Roll's boundary conditions). The corrected shape follows the expert order: **show, try together,
+then alone** (INTEGRATED 2.3), inside a ladder that restarts at rung 1 for every new task class.
 
-| Min | Step | What he does | What the tutor does | Source of material |
-|---|---|---|---|---|
-| 0 to 2 | **0 Recall** | Answers 2 spaced "cue → move" cards from old sessions and 1 number (for example "tokens a second at 10K DAU x 5 messages x 800 tokens?") | Marks against the card; no re-teaching | his own AAR rules; `llm-behaviour` and `production` cards |
-| 2 to 7 | **1 Brief and top 3** | Reads the kata brief. Writes the top 3 characteristics (from: cost, latency, answer quality, safety, isolation, freshness, availability), the one number that drives the design, and up to 3 questions for the customer | Answers questions **only** from the hidden fact sheet; anything else: "write it as an assumption" | SD lab briefs (`scaledojo_paid.json` labs), kata format (Neward), Richards and Ford top 3 |
-| 7 to 12 | **2 Conjecture** ("is it possible?") | Writes the simplest pipeline that could work, components in order, one reason each | Silent. If stuck after 2 min: "which worked case does this look like?" (points to the case library, not the answer) | Anthropic "start simple"; Lloyd and Scott conjecture; his case library |
-| 12 to 18 | **3 Numbers** ("is it feasible?") | Bill of materials: requests a second at peak, tokens a request, cost a day and per 1,000 requests, latency per stage against the target | Runs his numbers in Python, shows only which line is off and by how much | NALSD; BBG estimation recipe (saved `bbg-back-of-envelope.md`) |
-| 18 to 25 | **4 Options at 3 decision points** | For each prepared decision point: 2 to 3 options, his pick, one drawback of the pick, one risk, the cue in the brief that decided it. One-way or two-way door? | Names the 3 decision points (at L1 and L2 only). If stuck: one of the 4 reasoning cards (constraint, assumption, risk, trade-off) | debiasing workshop; Schriek cards; Fricke; AWS one-way doors |
-| | *break point* | He may stop here and resume later the same day (NALSD breaks) | Saves his committed draft; nothing is revealed | |
-| 25 to 33 | **5 Crit** | Reads the expert's choice at decision point 1 (choice, cue, reason, the option the expert dropped), writes "mine vs expert: which is better for this brief, why". Then point 2, then point 3 | Reveals per decision, never the whole design first. Then marks up **his** draft in place, narrating each change, and scores it on the rubric (section 5) with partial credit where valid alternatives exist | ShadowBox; Schön's desk crit; SD worked examples, Hello Interview Bad/Good/Great, MyEngineeringPath worked GenAI examples |
-| 33 to 37 | **6 Twist** ("is it resilient? can we do better?") | One fact changes (10x users, budget halves, a tenant must never see another's data, the model provider has an outage). He lists what moves, what stays, which option his design kept open | Reveals the expert answer after he commits | NALSD, law hypotheticals, Hohpe options |
-| 37 to 40 | **7 Record** | Writes one ADR for the hinge decision (context, decision, consequences good and bad) and one "cue → move" rule for the recall queue. Predicts his rubric score for next week's cold brief | Files the ADR and rule; logs the prediction | Nygard ADR; AAR (d = 0.67); calibration |
+Every unit is one rung of one class, written in unit format v3 (`learn/check_unit.py`: Kind show / try /
+scored / close, Help blocks, Retry and Cold items). One decision per message, at most five short questions
+per message, every term explained where it first appears, each try aimed at about 80% right.
 
-**Before a task class is known (first 2 designs of each class): the Study variant, "Guess the architect's
-move" (30 minutes).** Same brief and step 1. Then the expert design is uncovered one decision at a time; at
-each decision he writes his choice and one reason first, then sees the expert's with its cue and dropped
-option (chess "guess the move", `judgement-training.md` 6). He scores 1 for the expert's move, 0.5 for a
-listed acceptable alternative. He ends with the ADR for the hinge decision, written from the expert design.
-This keeps worked examples as his reference point while forcing a commitment at every step.
+**Rungs 1 and 2: study, then guess the move on a parallel case** (two units per class, each on a different
+expert case).
+
+| Order | Step (Kind) | What he gets | Source of material |
+|---|---|---|---|
+| 1 | **Goal and the problem** (show) | the failure with its stake, the one earlier idea it rests on, what "done" means; one self-explanation check | the class's ScaleDojo chapter |
+| 2 | **Toolbox**, one step per decision point (show) | that decision's options, taught before any use: the problem first, the chapter's own toy example, one picture, and a table where every option has "wins on", "effect on the target number" and "what it loses" (C32, C35, B14); one or two short checks. The table stays available for the rest of the class | the matching ScaleDojo module (C1: modules 2 and 3; C2: 5 to 8; C3: 9 and 12; C4: 10 and 11) |
+| 3 | **Worked example**, one step per decision (show) | an expert case modelled aloud: the cues and what each means, the options, the dead end and why it was dropped, the pick and why, then a 3-line replay (cue, what it means, move); one self-explanation question | ScaleDojo chapter text and its interview-signal weak/strong pair; Anthropic and other full-text sources; private excerpt per unit |
+| 4 | **Guess the move**, one step per decision (try) | a parallel case (a real ScaleDojo lab brief where one exists), one decision per step, only decisions he has just seen worked; each step opens with the reveal of the previous one (expert cue and dropped option); feedback at once; a Help block (second worked example, new surface) for each | ScaleDojo lab level briefs and missions, never their simulation numbers (audit R2) |
+| 5 | **How the scored part works** (show) | the scoring lines in plain words, then his score prediction (K2, C39) | |
+| 6 | **Your move** on new briefs (scored) | the same decisions on briefs he has not seen, including at least one where the cue points to a different option (C35: decisions must not be obvious); pick, the brief fact that decided it, and a dropped option or a cost | ScaleDojo briefs; made-up briefs marked "Suppose", with the key taken from the expert rule |
+| 7 | **Decision note** (scored) | a fill-in frame: "We decided to ___, because ___ (a brief fact). It costs us ___." | |
+| 8 | **Close** (close) | "Next time I see X, I do Y", marked against the Key's expert rule before it enters recall (S12) | |
+| after | **Help**, **Retry**, **Cold** | a prepared second worked example per try and scored step; a Retry brief after a miss; a Cold brief at 7 days, same decision, new surface | |
+
+**Later rungs** (from `../gap-audit-system-design.md` section 5; move up only after 2 passes in a row, back one
+rung after two misses at a rung, `skill-methods.md` D2):
+
+| Rung | Steps, in order |
+|---|---|
+| 3 completion | First-step check (write only the first decision and its reason); Read the brief; Worked pipeline and numbers (given, one self-explanation question); Choices 1..n (his); Compare with the expert 1..n; What if; Decision note; Close |
+| 4 faded | First-step check; Read the brief; Numbers (his, checked by a run); Choices 1..n; Compare 1..n; What if; Decision note; Close |
+| 5 full design | First-step check; Read the brief; First design; Numbers; Choices 1..n; Compare 1..n; What if; Decision note; Close |
+| 6 variation | as rung 5, on an old brief with one fact changed (the changed number tagged as a variation of its source) |
+
+Rules that hold on every rung: every brief lists all its facts with their source, and unknowns as
+"assume X" (no hidden fact sheet, C31, audit S8); "First design" (his own design before expert reasoning)
+appears only from rung 5, after he has passed the completion rung and the first-step check, and the
+productive-failure opening is used on the class's hinge decision, not on every step (audit S4); reveals are per
+decision, never the whole design first; feedback narrates at most 3 changes (S15); the stuck order is the
+shared one, with the two options in its step 2 taken from the toolbox table. The session length stays about 40
+minutes for rungs 5 and 6; rungs 1 to 4 are sized by their steps, not a clock.
 
 **Why this is not the other four skills' structure.**
 
@@ -105,18 +126,18 @@ This keeps worked examples as his reference point while forcing a commitment at 
 |---|---|---|---|---|---|
 | Unit of work | a batch of traces | a pattern or bug | a formula and a lever | one mechanism | **a whole brief** |
 | Judge | agreement with expert labels | tests passing | the exact number | the measured run | **brief's numbers + reasoning rubric, partial credit** |
-| Reveal | disagreements only | run result | worked solution | run result | **per decision point, then crit on his draft** |
+| Reveal | disagreements only | run result | worked solution | run result | **modelled first (rungs 1 and 2); per decision point after he commits (rung 3 on)** |
 | Output artefact | taxonomy, judge | a passing change | a number and a lever | a one-line explanation | **mini design doc + ADR** |
-| Session | 8 to 25 min | 30 min | short, mixed | 20 min | **40 min (30 for the Study variant)** |
+| Session | 8 to 25 min | 30 min | short, mixed | 20 min | **rungs 1 to 4 sized by their steps; about 40 min for full designs** |
 | Fading speed | slow | medium | fastest | barely uses examples | **slowest; restarts each class** |
 
 ---
 
 ## 3. Progression
 
-### 3a. Task classes (4C/ID; each restarts at the Study variant)
+### 3a. Task classes (4C/ID; each restarts at rung 1)
 
-| Class | Example brief | Worked cases for "guess the move" (2 each) | SD lab levels to design from the brief |
+| Class | Example brief | Worked cases for rungs 1 and 2 (2 each) | SD lab levels to design from the brief |
 |---|---|---|---|
 | **C1 Single-call feature** (prompt, model choice, token budget, streaming, basic guardrail) | SD level 1 QuickChat: $5 per 1,000 requests, 2,000 ms, 10K DAU x 5 messages, 800-token conversations, some at 15K, "never cut off" | SD level 1 and 6 briefs worked by the tutor from `genai-sd-sdhandbook-genai-interview.md` (code assistant: 2B tokens a day) and the tiered moderation example in `genai-sd-myengineeringpath-worked.md` | 1, 4, 5, 6, 8, 9 |
 | **C2 RAG** | internal Q&A over 10k PDFs, p95 under 3 s | MyEngineeringPath RAG support chatbot (500 articles, p95 < 3 s, faithfulness > 0.90); TopGenAIJobs production RAG | 11 to 17, 19, 20 |
@@ -128,18 +149,18 @@ they enter every class from C2 as the "twist" and as rubric lines, interleaved w
 Classes run in step with evaluation (C2 design needs retrieval metrics from evaluation class 2).
 
 ### 3b. Fading rules inside a class
-1. **Designs 1 and 2:** Study variant (guess the move).
-2. **Design 3:** Design Crit with the conjecture given (backward fading: the last steps, twist and record,
-   are his; then options; then numbers; the conjecture is the last support removed).
-3. **Design 4 on:** full Design Crit.
-4. **Support fades across levels, not only within a class:** L1 the tutor names the 3 decision points; L2 he
+1. **Rungs 1 and 2:** study units (toolbox, worked example, guess the move on a parallel case), section 2.
+2. **Rung 3:** completion (pipeline and numbers given; he writes the choices, the what-if and the note).
+3. **Rung 4:** faded (pipeline given; he writes the numbers and the choices).
+4. **Rungs 5 and 6:** full design, then a changed-fact variation.
+5. **Support fades across levels, not only within a class:** L1 the tutor names the decision points; L2 he
    must find them (scored: did he find the expert's hinge decision?); L3 he also writes the customer
    questions and the internal FAQ (3 hard reviewer questions).
-5. **Climb:** 2 designs in a row at 70+ on the rubric, with all brief numbers met, moves him to the next
-   class. **Fall back:** 2 below 55, or a failed brief number twice, sends him to one more Study session in
-   that class (Math Academy fail-twice rule, `skill-methods.md` D2).
-6. **Skip:** a 90-second first-step test at the start (write the conjecture only). Right twice in a row with
-   a right reason: skip the Study variant for that class (Kalyuga).
+6. **Climb:** 2 passes in a row at a rung moves him up one rung; at rung 5, 2 designs in a row at 70+ on the
+   rubric with all brief numbers met moves him to the next class. **Fall back:** two misses at a rung send him
+   back one rung (Math Academy fail-twice rule, `skill-methods.md` D2).
+7. **Skip:** from rung 2, each unit opens with a 90-second first-step check (write only the first decision
+   and its reason). Right twice in a row with a right reason: skip the next study rung (Kalyuga).
 
 ### 3c. Levels with observable milestones
 
@@ -156,7 +177,7 @@ Classes run in step with evaluation (C2 design needs retrieval metrics from eval
 | Format | How it runs | Concrete example |
 |---|---|---|
 | **1 Kata (the Design Crit)** | Section 2. The main weekly session | SD GenAI level 1, QuickChat: responses cut off mid-sentence; $5 per 1,000 requests, 2,000 ms, 10K DAU x 5 messages, 800-token average, power users at 15K tokens, "never cut off". Hinge decision: what to do with long histories (truncate, sliding window, summarise, bigger context model). Twist: power users grow to 30% of traffic |
-| **2 Guess the architect's move** | Section 2, Study variant | SD "Worked Example: Enterprise RAG and Support Copilots" (`learn/genai/capstone-designing-full-genai-systems/`): decision 1 "where does tenant isolation happen?" (expert: filter by tenant_id inside the vector search, before similarity search, not after); decision 2 "one pipeline or tiers for support?" (expert: 3 tiers, 0 automated, 1 agent with tools, 2 human) |
+| **2 Guess the architect's move** | Section 2, rungs 1 and 2 (on a parallel case, after the modelled one) | SD "Worked Example: Enterprise RAG and Support Copilots" (`learn/genai/capstone-designing-full-genai-systems/`): decision 1 "where does tenant isolation happen?" (expert: filter by tenant_id inside the vector search, before similarity search, not after); decision 2 "one pipeline or tiers for support?" (expert: 3 tiers, 0 automated, 1 agent with tools, 2 human) |
 | **3 Mini design doc with alternatives considered** | 1 page: context, goals and non-goals, the design, alternatives considered (at least 2, each with why rejected), cross-cutting concerns (Google template). Written at the end of each class as the capstone of that class | SD level 42, AI Customer Support: 50,000 tickets a day, 60% simple. Alternatives he must weigh: one agent for everything; humans for everything plus retrieval suggestions; three tiers. Non-goal he must state (for example, no refunds above a set amount without a human) |
 | **4 ADR** | End of every session, 5 to 8 lines, Nygard fields; one record's consequences become the next record's context | "Tenant isolation at query time. Context: 50 departments, zero leakage. Decision: tenant_id filter inside the vector query. Consequences: + a wrong-department chunk is unreachable; − per-tenant index tuning is harder; − every new data source must carry tenant_id" (from the SD worked example) |
 | **5 Review a flawed design** | He gets someone else's design with one or two planted flaws; he runs the Well-Architected GenAI questions over it and lists high- and medium-risk issues and one fix each. Then the expert review. Only after 2 correct designs of that class (Große and Renkl) | SD interview signal (multi-agent chapter): a team wants to rebuild a single-agent support bot as five agents "for better answers". Checklist hits: GENCOST05 (agent workflow cost; Anthropic reports multi-agent systems use about 15x the tokens of chat, https://www.anthropic.com/engineering/multi-agent-research-system ), GENREL02 (communication between components), GENSEC05 (excessive agency) |
@@ -247,7 +268,7 @@ Pace: a class takes about 4 to 6 weeks (2 Study + 3 to 4 Crit + cold recheck), s
 | Choice | Evidence | Grade |
 |---|---|---|
 | Commit before any expert reasoning, then compare per decision | productive failure with consolidation d = 0.36 (only with comparison); ShadowBox 18 to 28% [M-dev]; debrief d = 0.67 | moderate |
-| Worked cases first per class (Study variant) | worked examples g = 0.48 for novices; conjecture needs "specific experience of the problem type" (Lloyd and Scott) | strong (examples), moderate (the design link) |
+| Worked cases first per class (rungs 1 and 2) | worked examples g = 0.48 for novices; conjecture needs "specific experience of the problem type" (Lloyd and Scott) | strong (examples), moderate (the design link) |
 | 2 to 3 options, drawback, risk per decision | debiasing workshop, biased statements 49.9% to 23.1%, n = 36 [M]; cards +75% reasoning, 12 teams [M]; Fricke [M, protocol] | moderate (small samples, direct to software design) |
 | Numbers step (NALSD bill of materials) | Google's stated practice [S]; plays to his measured strength (about 88% first-try on numbers) | weak to moderate |
 | Scoping boxed at 5 min for novices | Atman: freshmen's long problem definition did not help, seniors' did [M] | moderate |
@@ -266,7 +287,7 @@ Pace: a class takes about 4 to 6 weeks (2 Study + 3 to 4 Crit + cold recheck), s
 | Full six-page memos and PR/FAQ | built for funding decisions, hours of writing; only the internal FAQ is kept, at L3 |
 | ATAM and formal architecture evaluation methods | heavy multi-day methods; the mapping study notes applying ATAM does not mean one can evaluate |
 | Interview time pressure (45 min, talk aloud) before L3 | interview performance is a different skill; frames are kept, the clock is not |
-| Reading DDIA or the saved essays front to back | passive (ICAP); read per component, after an attempt, as trade-off tables |
+| Reading DDIA or the saved essays front to back | passive (ICAP); read per component, as trade-off tables in the toolbox steps before the class |
 | ScaleDojo missions as the design, and its reference-match pass rule | missions state the answer; valid alternatives fail; used only as an after-check |
 | ScaleDojo quiz items as evidence of learning | 70% is reachable without reading the question (`scaledojo-method-analysis.md`) |
 | Open "design anything" tasks with no expert key | open investigation failed (postmortem cause 3); minimal guidance underperforms for novices |

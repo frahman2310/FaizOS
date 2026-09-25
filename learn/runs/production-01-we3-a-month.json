@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we3-a-month 'round(600 * 0.006, 4)' --note 'saving a per student a month, shown as $3.60'",
+ "expression": "round(600 * 0.006, 4)",
+ "value": 3.6,
+ "note": "saving a per student a month, shown as $3.60",
+ "made": "2026-09-25T14:01:14"
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 help_try3.py",
+ "program": "code/code-02/help_try3.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "Sent\n[{'name': 'Ali', 'tokens_out': 2}]\n"
+}

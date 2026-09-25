@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-start-ok '1550 - 1200' --note 'toy window: history room left when summarising starts at the 1200 threshold'",
+ "expression": "1550 - 1200",
+ "value": 350,
+ "note": "toy window: history room left when summarising starts at the 1200 threshold",
+ "made": "2026-09-25T14:01:44"
+}

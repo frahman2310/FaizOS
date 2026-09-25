@@ -1,0 +1,39 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Mera bijli ka bill kitna hai?' --save llm02-help-roman-bill",
+ "made": "20260925-140757-451513",
+ "inputs": {
+  "text": "Mera bijli ka bill kitna hai?"
+ },
+ "output": {
+  "characters": 29,
+  "words": 6,
+  "openai_o200k": [
+   "M",
+   "era",
+   " bij",
+   "li",
+   " ka",
+   " bill",
+   " kit",
+   "na",
+   " hai",
+   "?"
+  ],
+  "qwen": [
+   "M",
+   "era",
+   " bij",
+   "li",
+   " ka",
+   " bill",
+   " kit",
+   "na",
+   " hai",
+   "?"
+  ],
+  "openai_o200k_count": 10,
+  "qwen_count": 10
+ }
+}

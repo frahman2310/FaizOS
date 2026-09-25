@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 turn_fixed.py",
+ "program": "code/code-01/turn_fixed.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "Lahore\noutput tokens: 2\nLahore\n"
+}

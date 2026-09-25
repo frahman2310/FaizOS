@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we1-inpart '6500 * 2 / 1000000' --note 'input part, shown as $0.013'",
+ "expression": "6500 * 2 / 1000000",
+ "value": 0.013,
+ "note": "input part, shown as $0.013",
+ "made": "2026-09-25T14:01:12"
+}

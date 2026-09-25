@@ -1,0 +1,7 @@
+# Key check for Show 2: what reply holds after the call
+def fake_model(prompt):
+    return {"text": "Hello, Faiz", "input_tokens": 5, "output_tokens": 3}
+
+reply = fake_model("Say hello")
+print("after the call, reply holds:", reply)
+print(reply["text"])

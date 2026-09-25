@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 retry_a.py",
+ "program": "code/code-02/retry_a.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "[{'message': 'remind Ali', 'tokens_out': 5}, {'message': 'remind Sara', 'tokens_out': 5}]\nSent\n3\nremind Ali\n"
+}

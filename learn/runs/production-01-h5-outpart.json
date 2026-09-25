@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-h5-outpart '200 * 10 / 1000000' --note 'output part'",
+ "expression": "200 * 10 / 1000000",
+ "value": 0.002,
+ "note": "output part",
+ "made": "2026-09-25T14:01:18"
+}

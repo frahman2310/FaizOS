@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 help_try3.py",
+ "program": "code/code-01/help_try3.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "{'input_tokens': 11, 'output_tokens': 3}\n3\n"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-msg20-all '300 * 20' --note 'Suppose 300 tokens per message: input tokens for the call on message 20 when the whole chat is resent'",
+ "expression": "300 * 20",
+ "value": 6000,
+ "note": "Suppose 300 tokens per message: input tokens for the call on message 20 when the whole chat is resent",
+ "made": "2026-09-25T14:01:43"
+}

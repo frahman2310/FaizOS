@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 show1.py",
+ "program": "code/code-01/show1.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "5200\n{'account': 'HBL-001', 'balance': 5200}\n"
+}

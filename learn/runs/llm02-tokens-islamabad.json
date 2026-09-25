@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens Islamabad --save llm02-tokens-islamabad",
+ "made": "20260925-140335-986840",
+ "inputs": {
+  "text": "Islamabad"
+ },
+ "output": {
+  "characters": 9,
+  "words": 1,
+  "openai_o200k": [
+   "Islam",
+   "abad"
+  ],
+  "qwen": [
+   "Islam",
+   "abad"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

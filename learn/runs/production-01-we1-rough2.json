@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we1-rough2 'round(0.018, 2)' --note 'rough call, shown as about $0.02'",
+ "expression": "round(0.018, 2)",
+ "value": 0.02,
+ "note": "rough call, shown as about $0.02",
+ "made": "2026-09-25T14:01:12"
+}

@@ -3,15 +3,20 @@
 
     python3 learn/check_unit.py learn/units/code/01-*.md     # one or more files; exit 1 on any failure
 
-Enforces (docs/research/structures/INTEGRATED.md; docs/research/audit-system.md findings 13-19):
-- the skill's own steps in order ('## Step: <name>'), each ending '**Your answer.**' with a '### Key';
-- a 'scored:' header naming the scored steps; each scored step's Key starts a line with 'Score:';
-- a '## Cold' item (a new problem of the same kind, new numbers or code) with its own Key and 'Score:';
-- every number in step text, Keys, cold item and cards comes from a listed run (made by a recorded command)
-  or facts.md (verified rows only); a source number counts only inside quotation marks that match the
-  source; a scenario fact sits on a line that starts 'given:'; spelled-out numbers are not allowed;
-- every fenced code block (other than ```output) appears in a listed program file under 'code:';
-- at least one card; watchlist jargon explained right where it is first used.
+Unit format v3 (docs/research/structures/INTEGRATED.md section 2.3; the six audits of 2026-09-25):
+- '## Step: <name>' blocks in teaching order. Each Key has 'Kind: show|try|scored|close'.
+  show = worked example or explanation (I do), never scored, Key lists 'New:' ideas (at most 3);
+  try = guided practice (we do), unscored, aimed at about 80% right;
+  scored = independent item (you do), listed in the header 'scored:', Key has 'Score:';
+  close = his one-line rule.
+- The first step is a show; every scored step comes after at least one show AND one try; the last is close.
+- '## Help: <step name>': a prepared second worked example on a new surface for when he is stuck (at least one).
+- '## Retry' (after a miss, new surface) and '## Cold' (7 days later): scored, each with 'Score:'.
+- Every step body (code included) is at most 2600 characters; any code block has a '**How this ... works'
+  block (C48); every step ends '**Your answer.**'.
+- Numbers come from listed runs or verified facts.md rows (exact quotes of sources allowed; scenario facts on
+  a line starting 'given:'); no spelled-out numbers; code blocks appear in listed programs (code skill);
+  ```output lines appear in runs; at least one card, number/code cards with a second surface.
 """
 import json
 import re
@@ -22,16 +27,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 ASK = "**Your answer.**"
-STEPS = {
-    "code": ["Predict", "Trace", "Change", "Find the bug", "Tell the AI", "Close"],
-    "llm": ["Odd result", "Pick and say why", "Predict", "Run", "Explain", "Wrong idea fixed", "New case", "Close"],
-    "production": ["Guess", "Chain", "Run", "Lever", "Quick set", "Close"],
-    "evaluation": ["Warm-up labels", "Label the batch", "Group the failures", "Compare with the expert",
-                   "Count and decide", "Close"],
-    "design": ["Read the brief", "First design", "Numbers", "Choices", "Compare with the expert", "What if",
-               "Decision note", "Close"],
-}
-OPTIONAL = {("code", "Tell the AI"): 2}          # step: first level at which it is required
+SKILLS = ("code", "llm", "production", "evaluation", "design")
+KINDS = ("show", "try", "scored", "close")
+MAX_NEW = 3                                      # new ideas per show step (Rosenshine small steps; his A11)
+MAX_BODY = 2600                                  # characters per message, code included (his B8; eval audit F23)
 NUMBER_WORDS = r"\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)\b"
 
 
@@ -43,14 +42,25 @@ def header(text):
 
 
 def steps(text):
-    """[(name, body, key)] for every '## Step: name' block and the '## Cold' item (named 'Cold')."""
+    """[(name, body, key)] for every '## Step: name' block, then 'Help: X', 'Retry' and 'Cold' blocks by name."""
     out = []
     for block in re.split(r"(?m)^## ", text)[1:]:
         head, _, rest = block.partition("\n")
-        if head.startswith("Step: ") or head.strip() == "Cold":
+        head = head.strip()
+        if head.startswith("Step: ") or head.startswith("Help: ") or head in ("Cold", "Retry"):
             body, _, key = rest.partition("### Key")
-            out.append((head[6:].strip() if head.startswith("Step: ") else "Cold", body.strip(), key.strip()))
+            out.append((head[6:].strip() if head.startswith("Step: ") else head, body.strip(), key.strip()))
     return out
+
+
+def kind(key):
+    m = re.search(r"(?m)^Kind:\s*(\w+)", key)
+    return m.group(1).lower() if m else None
+
+
+def is_extra(name):
+    """Blocks outside the teaching order: sent only when needed (stuck, missed, 7 days later)."""
+    return name in ("Cold", "Retry") or name.startswith("Help: ")
 
 
 def cards(text):
@@ -71,7 +81,7 @@ def check_numbers(where, text, known, sources_text):
     out = []
     prose = re.sub(r"(?ms)^```(\w*)\n.*?^```", lambda m: m.group(0) if m.group(1) == "output" else " ", text)  # code: checked against programs
     for line in prose.splitlines():
-        if re.match(r"\s*(- )?given:", line, flags=re.I):
+        if re.match(r"\s*(- |> )?(given:|suppose\b)", line, flags=re.I):   # a stated hypothetical, not a fact
             continue
         if re.search(NUMBER_WORDS, line, flags=re.I):
             out.append(f"{where}: spelled-out number in '{line.strip()[:60]}' (write it as digits, traced)")
@@ -83,7 +93,7 @@ def check_numbers(where, text, known, sources_text):
                                             for q in re.findall(r'"([^"]{8,})"', line)):
                 continue
             out.append(f"{where}: number {n} is not in a listed run or verified facts.md row "
-                       f"(or an exact quotation from a source; scenario facts go on a line starting 'given:')")
+                       f"(or an exact quotation from a source; a made-up scenario number goes on a line starting 'Suppose')")
     return out
 
 
@@ -97,22 +107,52 @@ def problems(path):
         level = int(h.get("level", "1"))
     except ValueError:
         return ["'level:' must be a whole number"]
-    if skill not in STEPS:
+    if skill not in SKILLS:
         return [f"unknown skill '{skill}'"]
     all_steps = steps(text)
-    found = [s[0] for s in all_steps if s[0] != "Cold"]
-    expected = [s for s in STEPS[skill] if level >= OPTIONAL.get((skill, s), 0)]
-    if found != [s for s in STEPS[skill] if s in found] or [s for s in expected if s not in found]:
-        out.append(f"steps must be, in order: {expected}; found {found}")
-    if not h["scored"] or [s for s in h["scored"] if s not in found]:
-        out.append(f"'scored:' must list the scored steps (from {found}); got {h['scored']}")
+    order = [(n, kind(k)) for n, b, k in all_steps if not is_extra(n)]
+    names = [n for n, _ in order]
+    if not order:
+        return ["no '## Step:' blocks"]
+    for n, k in order:
+        if k not in KINDS:
+            out.append(f"step '{n}': its Key needs 'Kind: show|try|scored|close' (got {k})")
+    if order[0][1] != "show":
+        out.append(f"the first step must be a show (explain and show before asking); got '{order[0][0]}' ({order[0][1]})")
+    if order[-1][1] != "close":
+        out.append(f"the last step must be the close; got '{order[-1][0]}'")
+    seen = set()
+    for n, k in order:
+        if k == "scored" and not {"show", "try"} <= seen:
+            out.append(f"scored step '{n}' comes before at least one show and one try (I do, we do, then you do)")
+        seen.add(k)
+    marked = [n for n, k in order if k == "scored"]
+    if not h["scored"] or sorted(h["scored"]) != sorted(marked):
+        out.append(f"'scored:' must list exactly the steps with Kind: scored {marked}; got {h['scored']}")
+    for n, b, k in all_steps:
+        if kind(k) == "show":
+            m = re.search(r"(?m)^New:\s*(.*)$", k)
+            new = [x for x in (m.group(1).split(",") if m else []) if x.strip() and x.strip() != "-"]
+            if not m:
+                out.append(f"show step '{n}': its Key needs a 'New:' line listing the new ideas it adds ('-' if none)")
+            elif len(new) > MAX_NEW:
+                out.append(f"show step '{n}' adds {len(new)} new ideas, max {MAX_NEW}: split it")
+    for extra in ("Retry", "Cold"):
+        if extra not in [n for n, _, _ in all_steps]:
+            out.append(f"missing '## {extra}' item (new surface, same kind; scored with a 'Score:' line)")
+    helps = [n for n, _, _ in all_steps if n.startswith("Help: ")]
+    if not helps:
+        out.append("no '## Help: <step name>' block (a prepared second worked example for when he is stuck)")
+    for hname in helps:
+        if hname[6:] not in names:
+            out.append(f"'{hname}' names a step that does not exist")
     measured, sources_text = "", ""
-    for kind in ("runs", "sources", "code"):
-        for rel in h[kind]:
+    for part in ("runs", "sources", "code"):
+        for rel in h[part]:
             f = HERE / rel if (HERE / rel).exists() else ROOT / rel
             if not f.exists():
                 out.append(f"listed file not found: {rel}")
-            elif kind == "runs":
+            elif part == "runs":
                 raw = f.read_text(errors="ignore")
                 try:
                     if not json.loads(raw).get("command"):
@@ -120,7 +160,7 @@ def problems(path):
                 except ValueError:
                     out.append(f"run {rel} is not valid JSON")
                 measured += raw.replace("\\n", "\n").replace("\\t", "\t")   # JSON escapes hid line-start numbers
-            elif kind == "sources":
+            elif part == "sources":
                 sources_text += re.sub(r"\s+", " ", f.read_text(errors="ignore"))
     programs = ""
     for rel in h["code"]:
@@ -148,21 +188,20 @@ def problems(path):
             if not re.match(r"\s*(\(|,? (which |that )?(means|is called|is a|is an|is the|are the|, meaning)\b|:)", rest):
                 errs.append(f"'{term}' is not taught yet and is not explained right after it (in brackets or 'means ...')")
         return errs
-    if not any(s[0] == "Cold" for s in all_steps):
-        out.append("missing '## Cold' item: a new problem of the same kind for the 7-day cold check")
     for name, body, key in all_steps:
         where = f"step '{name}'"
         if not body.rstrip().endswith(ASK):
             out.append(f"{where} must end with {ASK}")
         if len(key) < 20 or re.fullmatch(r"(?i)\s*(tbd|todo|\.\.\.)\s*", key):
             out.append(f"{where} has no real ### Key")
-        if (name in h["scored"] or name == "Cold") and not re.search(r"(?m)^Score:", key):
+        if (kind(key) == "scored" or name in ("Cold", "Retry")) and not re.search(r"(?m)^Score:", key):
             out.append(f"{where} is scored, so its Key needs a line starting 'Score:' (how to mark it)")
-        prose_len = len(re.sub(r"(?ms)^```.*?^```", "", body))
-        if prose_len > 2500:
-            out.append(f"{where} has {prose_len} characters of prose (code not counted), max 2500")
-        if skill == "code" and "```python" in body and "**How this" not in body:
+        if len(body) > MAX_BODY:
+            out.append(f"{where} is {len(body)} characters with code, max {MAX_BODY}: split it")
+        if re.search(r"```(python|sql)", body) and "**How this" not in body:
             out.append(f"{where} shows code without a '**How this code works' explanation (C48)")
+        if re.search(r"(?m)^\s*(- )?given:", body):
+            out.append(f"{where}: 'given:' is a checker tag for the Key; in the text he reads, name the source instead")
         out += [f"{where}: {j}" for j in jargon_problems(body)]
         out += check_numbers(where, body, known, sources_text)
         out += check_numbers(f"{where} Key", key, known, sources_text)

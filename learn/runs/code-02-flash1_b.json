@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 flash1_b.py",
+ "program": "code/code-02/flash1_b.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "3\n{'amount': 10}\n"
+}

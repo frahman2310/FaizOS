@@ -1,0 +1,35 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens 'Please reply in short, simple sentences.' --save llm02-help-english",
+ "made": "20260925-140259-416490",
+ "inputs": {
+  "text": "Please reply in short, simple sentences."
+ },
+ "output": {
+  "characters": 40,
+  "words": 6,
+  "openai_o200k": [
+   "Please",
+   " reply",
+   " in",
+   " short",
+   ",",
+   " simple",
+   " sentences",
+   "."
+  ],
+  "qwen": [
+   "Please",
+   " reply",
+   " in",
+   " short",
+   ",",
+   " simple",
+   " sentences",
+   "."
+  ],
+  "openai_o200k_count": 8,
+  "qwen_count": 8
+ }
+}

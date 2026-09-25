@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 help_try1_trace.py",
+ "program": "code/code-02/help_try1_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1: [] 0\nafter line 2: [{'month': 'Jan', 'paid': 3000}] 1\nafter line 3: [{'month': 'Jan', 'paid': 3000}, {'month': 'Feb', 'paid': 3000}] 2\n2\n{'month': 'Jan', 'paid': 3000}\n"
+}

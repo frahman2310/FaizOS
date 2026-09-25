@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-co-all 'round(500 * 240 * 0.0166, 4)' --note '500 users a month, shown as $1,992'",
+ "expression": "round(500 * 240 * 0.0166, 4)",
+ "value": 1992.0,
+ "note": "500 users a month, shown as $1,992",
+ "made": "2026-09-25T14:01:17"
+}

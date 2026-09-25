@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-qs2-share-in 'round(0.02 / 0.0215 * 100, 1)' --note 'share of input, shown as 93%'",
+ "expression": "round(0.02 / 0.0215 * 100, 1)",
+ "value": 93.0,
+ "note": "share of input, shown as 93%",
+ "made": "2026-09-25T14:04:31"
+}

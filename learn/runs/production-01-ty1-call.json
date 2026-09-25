@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-ty1-call 'round(3200 * 2 / 1000000 + 300 * 10 / 1000000, 6)' --note 'one call'",
+ "expression": "round(3200 * 2 / 1000000 + 300 * 10 / 1000000, 6)",
+ "value": 0.0094,
+ "note": "one call",
+ "made": "2026-09-25T14:01:12"
+}

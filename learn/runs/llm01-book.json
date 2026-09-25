@@ -1,0 +1,12 @@
+{
+ "kind": "chat",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py chat 'Who wrote the 2019 novel The Ledger of Lyari? Reply with the author'\"'\"'s name only.' --save llm01-book",
+ "made": "20260925-140136-724038",
+ "inputs": {
+  "prompt": "Who wrote the 2019 novel The Ledger of Lyari? Reply with the author's name only.",
+  "max_new": 40,
+  "full_text_sent": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWho wrote the 2019 novel The Ledger of Lyari? Reply with the author's name only.<|im_end|>\n<|im_start|>assistant\n"
+ },
+ "output": "The Ledger of Lyari was written by Jhumpa Lahiri."
+}

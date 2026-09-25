@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 turn_b.py",
+ "program": "code/code-02/turn_b.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/turn_b.py\", line 11, in <module>\n    first = ask(\"file tax return\", log)\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-02/turn_b.py\", line 6, in ask\n    record = {\"question\": question, \"tokens_in\": reply[\"input_tokens\"]}\n                                                 ~~~~~^^^^^^^^^^^^^^^^\nKeyError: 'input_tokens'\n"
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 try2_trace.py",
+ "program": "code/code-01/try2_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after reply = ..., reply holds: {'text': 'Your invoice is due Friday', 'input_tokens': 9, 'output_tokens': 6}\nafter used = ..., used holds: 6\n6\n"
+}

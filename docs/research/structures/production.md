@@ -52,27 +52,68 @@ Worked examples appear once per problem class and show the number-picking and th
 
 ---
 
-## 2. THE STRUCTURE: the "Estimate, Compute, Decide" unit
+## 2. THE STRUCTURE: the unit (corrected 2026-09-25)
 
-25 minutes, same order every time. Enforced by the script, not chosen by the tutor.
+**Corrected 2026-09-25** after C49 and `docs/research/gap-audit-production.md` (findings 1.1, 1.3 to 1.10, 5.4).
+The earlier "Estimate, Compute, Decide" unit opened with an untaught estimate under a timer and kept the worked
+solution as a side note; that is replaced below. Format: unit format v3 (`learn/check_unit.py`): each step's
+Key has `Kind: show | try | scored | close`; show steps list at most 3 `New:` ideas; nothing is scored before
+at least one show and one try. The first full unit built to this template is
+`learn/units/production/01-what-one-call-costs.md`.
 
-| # | Step | Min | What he does | What the tutor does | Material from |
-|---|---|---|---|---|---|
-| 1 | **Mixed recall** | 0 to 3 | 3 old items from different classes, answered as a number with units; one anchor-card item | shows items due (1, 3, 7, 21 days); marks against the key; one-line reason on a miss | his missed items; anchor card |
-| 2 | **Exhibit and gut estimate** | 3 to 5 | reads the exhibit and question; writes an estimation tree (2 to 4 leaves), a best guess and a 90% range, and which input he thinks dominates | stays silent; starts a 90-second timer | exhibit built from a saved source's numbers |
-| 3 | **Build the chain** | 5 to 9 | writes the formula chain with units: which exhibit numbers, in which order. No arithmetic | checks each link against the key; at the first wrong link, shows only that link of the worked solution with its reason | key written and run before the session |
-| 4 | **Compute and compare** | 9 to 11 | reads the result | runs his chain in Python; prints result, his estimate, the ratio; easy-case check (for example, hit rate 0 and 1) | code |
-| 5 | **Lever** | 11 to 16 | before seeing it: names the lever, predicts its effect in %, and the input value that flips the decision | then prints the sensitivity table (each input +20%) and the break-even value; he writes one line: right or wrong, why | code; expert lever from the source (SRE, OpenAI latency guide, Anthropic caching) |
-| 6 | **Timed set** | 16 to 22 | 3 new bank items, interleaved across unlocked classes, short answer (a number), at exam pace | marks each with a worked solution shown after his answer; logs time | bank (section 4f) |
-| 7 | **Score and log** | 22 to 25 | predicted score vs actual; one line on the costliest miss | updates class readiness (section 5) and the recall queue | tracker |
+### 2a. First contact with a problem class (the first unit of each class; about 35 to 40 minutes)
 
-**First time a problem class appears:** step 3 is replaced by one full worked solution (3 minutes)
-in the CFA layout, where each step says *why this number from the exhibit*, followed by one
-"why this term" question. The second item of that class is a completion (he fills the last links).
-From the third he builds the chain himself. This is the ladder of skill-methods.md C4, cut to three
-rungs because the arithmetic rung is not needed.
+| # | Step | Kind | Content rule | Source |
+|---|---|---|---|---|
+| 1 | **The job** | show | The problem in 4 or more plain sentences with a real money stake; every term explained where it first appears; "You will be able to ..."; "You are done when ..." (9 of 10 now and 7 days later). Ends with one check on the words just taught, never a guess. | C34, C41; teaching-structure.md:149-150; teaching-craft T1 |
+| 2 | **Worked example 1** (knowledge point 1) | show | One everyday picture with where it stops; which numbers from the exhibit and why; the formula in plain words; **a rough size first**, then one substitution line per term with units; code that computes it with a **How this code works** block; what the answer means; one wrong turn, labelled wrong before it is shown; one self-explanation question on the key step. | B1, B2; Yale primer; CFA layout (skill-methods.md:170-178); Mahajan's modelled estimate; Loretan et al. (worked estimation); C48 |
+| 3 | **Your turn 1** | try | Same shape, new surface. Completion: the first link done, he does the rest. 2 to 4 short questions, aimed at about 80% right first try; any direction question as two options. | completion problems; Renkl and Atkinson; B9; E12 |
+| 4 | **Worked example 2** (knowledge point 2) | show | As step 2, one new idea (for C1: calls a month and the share of the bill). | Math Academy knowledge points (teaching-craft.md:115) |
+| 5 | **Your turn 2** | try | As step 3. The first **rough guess** he is asked for comes here, after he has seen a worked rough estimate, as one number. | gap-audit 1.1 |
+| 6 | **Worked example 3: what the number means** | show | A saving as before minus after, written as a subtraction, the one-side slip labelled wrong; the biggest share is where to cut first; which way an unsure input bends the bill (higher or lower). Never faded until he passes it cold. | E11, E12; review.md:108, :206; INTEGRATED.md section 6 |
+| 7 | **Your turn 3** | try | 2 or 3 meaning items; direction as two options. | E12 (0/3 open, 3/3 as two options) |
+| 8 | **Lever** | try | The table first (each option: cost after, saving per call and per month, what it risks), computed; then one pick of two with the deciding number. He never names a lever or its size before seeing the table. | contrasting cases (grade B, section 8a); Schwartz and Bransford 1998 |
+| 9 | **Quick set 1** | scored | Before it, his score prediction (`engine.py predict`). 5 short-answer items on new surfaces, this class only (interleaving starts from the second class); 1 or 2 about what a number means. | Kulik bar; Adesope short answer first |
+| 10 | **Quick set 2** | scored | Opens with the worked solutions to items 1 to 5 (inside the step, so the guard sends them verbatim), then 5 more items, 2 or more about meaning. Both halves together: **10 items, at least 3 about meaning, pass 9 of 10** (INTEGRATED section 3). | elaborated feedback d = 0.99 vs 0.24 |
+| 11 | **Close** | close | Opens with the solutions to items 6 to 10; then his line "Next time I see X, I first ...". | INTEGRATED 1 |
 
-**Every fourth production unit is a mock incident** (45 minutes, section 4e) instead.
+Prepared blocks outside the order (all required by the checker):
+- **`## Help: <step>`** for every try step and every scored step: a second worked example on a new surface,
+  taught differently (for example, a case where output, not input, is the biggest share), ending on the same
+  question shape. Sent as move 3 of the stuck order, and before a Retry.
+- **`## Retry`**: 10 new items, at least 3 about meaning, pass 9 of 10, after a miss and its Help blocks.
+- **`## Cold`** (7 days later): 10 new items, at least 3 about meaning, pass 9 of 10, one message.
+- **Cards**: every number card carries 4 surfaces (`||`), so a review never repeats the numbers.
+
+Target first-try rate on the try steps: about 80%. Under 70% means the unit overloaded him; rebuild it
+before the next unit of that class (gap-audit 4.4).
+
+### 2b. Later units of a class (second unit onward)
+
+1. **First step** (try): one new item, he writes only his first move and why; recorded, not scored. Right twice
+   in a row across units: Worked examples 1 and 2 may be skipped (Kalyuga and Sweller's first-step test).
+2. **Guess** (try): one rough number, only because a worked estimate in this class has been seen. A 90% range
+   comes only after a taught calibration segment (Hubbard) and is a trial measure, never scored.
+3. **Chain** (try): his full chain in words and units; the expert chain is shown only after he finishes, with
+   feedback on the first wrong link (gap-audit 1.5).
+4. **Run** (show): code computes his chain, with its How this code works block; he says in one line why his
+   guess was off, if it was.
+5. **Worked example 3: meaning** (show, kept until passed cold), then **Your turn 3** (try).
+6. **Lever** (try, table first), **Quick set 1 and 2** (scored, 10 items interleaved across *taught* classes,
+   3 or more about meaning), **Close**.
+
+### 2c. Delivery rules for every step
+- One step per message, at most 2,600 characters including code (checker); at most 3 new ideas per show step.
+- Plain words; every term explained in the sentence where it first appears (glossary check).
+- Every number from a `calc.py` run or a verified `facts.md` row; made-up scenario numbers on a line starting
+  "Suppose"; never "given:" in text he reads. Prices from `facts.md` (Sonnet 5 and Haiku 4.5 unless the item is
+  about switching models).
+- No timer in the first two units of a class; time is logged, not shown (gap-audit 1.10).
+- Stuck order: his own earlier number or the show step it uses; two options; the step's Help block; the answer
+  worked line by line, which he says back.
+
+**Every fourth production unit is a mock incident** (45 minutes, section 4e) instead, once classes C1 to C6 have
+each had their first-contact unit.
 
 ### Why this differs from the other four skills
 | Skill | Its centre | Production's centre instead |

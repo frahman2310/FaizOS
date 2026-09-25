@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 show2.py",
+ "program": "code/code-01/show2.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "Hello, Faiz\n"
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-half '1 / 2' --note 'score for a right answer after a hint, or a half-right answer (faiz-teach SKILL.md, INTEGRATED 2.5)'",
+ "expression": "1 / 2",
+ "value": 0.5,
+ "note": "score for a right answer after a hint, or a half-right answer (faiz-teach SKILL.md, INTEGRATED 2.5)",
+ "made": "2026-09-25T14:04:58"
+}

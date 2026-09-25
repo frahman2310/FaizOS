@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-h5-share 'round(0.002 / 0.01 * 100, 1)' --note 'share of answer'",
+ "expression": "round(0.002 / 0.01 * 100, 1)",
+ "value": 20.0,
+ "note": "share of answer",
+ "made": "2026-09-25T14:01:18"
+}

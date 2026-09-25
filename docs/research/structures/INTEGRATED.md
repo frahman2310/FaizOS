@@ -18,6 +18,11 @@ drawn from the experts who teach that kind of learning best:
 | **Evaluation** | seeing failures, labelling to a standard, building the list of failure types, reasoning with counts | **Warm-up labels, Label the batch, Group the failures, Compare with the expert, Count and decide** (25 min) + 8-min rapid rounds | perceptual learning (Kellman), rater training, qualitative coding, Gigerenzer's count trees, audit training, Hamel and Shreya |
 | **System design** | judgement with many valid answers | **Read the brief, First design, Numbers, Choices, Compare with the expert, What if, Decision note** (40 min); the first two designs of each type are "guess the architect's move" | architectural katas, Google SRE design exercises, Amazon memos, AWS Well-Architected, chess master-game study |
 
+**Corrected 2026-09-25.** The step names above are each skill's independent (you do) and review steps. Every
+unit now opens with worked examples and guided practice before any of them (section 2.3), and each structure
+file lists its own show and try steps; the unit checker enforces the order. The six audits that found the
+shows and tries missing are in `docs/research/gap-audit-*.md` and `audit-pedagogy.md`.
+
 Every unit ends with the same **Close** line ("next time I see X, I do Y"), which goes into the shared
 recall queue.
 
@@ -27,31 +32,43 @@ recall queue.
    code items always come back with new numbers or new code, never the same surface.
 2. **One confidence measure.** Before every check he predicts his score; the gap between prediction and
    result is the calibration number for all five skills.
-3. **One frame inside every unit.** Commit (his answer first, with a reason), Check (run, test, or key),
-   Compare (with the expert, one decision at a time), Close.
-4. **One stuck order.** His own earlier answer, then two options, then one everyday picture, then the answer
-   with a reason. Never more prose.
-5. **One mastery rule.** The skill's bar on 2 sessions in a row, then the same bar cold at 7 days. Up one
-   rung after 2 at the bar; down one after 2 below the floor (the bar minus 20 points, or a confident wrong
-   answer).
+3. **One frame inside every unit: show, try together, then alone** (corrected 2026-09-25 after six audits,
+   `docs/research/gap-audit-*.md` and `audit-pedagogy.md`). A new pattern starts with a worked example he
+   studies (show), then practice with the last parts blank and feedback at once (try, about 80% right), and only
+   then an independent scored item (Rosenshine; Renkl and Atkinson backward fading; Sweller worked-example
+   effect). At most 3 new ideas per show step. "Commit first, then compare with the expert" is used only from
+   the third problem of a pattern he has studied, never on first contact (Loibl, Roll and Rummel 2017; Chen,
+   Kalyuga and Sweller 2015 taught the material before the recall test, it did not ask before teaching).
+   The unit format and its rules are enforced by `learn/check_unit.py` (Kind: show / try / scored / close).
+4. **One stuck order, and it teaches.** His own earlier answer or the show step it uses, then two options, then
+   the step's prepared Help block (a second worked example on a new surface), then the answer worked line by
+   line with a reason, which he says back. Explanations come from the unit, never improvised.
+5. **One mastery rule.** The skill's bar on the scored (independent) steps of 2 units in a row, then the same
+   bar cold at 7 days. A miss gets corrective teaching (Help blocks) and a Retry item on a new surface; a
+   second miss moves to a parallel unit (Bloom and Guskey mastery learning). Up one rung after 2 at the bar;
+   down one after 2 below the floor (the bar minus 20). A right answer after a hint scores 0.5. Confidence is
+   for calibration only and never demotes.
 6. **One dashboard.** Per skill, only three numbers: the main score, the 7-day cold score, the prediction gap.
 7. **One dated fact sheet.** Prices, token rates and limits, taken from the providers' official pages on the
    day it is built, with the date on every line; every skill uses it. (The review found two structures
    using different model prices and an outdated characters-per-token figure.)
 8. **One delivery rule.** One step per message; the part template where a step explains something; plain
    words, with every new term explained in the sentence where it first appears; every number produced by running code.
-9. **One change rule.** No format changes for 8 weeks. After that, only items marked "trial" may change, and
-   only when the 7-day cold score says so.
+9. **One change rule.** Bars and scoring numbers do not change for 8 weeks; after that, only items marked
+   "trial", and only when the 7-day cold score says so. How he is taught (a missing worked example, an unclear
+   question, overload) is fixed at once: the freeze never protects a teaching gap (C49).
 
 ## 3. Mastery bars per skill
 
-| Skill | Fixed bar | Trial (reviewed after 8 weeks of data) |
+Bars apply only to scored (independent) steps, the Retry item and the 7-day cold item, never to guided practice.
+
+| Skill | Bar (percent of scored steps) | Notes |
 |---|---|---|
-| Code | 90% of trace cells right; tests pass within 2 attempts | 5-minute trace pace |
-| LLM behaviour | right answer with a right one-line reason, on 2 different cases | the 10-item concept check (a guide, not a gate) |
-| Production | 9 of 10 on a mixed set | 90-second pace; estimates within a factor of 2 on 80% |
-| Evaluation | agreement with the expert (kappa, taught before it is used) of 0.70 or more, and no missed failure, pooled over 24 or more traces | rapid round 90% at 20 seconds; the 5-of-6 warm-up gate |
-| System design | 70 of 100 on the reasoning rubric, with every number in the brief met | 80 for level 3 |
+| Code | 90 | independent trace or edit of a new program; an edit counts only if the tests pass within 2 attempts |
+| LLM behaviour | 90 | new-case items with the answer AND a right one-line reason; never the pre-question |
+| Production | 90 | a set of 10 items, at least 3 about what a number means (E11, E12), not only arithmetic |
+| Evaluation | 80 on first units; later kappa 0.70 with no missed failure over 24+ traces, computed by the engine | kappa only after it is taught |
+| System design | 70 on study units; rubric 70 with every brief number met on full designs | rubric anchored on ScaleDojo weak and strong answers |
 
 ## 4. Start order (so no more than about one new thing at a time)
 

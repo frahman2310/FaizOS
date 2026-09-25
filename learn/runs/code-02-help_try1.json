@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 help_try1.py",
+ "program": "code/code-02/help_try1.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "2\n{'month': 'Jan', 'paid': 3000}\n"
+}

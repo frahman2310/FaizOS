@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py design01-room '2000 - 150 - 300' --note 'ScaleDojo toy window: 2000 window, 150 system prompt, 300 held back for the reply; tokens left for history'",
+ "expression": "2000 - 150 - 300",
+ "value": 1550,
+ "note": "ScaleDojo toy window: 2000 window, 150 system prompt, 300 held back for the reply; tokens left for history",
+ "made": "2026-09-25T14:01:43"
+}

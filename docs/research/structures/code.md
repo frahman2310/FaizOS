@@ -33,14 +33,14 @@ AI-engineering patterns (section 3), not by Python features.
 | Expert | What they found | Tag and source | What it changes here |
 |---|---|---|---|
 | Lister (BRACElet) | Students who trace under 50% accuracy usually cannot explain similar code; tracing plus explaining predicted code writing (R² = 0.66) | [M] https://opus.lib.uts.edu.au/bitstream/10453/11384/1/2009002706OK.pdf (local: `research/lister-2009`) | A gate: no "explain" or "specify" work on a pattern until he traces it at 90% |
-| Sentance (PRIMM) | Predict, Run, Investigate, Modify, Make; 13 schools, 493 students, PRIMM group beat control on post-test (3.28 vs 2.58, p = .001, but r = .13, small) | [M, quasi-experiment] https://suesentance.net/wp-content/uploads/2020/02/teaching_computer_programming_with_primm__a_sociocultural_perspective_author_copy.pdf | The unit order. The effect is small, so PRIMM is the frame, not the engine |
+| Sentance (PRIMM) | Predict, Run, Investigate, Modify, Make; 13 schools, 493 students, PRIMM group beat control on post-test (3.28 vs 2.58, p = .001, but r = .13, small) | [M, quasi-experiment] https://suesentance.net/wp-content/uploads/2020/02/teaching_computer_programming_with_primm__a_sociocultural_perspective_author_copy.pdf | Reading before writing and small modify steps. Predict is low stakes and unscored, on code already shown (corrected 2026-09-25, G3) |
 | Schulte (Block Model) | Understanding has levels (atom, block, relations, whole program) and sides (text, execution, purpose); novices read bottom-up | [S] https://dl.acm.org/doi/10.1145/1404520.1404535 ; https://static.teachcomputing.org/pedagogy/QR12-Block-model.pdf | Investigate questions: one per level, ending at purpose |
 | Margulieux, Guzdial | Subgoal-labelled worked examples: 36% more problems solved (61% vs 45%) in the lab | [M] local `research/margulieux-2016` | Every worked example carries subgoal labels |
 | Margulieux, Morrison, Decker 2020 | Over a semester (265 students): better weekly quizzes, **not** better exams; fewer drops and fails | [M] https://link.springer.com/article/10.1186/s40594-020-00222-7 | Challenge: labels help while learning, fade them; they are not the mastery test |
-| Xie, Nelson, Ko 2018 | A 5 to 10 minute explicit tracing strategy (line by line, write memory down) gave 15% higher tracing scores, n = 24 | [M] https://www.benjixie.com/publication/sigcse-2018/ | He always traces with a memory table, never in his head |
-| Cunningham et al. 2017 | Students who sketched a full trace got 82% of reading problems right vs 61% with no sketch; an incomplete sketch was as bad as none | [M] https://www.gvu.gatech.edu/sites/default/files/related_project_files/p164-cunningham.pdf | The trace table must be complete; half tables are marked incomplete |
-| Nelson (PLTutor) | Tracing taught first, values hidden for the learner to fill: 60% higher gain than Codecademy (3.89 vs 2.42 of 27) | [M, small lab] local `research/nelson-2017` | Trace items hide values; he fills them |
-| Sorva (notional machines) | Program visualisation helps mainly when the learner does the simulating, not watching | [S, review] https://dl.acm.org/doi/10.1145/2490822 | He fills the memory table himself; no watch-only animations |
+| Xie, Nelson, Ko 2018 | A 5 to 10 minute explicit tracing strategy (line by line, write memory down) gave 15% higher tracing scores, n = 24 | [M] https://www.benjixie.com/publication/sigcse-2018/ | The tracing strategy is **taught first**: the tutor fills a table row by row in a show, then tables are faded (corrected 2026-09-25, G6) |
+| Cunningham et al. 2017 | Students who sketched a full trace got 82% of reading problems right vs 61% with no sketch; an incomplete sketch was as bad as none. Observational, about students' **own** sketches after a CS1 course; on a code-ordering problem only 3% sketched and both groups scored about 97% | [M, observational] https://www.gvu.gatech.edu/sites/default/files/related_project_files/p164-cunningham.pdf | Corrected 2026-09-25 (G6): the paper concludes a sketch technique should be **taught**; it says nothing about handing a novice a large blank table. Tables are modelled in a show, then faded; a full table is the scored independent task only. A table is a tool for hard tracing, not a default task |
+| Nelson (PLTutor) | Tracing taught first, values hidden for the learner to fill: 60% higher gain than Codecademy (3.89 vs 2.42 of 27) | [M, small lab] local `research/nelson-2017` | Each state change is shown with its explanation first; only then are values hidden for him to fill (G6) |
+| Sorva (notional machines) | Program visualisation helps mainly when the learner engages with it, not when he watches passively | [S, review] https://dl.acm.org/doi/10.1145/2490822 | Corrected 2026-09-25 (G7): a shown, filled table read line by line with a self-explanation prompt is engagement, not passive watching; it comes before he fills tables himself. Only long unprompted animations are left out |
 | Ericson (Parsons) | Parsons with distractors took less time than fixing or writing, same learning; adaptive Parsons solved nearly 2x as often | [M] https://dl.acm.org/doi/10.1145/3141880.3141895 ; local `research/ericson-2019`; https://dl.acm.org/doi/10.1145/3411764.3445292 | Parsons is the cheap bridge between reading and editing, not a goal |
 | Lee, Lytle (Use-Modify-Create) | UMC lowered felt difficulty and raised ownership; the study measured perceptions, not scores | [S, R] https://dl.acm.org/doi/10.1145/1929887.1929902 ; https://dl.acm.org/doi/abs/10.1145/3304221.3319786 | Modify before make; "Create" is replaced by "Specify" |
 | Michaeli, Romeike | A 10-minute explicit debug process (hypothesise, test, undo failed changes): d = 0.69 on bugs fixed (median 4 vs 2 of 9) | [M] https://computingeducation.de/pub/2019_Michaeli-Romeike_WIPSCE19.pdf | A written debug card used every time |
@@ -56,45 +56,75 @@ AI-engineering patterns (section 3), not by Python features.
 | GitHub, Anthropic, Willison | Run tests first; look for invented APIs, ignored constraints, deleted or skipped tests, code that looks right but misses intent; never commit code you cannot explain | [S] https://docs.github.com/en/copilot/tutorials/review-ai-generated-code ; https://code.claude.com/docs/en/best-practices ; local `ai-steering/willison-vibe-coding.md` | The review checklist |
 | Hundhausen; Indriasari review | Code review in class improved code quality and discussion (51 studies, mostly benefits, few controlled) | [S, R] https://dl.acm.org/doi/10.1145/1539024.1508972 ; https://dl.acm.org/doi/10.1145/3403935 | Review is kept, but judged by the planted bug found, not by his feeling |
 
-**His own record points the same way** (`docs/learning-evidence.md`): step tables of working code 3 of 4
-(D5) and 5 of 6 (B11), but simulating broken code in a table 0 of 4 (B11); "someone broke it" with only a
+**His own record points the same way** (`docs/learning-evidence.md`): a step table of working code **with the
+last cells blank** 3 of 4 (D5: backward fading, not a full blank table; corrected 2026-09-25, G19) and tables
+of working code 5 of 6 (B11), but simulating broken code in a table 0 of 4 (B11), so planted bugs stay out of
+tables; "someone broke it" with only a
 label 5 of 6; tiny example first was the strongest predictor (B1); code shown in chat, not in files (B7);
 writing from blank 0 of 4 (B10). His four repeat errors (E1 quiet wrong vs crash, E2 start line inside a
 loop, E3 one record per call vs per try, E4 what kind of value a name holds) become fixed item types.
 
 ---
 
-## 2. The structure: one code unit, "Predict, Trace, Change, Break, Steer" (30 minutes)
+## 2. The structure: one code unit, "show, try with me, your turn" (about 30 minutes)
 
-The tutor prepares everything before the session, runs every snippet, and stores expected outputs.
-All code is shown in chat, 30 lines at most per block.
+> **Rewritten 2026-09-25** after the voided first code session (C49) and the gap audit
+> (`docs/research/gap-audit-code.md`, G1 to G20). The old order (Predict, Trace, Change, Break, Steer) put a
+> scored question on untaught code first and a full blank memory table second; no step showed a worked example.
+> The template below is `docs/research/curricula/code-teaching-experts-v2.md` section (e), which carries the
+> sources and a message-by-message sample of unit 1. The unit format is enforced by `learn/check_unit.py`
+> (Kind: show / try / scored / close).
 
-| # | Step | Min | What he does | What the tutor does | Material comes from |
-|---|---|---|---|---|---|
-| 1 | Warm reps | 4 | 3 cold items from old patterns, mixed, spaced at 1, 3, 7, 21 days; at least one is E1 to E4 | Runs them, marks, queues misses | His review queue |
-| 2 | Predict | 3 | A tiny version (8 lines at most) of today's pattern: writes the output and a label: crash, quietly wrong, or fine. Then his score prediction for the unit | Runs it; if wrong, asks only "which line did you read differently?" | Forge chapter snippets (outputs stripped), CS50P lecture code |
-| 3 | Trace | 7 | The real 15 to 30 line worked example, with subgoal labels as comments. Fills a memory table for one input (every name, every row, hidden values) | Checks cell by cell against the run; incomplete table sent back | His own lesson code in `projects/`, CS50P, Forge |
-| 4 | Explain | 2 | Three block questions (one line, one block, the whole) ending in one sentence: what is this for | Scores purpose level on the 7-point EiPE rubric; later, feeds his sentence to a fresh model and runs the tests on what it builds | Zilles rubric, Denny 2024 |
-| 5 | Change | 5 | Parsons with one distractor (first time on a pattern), then a 1 to 5 line edit to meet a changed spec | Runs the given tests; shows the reference edit after he passes or after 2 hints | Exercism exemplars, CS50P psets, own code |
-| 6 | Break | 6 | A planted quiet bug in the same code. Uses the debug card: symptom, suspect lines, hypothesis, predicted check result, run, fix, rerun tests, undo failed fixes | Runs only what he asks; holds the answer until 2 failed hypotheses | Real bugs from his record, `projects/meter/meter_broken.py`, Real Python IDLE example |
-| 7 | Steer | 3 | Level 2 and up: writes a spec (goal, input, output, constraint, one test) for an AI; or reviews an AI diff with the checklist and writes a test that exposes its bug | Sends the spec to a fresh model with no context, runs hidden tests, reports pass/fail per test | Prompt Problems format; GitHub and Anthropic checklists |
+The tutor prepares everything before the session, runs every program with `learn/code/record.py`, and stores
+the outputs. All code is shown in chat. One step per message, 700 to 2,100 characters where possible (his B8),
+2,600 at most including code. Real terms (variable, function, argument, return value, dict, key, list), each
+explained in the sentence where it first appears. Every code block comes with a **How this code works** block
+that reads the code line by line in run order, saying what each line leaves behind and why it is built that
+way, and never gives the answer to a question (C48, G11).
 
-Close (inside step 7): predicted score vs actual, misses go into the queue. No written reflection;
-the prediction gap is the reflection.
+| # | Step | Kind | What the message contains | Source |
+|---|---|---|---|---|
+| 0 | Recall | (queue) | Up to 3 old cards, never on today's pattern | Rosenshine 1; FSRS queue |
+| 1 | Goal and steps | show | The job in one line; the problem it solves; the pattern's 2 to 4 **subgoal labels** as a short list, up front; one line per new word | CS1 Subgoals project; Xie 2019 4.1.1 |
+| 2 | **Show 1** (I do, tiny) | show | One knowledge point. A 2 to 5 line correct program, its recorded output, each line read in words with the value it leaves; a filled trace table the first time tables appear; one self-explanation prompt on the key line | Rosenshine 2 to 4; CS50P lecture 0; his B1 |
+| 3 | **Try with me 1** (we do) | try | Same shape, new surface; the trace table filled except its last row; one hinge question whose wrong options each match a named wrong idea (E1 to E4) | Renkl and Atkinson; Wiliam |
+| 4 | **Show 2** | show | The next knowledge point, one new idea added to the same kind of example; same line-by-line reading; one prompt | Math Academy knowledge points; Xie "added complexity" |
+| 5 | **Try with me 2** | try | The last two rows blank, or one line to complete | Renkl backward fading |
+| 6 | **Show 3** (the real shape) | show | The real-sized version (up to about 15 lines) with the subgoal labels named in its reading. Broken versions appear only here or later, after two correct examples, each run and labelled (crash / quietly wrong) as it is shown | Margulieux 2016; CS50P lecture 4; Große and Renkl 2007 |
+| 7 | **Try with me 3** | try | Parsons with one distractor, or a pick-the-line hinge | Ericson; Subgoals formative practice |
+| 8 | **Your turn** (you do) | scored | A new program of the same shape: trace it in full, then predict and label changed copies (crash / quietly wrong / fine), now that each label has been shown; each labelled line carries its aim | Rosenshine 9; PRIMM Modify |
+| 9 | Close | close | "Next time I see ..., I ..."; cards join the queue | Rosenshine 10 |
+| extra | Help: <step> | show | A second worked example on a new surface, for every try and the scored step, sent in the stuck order | Khan hints; Rosenshine re-teaching |
+| extra | Retry / Cold | scored | Same kind, new surface: after a miss, and 7 days later | Bloom and Guskey; `recommended-method.md` |
 
-**Placement and fading** (unchanged from skill-methods D2): a 90-second first-step test on a new pattern;
-right twice → skip steps 2 to 3 and start at Change. Subgoal labels are removed from the third example
-of a pattern (Margulieux 2020: they help quizzes, not exams).
+Rules that sit on top of the order:
+- **One knowledge point per show**, at most 3 new ideas (listed in the step's `New:` line). Each try aims at
+  about 80% right first time; tries are never scored. The bar applies only to Your turn, Retry and Cold (G16).
+- **Nothing is asked before it is taught** (G3). Predicting output is a check after a show, never first contact.
+- **Tables are faded, not handed over blank** (G5, G6): filled and read aloud in a show, then the last row blank,
+  then the last two, then a full table only in the scored step.
+- **Correct before broken** (G14): planted bugs only after two correct worked examples of the pattern, and the
+  crash / quietly wrong / fine labels only after an example of each has been shown.
 
-**Stuck order** (from his record, D1, D4): his own earlier answer or table; then two options; then the
-answer with the reason. Never more prose (D6: 0 of 5).
+Later units of the same pattern: one show, tries with more blanks, then Change (edit to pass a test), then
+Find the bug (label-only first, then the debug card modelled once by the tutor), then Tell the AI. From the
+third problem of a pattern he attempts first and then sees the expert version (`method-effectiveness.md`
+section 3). A new pattern starts again at Show (4C/ID saw-tooth).
+
+**Placement and fading** (skill-methods D2): a 90-second first-step test on a new pattern; right twice → the
+unit starts at Try with me 3. After C49 his placement on T1 is "not yet". Subgoal labels are removed from the
+third example of a pattern (Margulieux 2020: they help quizzes, not exams).
+
+**Stuck order** (from his record, D1, D4; `SKILL.md`): his own earlier answer or the show it uses; two options;
+the step's prepared Help block (a second worked example); the answer worked line by line, which he says back.
+Never more improvised prose (D6: 0 of 5).
 
 **Why this differs from the other four skills**
 
 | | Evaluation | System design | Production | LLM behaviour | **Code** |
 |---|---|---|---|---|---|
 | Who judges | expert labels | expert design | exact number | the measured run | **the machine: run output and tests** |
-| Core move | label, then compare | commit, compare, changed fact | faded numeric solution | predict, run, one line | **predict, trace, change, break, steer** |
+| Core move | label, then compare | commit, compare, changed fact | faded numeric solution | predict, run, one line | **show, try with me, your turn; later change, find the bug, steer** |
 | Material | real traces | briefs | formulas | model calls | **a fixed library of 6 patterns, each with planted bugs** |
 | Practice kind | non-recurrent judgement | non-recurrent | recurrent maths | facts and concepts | **recurrent procedure: speed and accuracy drills are allowed (4C/ID part-task practice)** |
 | Errors | missed failures | trade-off missed | arithmetic | wrong mental model | **quiet wrong results are the main teaching material** |
@@ -214,9 +244,10 @@ pattern (task class) every 2 to 3 weeks, so L1 to L3 across six classes in about
 | Choice | Grade | Why |
 |---|---|---|
 | Read and trace before explain, explain before write | strong | Lister, Lopez replicated; Xie; CS1-LLM |
-| Memory table for every trace | moderate | Xie 2018 (n = 24), Cunningham 2017 (observational) |
+| Tracing strategy modelled, then faded tables; full table only when scored | moderate | Xie 2018 (n = 24), PLTutor, Cunningham 2017 (observational); corrected 2026-09-25 (G6) |
 | Subgoal-labelled worked examples, faded | moderate | lab gains strong; semester exams null |
-| PRIMM order | moderate for the order, weak for size | one quasi-experiment, r = .13 |
+| Worked example, then completion, then independent (show, try, your turn) | strong | Rosenshine; Renkl and Atkinson; Sweller; gap audit G1 to G5 |
+| PRIMM predict as an unscored check after a show | moderate for the order, weak for size | one quasi-experiment, r = .13; Predict is low stakes in PRIMM itself |
 | Parsons with distractors | moderate | same learning, less time; efficiency, not superiority |
 | Explicit debug card | moderate | d = 0.69, one classroom study, plus Ko |
 | Planted quiet bugs from his own record | moderate | his E1 to E4 counts; B11 label format 5 of 6 |
@@ -232,7 +263,7 @@ pattern (task class) every 2 to 3 weeks, so L1 to L3 across six classes in about
 |---|---|
 | Writing whole programs from a blank file | Not his goal; his record 0 of 4; CS1-LLM accepts lower from-scratch writing |
 | Syntax drills (Xie's S2) beyond what edits need | He edits, the AI types |
-| Watch-only animations or visualisers (UUhistle style) | Sorva: learners gain when they simulate, not watch; the memory table does that |
+| Long, unprompted watch-only animations (UUhistle style) | Sorva: learners gain when they engage; a shown table read line by line with a prompt is kept (G7) |
 | Nicer error messages as the fix | Conflicting evidence (Becker vs Denny); reading tracebacks is taught instead |
 | Long CS50P lectures as the main method | Passive; lecture code is used as snippets |
 | "Create" from Use-Modify-Create | Replaced by Specify; UMC evidence is perception only |

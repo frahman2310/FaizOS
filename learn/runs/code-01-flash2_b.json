@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 flash2_b.py",
+ "program": "code/code-01/flash2_b.py",
+ "args": [],
+ "exit_code": 1,
+ "output": "Traceback (most recent call last):\n  File \"/Users/faizr/AI OS for Learning/learn/code/code-01/flash2_b.py\", line 2, in <module>\n    print(reply[\"text\"])\n          ~~~~~^^^^^^^^\nKeyError: 'text'\n"
+}

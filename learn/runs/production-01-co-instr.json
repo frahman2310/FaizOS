@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-co-instr '5000 * 2 / 1000000' --note 'instructions part'",
+ "expression": "5000 * 2 / 1000000",
+ "value": 0.01,
+ "note": "instructions part",
+ "made": "2026-09-25T14:01:17"
+}

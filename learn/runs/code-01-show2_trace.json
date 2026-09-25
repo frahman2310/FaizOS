@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-01 show2_trace.py",
+ "program": "code/code-01/show2_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after the call, reply holds: {'text': 'Hello, Faiz', 'input_tokens': 5, 'output_tokens': 3}\nHello, Faiz\n"
+}

@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 show2_trace.py",
+ "program": "code/code-02/show2_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1, reply: {'text': 'Paid', 'usage': {'input_tokens': 11, 'output_tokens': 2}}\nafter line 2, record: {'text': 'Paid', 'tokens_out': 2}\nafter line 3, log: []\nafter line 4, log: [{'text': 'Paid', 'tokens_out': 2}]\n[{'text': 'Paid', 'tokens_out': 2}]\n"
+}

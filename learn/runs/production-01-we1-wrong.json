@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we1-wrong '6900 * 2 / 1000000' --note 'wrong turn: every token at the input rate'",
+ "expression": "6900 * 2 / 1000000",
+ "value": 0.0138,
+ "note": "wrong turn: every token at the input rate",
+ "made": "2026-09-25T14:01:12"
+}

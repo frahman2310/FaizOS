@@ -1,0 +1,38 @@
+{
+ "kind": "next",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py next 'The largest city in Pakistan is' --save llm01-city-plain",
+ "made": "20260925-140104-274159",
+ "inputs": {
+  "prompt": "The largest city in Pakistan is",
+  "k": 5,
+  "note": "first-piece chances only; tokens are not whole words"
+ },
+ "output": [
+  {
+   "token": " Karachi",
+   "prob": 0.2125,
+   "percent": 21.2
+  },
+  {
+   "token": " Lahore",
+   "prob": 0.0876,
+   "percent": 8.8
+  },
+  {
+   "token": " __",
+   "prob": 0.0862,
+   "percent": 8.6
+  },
+  {
+   "token": " ____",
+   "prob": 0.0569,
+   "percent": 5.7
+  },
+  {
+   "token": " located",
+   "prob": 0.0541,
+   "percent": 5.4
+  }
+ ]
+}

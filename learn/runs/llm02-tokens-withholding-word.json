@@ -1,0 +1,23 @@
+{
+ "kind": "tokens",
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "command": "uv run demo.py tokens withholding --save llm02-tokens-withholding-word",
+ "made": "20260925-140343-000410",
+ "inputs": {
+  "text": "withholding"
+ },
+ "output": {
+  "characters": 11,
+  "words": 1,
+  "openai_o200k": [
+   "with",
+   "holding"
+  ],
+  "qwen": [
+   "with",
+   "holding"
+  ],
+  "openai_o200k_count": 2,
+  "qwen_count": 2
+ }
+}

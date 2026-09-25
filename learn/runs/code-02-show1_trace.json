@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 show1_trace.py",
+ "program": "code/code-02/show1_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 1: [] 0\nafter line 2: [{'amount': 500}] 1\nafter line 3: [{'amount': 500}, {'amount': 120}] 2\n2\n{'amount': 120}\n"
+}

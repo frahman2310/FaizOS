@@ -1,0 +1,7 @@
+{
+ "command": "python3 code/record.py code-02 help_try2_trace.py",
+ "program": "code/code-02/help_try2_trace.py",
+ "args": [],
+ "exit_code": 0,
+ "output": "after line 2, record: {'text': 'Refund sent', 'tokens_out': 4}\nafter line 4, done: [{'text': 'Refund sent', 'tokens_out': 4}]\nRefund sent\n"
+}

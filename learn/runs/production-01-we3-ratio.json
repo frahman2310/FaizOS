@@ -1,0 +1,8 @@
+{
+ "kind": "calc",
+ "command": "python3 calc.py production-01-we3-ratio 'round(0.006 / 0.002)' --note 'a saves 3 times b'",
+ "expression": "round(0.006 / 0.002)",
+ "value": 3,
+ "note": "a saves 3 times b",
+ "made": "2026-09-25T14:01:14"
+}
