@@ -33,8 +33,8 @@ OIDC: proving which project a run belongs to, so it gets a pass that expires ins
 secret: a password stored in a service's settings, readable by every run
 summariser: the machine that turns a supplier email into a one-line invoice note
 judge: a second AI that marks each output pass or fail against one written rule
-catch rate: of the notes a person marked FAIL, the share the judge also marked FAIL (TPR)
-clear rate: of the notes a person marked PASS, the share the judge also marked PASS (TNR)
+catch rate: of the notes a person marked FAIL, the share the judge also marked FAIL (tools name this TPR or TNR depending on which label they call positive; say "catch rate")
+clear rate: of the notes a person marked PASS, the share the judge also marked PASS (say "clear rate")
 wobble: how far a rate measured on a set of cases can sit from the true rate by luck alone
 true rate: the rate on every case the firm will ever see, not just the ones measured
 

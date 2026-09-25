@@ -12,11 +12,11 @@ drawn from the experts who teach that kind of learning best:
 
 | Skill | Kind of learning | Its structure, in plain words | Borrowed from |
 |---|---|---|---|
-| **Code** | a procedure built by practice; the machine checks every step | **Predict, Trace, Change, Find the bug, Tell the AI** (30 min) | computing-education research: tracing tables, Parsons problems, PRIMM, subgoal labels, explicit debugging, Prompt Problems, CS1-LLM |
-| **LLM behaviour** | fixing wrong mental models, plus facts to keep | **Odd result, Pick and say why, Predict, Run, Explain, Wrong idea fixed, New case** (20 min) | physics education (Mazur, Hake, predict-observe-explain), refutation texts, Quantum Country and spaced cards |
-| **Production** | applied maths and quality control; the weak point is choosing numbers and reading what they mean | **Guess, Chain, Run, Lever, Quick set** (25 min; every 4th week a 45-min mock incident) | CFA and actuarial prep, Mahajan's estimation, Deming, SRE error budgets |
-| **Evaluation** | seeing failures, labelling to a standard, building the list of failure types, reasoning with counts | **Warm-up labels, Label the batch, Group the failures, Compare with the expert, Count and decide** (25 min) + 8-min rapid rounds | perceptual learning (Kellman), rater training, qualitative coding, Gigerenzer's count trees, audit training, Hamel and Shreya |
-| **System design** | judgement with many valid answers | **Read the brief, First design, Numbers, Choices, Compare with the expert, What if, Decision note** (40 min); the first two designs of each type are "guess the architect's move" | architectural katas, Google SRE design exercises, Amazon memos, AWS Well-Architected, chess master-game study |
+| **Code** | a procedure built by practice; the machine checks every step | **Goal, Show, Try with me (x3, faded), Your turn, Close**; later units add Change, Find the bug, Tell the AI (30 min) | computing-education research: tracing tables, Parsons problems, PRIMM, subgoal labels, explicit debugging, Prompt Problems, CS1-LLM |
+| **LLM behaviour** | fixing wrong mental models, plus facts to keep | **Goal and odd result, How it works (worked demonstration), Predict, Run and compare, Wrong idea fixed, Checks, New case** (20 min) | physics education (Mazur, Hake, predict-observe-explain), refutation texts, Quantum Country and spaced cards |
+| **Production** | applied maths and quality control; the weak point is choosing numbers and reading what they mean | **The job, Worked example and Your turn per idea (x3, incl. what the number means), Lever, Quick set of 10** (25 min; every 4th week a 45-min mock incident) | CFA and actuarial prep, Mahajan's estimation, Deming, SRE error budgets |
+| **Evaluation** | seeing failures, labelling to a standard, building the list of failure types, reasoning with counts | **The job and the rule, 2 worked examples, Finish the expert's work, Warm-up labels, Label the batch, Compare (numbers, then reasons)**; grouping and counting come in later units (25 min) + 8-min rapid rounds once prepared | perceptual learning (Kellman), rater training, qualitative coding, Gigerenzer's count trees, audit training, Hamel and Shreya |
+| **System design** | judgement with many valid answers | a ladder per problem type: **Toolbox, worked example per decision, Guess the move, Your move** (rungs 1-2), then completion, faded, and only from rung 5 **First design, Numbers, Choices, Compare, What if, Decision note** (40 min) | architectural katas, Google SRE design exercises, Amazon memos, AWS Well-Architected, chess master-game study |
 
 **Corrected 2026-09-25.** The step names above are each skill's independent (you do) and review steps. Every
 unit now opens with worked examples and guided practice before any of them (section 2.3), and each structure
@@ -78,7 +78,7 @@ Bars apply only to scored (independent) steps, the Retry item and the 7-day cold
 | 3 | **Production** | needs tokens and pricing from weeks 1-2; his strength; supplies the cost and latency numbers design needs |
 | 4 | **Evaluation**, after a placement check (he already did L5 and L6) | needs code reading and SQL (he has them) and repeatable-output concepts (week 2); agreement statistics taught first |
 | 6 | **System design**, "guess the architect's move" first | needs production's cost and latency classes |
-| 7-8 | first full design session | all five running |
+| 7-8 | all five running; design stays on study rungs (worked examples, guess the move) until it passes them | the design ladder, `system-design.md` section 2 |
 
 This order rests on the prerequisite graph and 4C/ID, and on his record that about 8 new things at once got
 no answers; no study tests staggered starts for one adult, so it is a trial and is checked at week 8.

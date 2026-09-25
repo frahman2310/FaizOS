@@ -35,6 +35,8 @@ logged in `docs/learning-evidence.md` (C1 to C49); his latest words win.
    - **scored** steps: only after the shows and tries. Just before the first one, ask him to predict his score
      0 to 100 and record it: `uv run engine.py predict <unit-id> <p>`.
    Short feedback on his previous answer may come before a step. The Stop hook blocks anything else.
+   After the last try step, record how many try answers were right first time: `uv run engine.py tries
+   <unit-id> <right> <total>` (under 70% is an overload alarm: slow down, use the Help blocks).
 4. **Mark** scored steps against the Key's `Score:` line (0 to 1). Right after a hint = 0.5; the answer given to
    him = 0. Record: `uv run engine.py done <unit-id> --step "<name>=<value>" ... [--confident-wrong N]`
    (confidence is for calibration only; it never lowers his level). Pass = mean of scored steps at the skill's

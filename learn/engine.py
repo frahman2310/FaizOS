@@ -35,8 +35,10 @@ BACKLOG_PAUSE = 40                  # due backlog above this: new cards wait (ll
 FLOOR_GAP = 20                      # floor = bar minus 20 points
 
 
-def passes(skill, s, scored):
-    """s: {step: value}; scored: the unit's scored step names (INTEGRATED section 3)."""
+def passes(skill, s, scored, floor=None):
+    """s: {step: value}; scored: the unit's scored step names (INTEGRATED section 3); floor: {step: min}."""
+    if any(s.get(k, 0) < v for k, v in (floor or {}).items()):
+        return False
     if skill == "evaluation" and "kappa" in s:
         return s["kappa"] >= 0.70 and s.get("missed_fail", 1) == 0 and s.get("traces", 0) >= 24
     if skill == "design" and "rubric" in s:
@@ -74,7 +76,8 @@ def meta(path):
     m = dict(re.findall(r"(?m)^(\w[\w ]*):\s*(.*)$", head))
     return {"id": m.get("id", path.stem), "skill": path.parent.name, "level": int(m.get("level", "1")),
             "scored": [x.strip() for x in m.get("scored", "").split(",") if x.strip()],
-            "parallel_of": m.get("parallel_of", "").strip(), "path": path}
+            "parallel_of": m.get("parallel_of", "").strip(), "path": path,
+            "floor": {k.strip(): float(v) for k, v in re.findall(r"([^,=]+)=([\d.]+)", m.get("floor", ""))}}
 
 
 def find_unit(uid):
@@ -133,7 +136,8 @@ def plan(wd, w):
     for s in SKILLS:
         if w == START_WEEK[s] and wd == 0 and s in ("evaluation", "production"):
             other.append(f"{s} placement check before the first unit")
-    return units, other
+    other = [o for o in other if (HERE / "sessions" / (re.sub(r"\W+", "-", o.split(" (")[0].split(":")[0]).strip("-") + ".md")).exists()]
+    return units, other                       # a session is listed only once its material is prepared (review finding)
 
 
 # ---------- results and mastery ----------
@@ -313,9 +317,10 @@ def cmd_predict(a):
     if not 0 <= a.p <= 100:
         fail("prediction must be 0 to 100")
     st = load("state.json", {})
-    st.setdefault("predictions", {})[f"{a.unit}{':cold' if a.cold else ''}"] = a.p
+    tag = ":cold" if a.cold else ":retry" if a.retry else ""
+    st.setdefault("predictions", {})[f"{a.unit}{tag}"] = a.p
     save("state.json", st)
-    print(f"Prediction for {a.unit}{' (cold)' if a.cold else ''}: {a.p}")
+    print(f"Prediction for {a.unit}{tag}: {a.p}")
 
 
 def cmd_done(a):
@@ -341,6 +346,8 @@ def cmd_done(a):
         prior = [r for r in sessions(results) if r["unit"] == a.unit]
         if not prior:
             fail(f"{a.unit} has no session yet, so no cold check")
+        if any(r["kind"] == "cold" and r["unit"] == a.unit for r in results):
+            fail(f"{a.unit} already has its cold check recorded")
         if dt.date.fromisoformat(prior[-1]["cold_due"]) > today:
             fail(f"cold check for {a.unit} is not due until {prior[-1]['cold_due']}")
         scored = list(steps)                  # the cold item's own scored parts
@@ -359,7 +366,7 @@ def cmd_done(a):
     score = round(100 * sum(vals) / len(vals)) if vals else round(steps.get("rubric", steps.get("kappa", 0) * 100))
     kind = "cold" if a.cold else "retry" if a.retry else "session"
     passed = {"cold": steps.get("Cold", 0) * 100 >= BAR[skill], "retry": steps.get("Retry", 0) * 100 >= BAR[skill],
-              "session": passes(skill, steps, scored)}[kind]
+              "session": passes(skill, steps, scored, u["floor"])}[kind]
     r = {"date": str(today), "skill": skill, "unit": a.unit, "kind": kind, "score": score,
          "predicted": predicted, "steps": steps, "confident_wrong": a.confident_wrong, "passed": passed}
     if not a.cold:
@@ -375,8 +382,24 @@ def cmd_done(a):
     results.append(r)
     save("results.json", results)
     save("state.json", st)
+    if kind == "cold" and not passed:
+        print(f"Cold check missed: at the start of the next {skill} sitting, re-teach {a.unit} from its Help blocks "
+              f"(its cards stay in the recall queue).")
     print(f"Recorded {a.unit}{' (' + kind + ')' if kind != 'session' else ''}: {score}, {'passed' if r['passed'] else 'not yet'} "
           f"(predicted {predicted}, gap {score - predicted:+d}).")
+
+
+def cmd_tries(a):
+    """First-try results on the unscored try steps: the overload alarm (Rosenshine: about 80% while practising)."""
+    if not 0 <= a.right <= a.total or a.total < 1:
+        fail("tries: right must be 0..total")
+    u = find_unit(a.unit)
+    results = load("results.json", [])
+    results.append({"date": str(dt.date.today()), "skill": u["skill"], "unit": a.unit, "kind": "tries",
+                    "score": round(100 * a.right / a.total), "predicted": None, "passed": a.right / a.total >= 0.7})
+    save("results.json", results)
+    print(f"First-try on practice for {a.unit}: {a.right}/{a.total}" +
+          ("  ALARM: under 70%, the unit is overloading him; slow down and use the Help blocks" if a.right / a.total < 0.7 else ""))
 
 
 def cmd_close(a):
@@ -421,6 +444,9 @@ def cmd_dashboard(a):
             notes.append(f"ALARM prediction gap {gap:+d}")
         elif gap is not None and weeks_in >= 4 and abs(gap) > 10:
             notes.append(f"gap {gap:+d} above 10 after 4 weeks")
+        tries = [r for r in rs if r["kind"] == "tries"]
+        if tries and not tries[-1]["passed"]:
+            notes.append(f"ALARM first-try on practice {tries[-1]['score']}% (under 70: overload)")
         if outside and not outside[-1]["passed"]:
             notes.append("outside task below the bar")
         status = "mastered" if mastered else ("not started" if not rs else f"bar {BAR[s]}")
@@ -441,6 +467,7 @@ if __name__ == "__main__":
     p.add_argument("--confident-wrong", type=int, default=0); p.add_argument("--cold", action="store_true")
     p.add_argument("--retry", action="store_true")
     p = sub.add_parser("close"); p.add_argument("unit"); p.add_argument("line")
+    p = sub.add_parser("tries"); p.add_argument("unit"); p.add_argument("right", type=int); p.add_argument("total", type=int)
     p = sub.add_parser("outside"); p.add_argument("skill"); p.add_argument("score", type=int); p.add_argument("what")
     sub.add_parser("dashboard")
     a = ap.parse_args()

@@ -65,6 +65,12 @@ else:
     attack("no Help block", re.sub(r"(?ms)^## Help: .*?(?=^## )", "", text))
     attack("no Retry item", re.sub(r"(?ms)^## Retry\n.*?(?=^## )", "", text))
     attack("a step over 2600 characters", inj("x" * 2700))
+    attack("a practice step with a big blank table", text.replace(
+        f"## Step: {first_try}\n", f"## Step: {first_try}\n\n| a | b | c |\n|---|---|---|\n" + "| ? | ? | ? |\n" * 3, 1))
+    attack("a practice step with no prepared two options",
+           re.sub(r"(?m)^Two options:.*\n", "", text))
+    attack("a practice step with no prepared worked answer",
+           re.sub(r"(?m)^Worked answer:.*\n", "", text))
     attack("'given:' in text he reads", inj("given: the bill is 4837."))
     (HERE / "runs/zz-nocommand.json").write_text('{"output": 1}')
     attack("run without a recorded command", re.sub(r"(?m)^runs:[ \t]*", "runs: runs/zz-nocommand.json, ", text, count=1))
@@ -94,6 +100,7 @@ def guard(text, cursor=None, active=False):
 
 if base is not None:
     st = steps(base.read_text())
+    other = next(p for p in sorted((HERE / "units").glob("*/*.md")) if p != base)
     s0, s1, key0 = st[0][1], st[1][1], st[0][2]
     expect("guard allows the first step alone", not guard(s0))
     expect("guard allows short feedback then a step", not guard("Right: that was it.\n\n" + s0))
@@ -123,7 +130,9 @@ if base is not None:
             if not ok:
                 break
         expect(f"guard allows every step of {u.parent.name}/{u.name} in order", ok)
-    expect("guard blocks a repeated step", guard(s0, {"unit": str(base), "index": 0, "finished": False}))
+    expect("guard allows re-sending an earlier step (re-teach)", not guard(s0, {"unit": str(base), "index": 2, "finished": False}))
+    expect("guard blocks starting another unit mid-unit",
+           guard(steps(other.read_text())[0][1], {"unit": str(base), "index": 1, "finished": False}))
 
 # ---------- 3. engine flows in a temp copy ----------
 with tempfile.TemporaryDirectory() as d:

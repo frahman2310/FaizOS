@@ -48,7 +48,7 @@ def last_assistant_text(transcript):
 def main():
     data = json.load(sys.stdin)
     text = last_assistant_text(data["transcript_path"])
-    if re.search(r"(?i)your answer", text):
+    if re.search(r"\*\*Your answer[.:]?\*\*", text):   # the unit's question marker only; "look at your answer" is help
         return unit_step(text, last_assistant_text.final)   # checked even on a retry
     if data.get("stop_hook_active"):
         return
@@ -115,7 +115,7 @@ def unit_step(text, final=None):
         before = last[:last.index(b)]
         if after:
             return block(f"Text was added after step '{name}'.")
-        if re.search(r"(?i)your answer", before) or "?" in before:
+        if re.search(r"\*\*Your answer", before) or "?" in before:
             return block("A question appears before the step; feedback before a step only says what was right or wrong.")
         if len(before) > 600:
             return block("The feedback before the step is longer than 600 characters (at most 3 short points).")
@@ -127,15 +127,17 @@ def unit_step(text, final=None):
         if not is_extra(name):                # Help, Retry and Cold blocks are sent when needed, outside the order
             same = cur.get("unit") == path
             finished = cur.get("finished", True)
-            if same and i <= cur.get("index", -1):
-                return block(f"Step '{name}' was already sent; steps go forward only.")
             if not same and not finished:
                 return block(f"The unit {os.path.basename(cur['unit'])} is not finished (its Close step is not sent).")
             if not same and i != 0:
                 return block(f"A unit starts at its first step, not '{name}'.")
+            if same and i > cur.get("index", -1) + 1:
+                return block(f"Step '{name}' skips a step: send the steps in order, show and try before scored.")
             total = len([s for s in steps(open(path).read()) if not is_extra(s[0])])
             os.makedirs(os.path.dirname(cursor_file), exist_ok=True)
-            json.dump({"unit": path, "index": i, "finished": i == total - 1}, open(cursor_file, "w"))
+            i = max(i, cur.get("index", -1)) if same else i
+            json.dump({"unit": path, "index": i, "finished": i == total - 1 or (same and cur.get("finished", False))},
+                      open(cursor_file, "w"))
     except Exception as e:                    # fail closed for unit steps
         return block(f"The step check itself failed ({type(e).__name__}).")
 

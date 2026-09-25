@@ -11,7 +11,10 @@ Unit format v3 (docs/research/structures/INTEGRATED.md section 2.3; the six audi
   close = his one-line rule.
 - The first step is a show; every scored step comes after at least one show AND one try; the last is close.
 - '## Help: <step name>': a prepared second worked example on a new surface for when he is stuck (at least one).
-- '## Retry' (after a miss, new surface) and '## Cold' (7 days later): scored, each with 'Score:'.
+- '## Retry' (after a miss, new surface) and '## Cold' (7 days later): scored, each with 'Score:'; either may
+  continue in '## Retry 2', '## Cold 2' ... so it holds enough items to be a fair measure (about 10 marked parts).
+- Optional header 'floor: <step>=<min>, ...': a scored step that must reach its minimum for a pass
+  (e.g. evaluation: most real failures caught), on top of the mean.
 - Every step body (code included) is at most 2600 characters; any code block has a '**How this ... works'
   block (C48); every step ends '**Your answer.**'.
 - Numbers come from listed runs or verified facts.md rows (exact quotes of sources allowed; scenario facts on
@@ -47,7 +50,7 @@ def steps(text):
     for block in re.split(r"(?m)^## ", text)[1:]:
         head, _, rest = block.partition("\n")
         head = head.strip()
-        if head.startswith("Step: ") or head.startswith("Help: ") or head in ("Cold", "Retry"):
+        if head.startswith(("Step: ", "Help: ")) or re.fullmatch(r"(Cold|Retry)( \d+)?", head):
             body, _, key = rest.partition("### Key")
             out.append((head[6:].strip() if head.startswith("Step: ") else head, body.strip(), key.strip()))
     return out
@@ -60,7 +63,7 @@ def kind(key):
 
 def is_extra(name):
     """Blocks outside the teaching order: sent only when needed (stuck, missed, 7 days later)."""
-    return name in ("Cold", "Retry") or name.startswith("Help: ")
+    return bool(re.fullmatch(r"(Cold|Retry)( \d+)?", name)) or name.startswith("Help: ")
 
 
 def cards(text):
@@ -130,13 +133,27 @@ def problems(path):
     if not h["scored"] or sorted(h["scored"]) != sorted(marked):
         out.append(f"'scored:' must list exactly the steps with Kind: scored {marked}; got {h['scored']}")
     for n, b, k in all_steps:
-        if kind(k) == "show":
+        if kind(k) == "show" and not is_extra(n):
             m = re.search(r"(?m)^New:\s*(.*)$", k)
-            new = [x for x in (m.group(1).split(",") if m else []) if x.strip() and x.strip() != "-"]
-            if not m:
-                out.append(f"show step '{n}': its Key needs a 'New:' line listing the new ideas it adds ('-' if none)")
+            new = [x for x in (re.split(r"[,;/]| and ", m.group(1)) if m else []) if x.strip() and x.strip() != "-"]
+            if not m or not new:
+                out.append(f"show step '{n}': its Key needs a 'New:' line naming the new ideas it teaches (1 to {MAX_NEW})")
             elif len(new) > MAX_NEW:
                 out.append(f"show step '{n}' adds {len(new)} new ideas, max {MAX_NEW}: split it")
+            if len(b) < 400:
+                out.append(f"show step '{n}' is {len(b)} characters: a worked example or explanation needs at least 400")
+        if kind(k) in ("try", "scored") and not is_extra(n):
+            for label in ("Two options:", "Worked answer:"):
+                if not re.search(r"(?m)^" + label, k):
+                    out.append(f"step '{n}': its Key needs a prepared '{label}' line (stuck order, never improvised)")
+        if kind(k) == "try":
+            rows = re.findall(r"(?m)^\|(?!\s*-).*\|\s*$", b)[1:]          # table rows under the header
+            blanks = sum(1 for r in rows for c in r.strip().strip("|").split("|") if re.fullmatch(r"\s*(\?|_+)?\s*", c))
+            if blanks > 6:
+                out.append(f"try step '{n}' has {blanks} blank table cells, max 6 (fade: the last rows only)")
+        i = b.find("**How this")
+        if i >= 0 and len(b[i:].replace(ASK, "")) < 200:
+            out.append(f"step '{n}': the '**How this ... works' block is too short to read the code line by line")
     for extra in ("Retry", "Cold"):
         if extra not in [n for n, _, _ in all_steps]:
             out.append(f"missing '## {extra}' item (new surface, same kind; scored with a 'Score:' line)")
@@ -194,7 +211,7 @@ def problems(path):
             out.append(f"{where} must end with {ASK}")
         if len(key) < 20 or re.fullmatch(r"(?i)\s*(tbd|todo|\.\.\.)\s*", key):
             out.append(f"{where} has no real ### Key")
-        if (kind(key) == "scored" or name in ("Cold", "Retry")) and not re.search(r"(?m)^Score:", key):
+        if (kind(key) == "scored" or re.fullmatch(r"(Cold|Retry)( \d+)?", name)) and not re.search(r"(?m)^Score:", key):
             out.append(f"{where} is scored, so its Key needs a line starting 'Score:' (how to mark it)")
         if len(body) > MAX_BODY:
             out.append(f"{where} is {len(body)} characters with code, max {MAX_BODY}: split it")

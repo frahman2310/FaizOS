@@ -9,3 +9,7 @@ notebook/VENTURES.md
 *.db-wal
 *.db-shm
 private/
+
+# Units quoting licensed ScaleDojo text stay local (review-rebuild-eval-design.md, licence finding)
+learn/units/design/
+learn/units/llm/02-tokens.md
